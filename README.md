@@ -1,5 +1,5 @@
 # Project 2 - Pokémon Database Back End
-The back end of our Pokémon Database. This will interact with the [PokéAPI](https://pokeapi.co/) to pull Pokémon data and construct a page containing data about a particular Pokémon along with fan comments and fanart.
+The back end of Team Synergy's Pokémon Database. This will interact with the [PokéAPI](https://pokeapi.co/) to pull Pokémon data and construct a page containing data about a particular Pokémon along with fan comments and fanart.
 
 ## Description
 Using the [PokéAPI](https://pokeapi.co/) API, users will be able to do the following:
