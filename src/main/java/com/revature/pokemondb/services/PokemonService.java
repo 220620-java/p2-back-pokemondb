@@ -155,7 +155,7 @@ public class PokemonService {
             }
 
             // Image URL
-            String imageURL = pokemonRoot.get("stats").get("other").get("official-artwork").get("front_default").asText();
+            String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
 
             // Species JSON
             String speciesJSON = getPokemonSpeciesJSON(pokemonName);
