@@ -181,7 +181,7 @@ public class Pokemon {
         for (String stat : baseStats.keySet()) {
             String baseStatName = stat;
             Integer baseStatNumber = baseStats.get(stat);
-            retString += "\t" + baseStatName + ": " + baseStatNumber;
+            retString += "\t" + baseStatName + ": " + baseStatNumber + "\n";
         }
         retString += "] \n";
 
@@ -193,7 +193,7 @@ public class Pokemon {
         for (String[] evolution : evolutionChain) {
             String evolutionName = evolution[0];
             String evolutionURL = evolution[1];
-            retString += "\t" + evolutionName + ": " + evolutionURL;
+            retString += "\t" + evolutionName + ": " + evolutionURL + "\n";
         }
         retString += "] \n";
         
@@ -201,13 +201,15 @@ public class Pokemon {
         retString += "[locations: \n";
         for (Map<String, String> location : locations) {
             String locationName = location.get("locationName");
-            String locationURL = location.get("locationUrl");
-            retString += "\t" + locationName + ": " + locationURL;
+            String locationURL = location.get("locationURL");
+            retString += "\t" + locationName + ": " + locationURL + "\n";
+            retString += "\t\t";
             for (Map<String, String> version : versions) {
                 String versionName = version.get("versionName");
                 String maxChance = version.get("maxChance");
-                retString += "\t\t" + versionName + ": " + maxChance + "%";
+                retString += versionName + ": " + maxChance + ", ";
             }
+            retString += "\n";
         }
         retString += "]";
         return retString;
