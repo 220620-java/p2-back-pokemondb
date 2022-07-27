@@ -154,6 +154,9 @@ public class PokemonService {
                 baseStats.put(baseStatName, baseStatNumber);
             }
 
+            // Image URL
+            String imageURL = pokemonRoot.get("stats").get("other").get("official-artwork").get("front_default").asText();
+
             // Species JSON
             String speciesJSON = getPokemonSpeciesJSON(pokemonName);
             JsonNode speciesRoot = objMapper.readTree(speciesJSON);
@@ -230,6 +233,7 @@ public class PokemonService {
                 weight,
                 types,
                 baseStats,
+                imageURL,
                 generation,
                 category,
                 description,

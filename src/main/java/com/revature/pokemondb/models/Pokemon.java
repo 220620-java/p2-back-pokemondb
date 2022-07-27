@@ -11,6 +11,7 @@ public class Pokemon {
     private int weight;
     private String[] types;
     private Map<String, Integer> baseStats;
+    private String imageUrl;
     private String generation;
     private String category;
     private String description;
@@ -25,6 +26,7 @@ public class Pokemon {
         int weight,
         String[] types,
         Map<String, Integer> baseStats,
+        String imageUrl,
         String generation,
         String category,
         String description,
@@ -38,6 +40,7 @@ public class Pokemon {
         this.weight = weight;
         this.types = types;
         this.baseStats = baseStats;
+        this.imageUrl = imageUrl;
         this.generation = generation;
         this.category = category;
         this.description = description;
@@ -129,6 +132,14 @@ public class Pokemon {
         this.baseStats = baseStats;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public String getGeneration() {
         return generation;
     }
@@ -184,6 +195,9 @@ public class Pokemon {
             retString += "\t" + baseStatName + ": " + baseStatNumber + "\n";
         }
         retString += "] \n";
+
+        // Image
+        retString += "[image: " + imageUrl + "] \n";
 
         // Description
         retString += "[description=" + description + "]\n";
