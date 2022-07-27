@@ -1,6 +1,7 @@
 package com.revature.pokemondb.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.revature.pokemondb.services.PokemonService;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping(path="/pokemon")
 public class PokemonController {
     private PokemonService pokemonService;
@@ -17,6 +19,7 @@ public class PokemonController {
         this.pokemonService = pokemonService;
     }
 
+	
 	@GetMapping("/")
 	public ResponseEntity<String> getHelloWorld () {
 		return ResponseEntity.ok("Hello World Pokemon");
