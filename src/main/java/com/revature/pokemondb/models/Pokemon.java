@@ -16,8 +16,7 @@ public class Pokemon {
     private String category;
     private String description;
     private List<String[]> evolutionChain;
-    private List<Map<String, String>> locations;
-    private List<Map<String, String>> versions;
+    private List<Map<String, String>> location_versions;
 
     public Pokemon (
         int id,
@@ -31,8 +30,7 @@ public class Pokemon {
         String category,
         String description,
         List<String[]> evolutionChain,
-        List<Map<String, String>> locations,
-        List<Map<String, String>> versions
+        List<Map<String, String>> location_versions
     ) {
         this.id = id;
         this.name = name;
@@ -45,8 +43,7 @@ public class Pokemon {
         this.category = category;
         this.description = description;
         this.evolutionChain = evolutionChain;
-        this.locations = locations;
-        this.versions = versions;
+        this.location_versions = location_versions;
     }
 
     public int getId() {
@@ -172,20 +169,12 @@ public class Pokemon {
         this.evolutionChain = evolutionChain;
     }
 
-    public List<Map<String, String>> getLocationArea() {
-        return locations;
+    public List<Map<String, String>> getLocationVersions() {
+        return location_versions;
     }
 
-    public void setLocationArea(List<Map<String, String>> locations) {
-        this.locations = locations;
-    }
-
-    public List<Map<String, String>> getVersions() {
-        return versions;
-    }
-
-    public void setVersions(List<Map<String, String>> versions) {
-        this.versions = versions;
+    public void setLocationVersions(List<Map<String, String>> locations) {
+        this.location_versions = locations;
     }
 
     @Override
@@ -221,16 +210,14 @@ public class Pokemon {
         
         // Locations/Versions
         retString += "[locations: \n";
-        for (Map<String, String> location : locations) {
+        for (Map<String, String> location : location_versions) {
             String locationName = location.get("locationName");
             String locationURL = location.get("locationURL");
+            String versionName = location.get("versionName");
+            String maxChance = location.get("maxChance");
+            String methods = location.get("methods");
             retString += "\t" + locationName + ": " + locationURL + "\n";
-            retString += "\t\t";
-            for (Map<String, String> version : versions) {
-                String versionName = version.get("versionName");
-                String maxChance = version.get("maxChance");
-                retString += versionName + ": " + maxChance + ", ";
-            }
+            retString += "\t\t" + versionName + ": " + maxChance + " " + methods;
             retString += "\n";
         }
         retString += "]";
