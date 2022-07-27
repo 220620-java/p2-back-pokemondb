@@ -17,10 +17,6 @@ public class PokemondbApplication {
 		RestTemplateBuilder restBuilder = new RestTemplateBuilder();
 		PokemonService pokeService = new PokemonService(restBuilder);
 
-		// pokeService.printPokemonInformation("pikachu");
-		// pokeService.printPokemonInformation("ditto");
-		// pokeService.printPokemonInformation("spheal");
-		// pokeService.printPokemonInformation("Mr. Mime");
 		Scanner keyboard = new Scanner(System.in);
 		String input;
 		do {
