@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 
+import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.services.PokemonService;
 
 @SpringBootApplication
@@ -26,8 +27,9 @@ public class PokemondbApplication {
 			System.out.print("Enter a Pokemon: ");
 			input = keyboard.nextLine();
 			if (input != "\n" && input != "" && input != " ") {
-				System.out.println(input);
-				pokeService.printPokemonInformation(input);
+				// pokeService.printPokemonInformation(input);
+				Pokemon pokemon = pokeService.createPokemon(input);
+				System.out.println(pokemon);
 			}
 		} while (input != "\n" && input != "");
 		keyboard.close();
