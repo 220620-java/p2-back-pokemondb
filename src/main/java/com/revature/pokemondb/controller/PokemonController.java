@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.services.PokemonService;
 
 @RestController
@@ -14,9 +17,11 @@ import com.revature.pokemondb.services.PokemonService;
 @RequestMapping(path="/pokemon")
 public class PokemonController {
     private PokemonService pokemonService;
+	private ObjectMapper objectMapper;
 
-    public PokemonController(PokemonService pokemonService) {
+    public PokemonController(PokemonService pokemonService, ObjectMapper objectMapper) {
         this.pokemonService = pokemonService;
+        this.objectMapper = objectMapper;
     }
 
 	
@@ -32,14 +37,22 @@ public class PokemonController {
 	 */
 	@GetMapping(path = "/{pokemonName}")
 	public ResponseEntity<String> getPokemonByName(@PathVariable String pokemonName) {
-		String pokemon = pokemonService.createPokemon(pokemonName).toString();
-
-		if (pokemon != null) {
-			// OK sets status code to 200
-			return ResponseEntity.ok(pokemon);
-		} else {
-			// notFound sets status code to 404
-			return ResponseEntity.notFound().build();
+		// Create pokemon object
+		Pokemon pokemon = pokemonService.createPokemon(pokemonName);
+		String pokemonJSON;
+		try {
+			// Turn pokemon into JSON
+			pokemonJSON = objectMapper.writeValueAsString(pokemon);
+			if (pokemon != null) {
+				// OK sets status code to 200
+				return ResponseEntity.ok(pokemonJSON);
+			} else {
+				// notFound sets status code to 404
+				return ResponseEntity.notFound().build();
+			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
 		}
+		return ResponseEntity.notFound().build();
 	}
 }

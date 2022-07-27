@@ -180,6 +180,14 @@ public class Pokemon {
         this.locations = locations;
     }
 
+    public List<Map<String, String>> getVersions() {
+        return versions;
+    }
+
+    public void setVersions(List<Map<String, String>> versions) {
+        this.versions = versions;
+    }
+
     @Override
     public String toString() {
         String retString = name + " (" + id + ") \n" +
