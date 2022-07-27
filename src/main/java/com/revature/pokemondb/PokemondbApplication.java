@@ -25,11 +25,13 @@ public class PokemondbApplication {
 		do {
 			System.out.print("Enter a Pokemon: ");
 			input = keyboard.nextLine();
-			if (input != "\n" || input != "") {
+			if (input != "\n" && input != "" && input != " ") {
+				System.out.println(input);
 				pokeService.printPokemonInformation(input);
 			}
-		} while (input != "\n" || input != "");
+		} while (input != "\n" && input != "");
 		keyboard.close();
+		System.exit(0);
 	}
 
 	public static void testCall () {
