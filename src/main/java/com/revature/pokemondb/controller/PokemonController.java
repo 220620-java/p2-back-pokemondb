@@ -35,7 +35,10 @@ public class PokemonController {
 	 * @param pokemonName
 	 * @return
 	 */
-	@GetMapping(path = "/{pokemonName}")
+	@GetMapping(
+		path = "/{pokemonName}", 
+		produces="application/json"
+	)
 	public ResponseEntity<String> getPokemonByName(@PathVariable String pokemonName) {
 		// Create pokemon object
 		Pokemon pokemon = pokemonService.createPokemon(pokemonName);

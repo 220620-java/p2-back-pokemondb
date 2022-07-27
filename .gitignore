@@ -177,3 +177,6 @@ build/
 
 # Github Apache Maven Repo
 .m2/
+
+# Spring Boot Static HTML Content
+public/
