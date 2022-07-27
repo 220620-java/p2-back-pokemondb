@@ -171,7 +171,7 @@ public class PokemonService {
             for (JsonNode jsonNode : root.get("stats")) {
                 String baseStatNumber = jsonNode.get("base_stat").asText();
                 String baseStatName = jsonNode.get("stat").get("name").asText();
-                System.out.println(baseStatName + ": " + baseStatNumber);
+                System.out.println("\t" + baseStatName + ": " + baseStatNumber);
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -192,7 +192,7 @@ public class PokemonService {
 
             // Generation
             String generation = root.get("generation").get("name").asText();
-            System.out.println("Generation: " + generation);
+            System.out.println("Generation: " + StringUtils.convertFromURIFormat(generation));
 
             // Category
             String category = root.get("genera").get(7).get("genus").asText();
