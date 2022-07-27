@@ -1,11 +1,15 @@
 package com.revature.pokemondb;
 
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.function.ObjIntConsumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.services.PokemonService;
 
 @SpringBootApplication
@@ -15,19 +19,23 @@ public class PokemondbApplication {
 		SpringApplication.run(PokemondbApplication.class, args);
 		RestTemplateBuilder restBuilder = new RestTemplateBuilder();
 		PokemonService pokeService = new PokemonService(restBuilder);
+		ObjectMapper objectMapper = new ObjectMapper();
 
-		// pokeService.printPokemonInformation("pikachu");
-		// pokeService.printPokemonInformation("ditto");
-		// pokeService.printPokemonInformation("spheal");
-		// pokeService.printPokemonInformation("Mr. Mime");
 		Scanner keyboard = new Scanner(System.in);
 		String input;
 		do {
 			System.out.print("Enter a Pokemon: ");
 			input = keyboard.nextLine();
 			if (input != "\n" && input != "" && input != " ") {
-				System.out.println(input);
-				pokeService.printPokemonInformation(input);
+				// pokeService.printPokemonInformation(input);
+				Pokemon pokemon = pokeService.createPokemon(input);
+				try {
+					// Return object has JSON
+					String pokemonJSON = objectMapper.writeValueAsString(pokemon);
+					System.out.println(pokemonJSON);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		} while (input != "\n" && input != "");
 		keyboard.close();

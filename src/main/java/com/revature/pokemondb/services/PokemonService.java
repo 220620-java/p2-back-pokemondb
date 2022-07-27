@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.utils.StringUtils;
 
 // GRAB FROM pokemon-species for description, generation, and evolution chain
@@ -117,6 +118,136 @@ public class PokemonService {
         return pokemonMap;
     }
 
+    public Pokemon createPokemon (String pokemonName) {
+        Pokemon pokemon;
+        try {
+            // Pokemon JSON
+            String pokemonJSON = getPokemonJSON(pokemonName);
+            JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
+            
+            // Id
+            int id = pokemonRoot.get("id").asInt();
+
+            // Name
+            String name = StringUtils.convertToTitleCase(pokemonRoot.get("name").asText());
+
+            // Height
+            int height = pokemonRoot.get("height").asInt();
+
+            // Weight
+            int weight = pokemonRoot.get("weight").asInt();
+
+            // Types
+            String[] types;
+            JsonNode typesNode = pokemonRoot.get("types").get(0);
+            int typesSize = typesNode.size();
+            types = new String[typesSize];
+            for (int i = 0; i < typesSize; i++) {
+                types[i] = typesNode.get("type").get("name").asText();
+            }
+
+            // Base Stats
+            Map<String, Integer> baseStats = new HashMap<>();
+            for (JsonNode jsonNode : pokemonRoot.get("stats")) {
+                String baseStatName = jsonNode.get("stat").get("name").asText();
+                int baseStatNumber = jsonNode.get("base_stat").asInt();
+                baseStats.put(baseStatName, baseStatNumber);
+            }
+
+            // Image URL
+            String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
+
+            // Species JSON
+            String speciesJSON = getPokemonSpeciesJSON(pokemonName);
+            JsonNode speciesRoot = objMapper.readTree(speciesJSON);
+
+            // Generation
+            String generation = speciesRoot.get("generation").get("name").asText();
+            generation = StringUtils.convertFromURIFormat(generation);
+
+            // Category
+            String category = speciesRoot.get("genera").get(7).get("genus").asText();
+            
+            // Description
+            String description = speciesRoot.get("flavor_text_entries").get(0).get("flavor_text").asText();
+            description += " " + speciesRoot.get("flavor_text_entries").get(1).get("flavor_text").asText();
+            description = description.replace("\f", " ");
+            description = description.replace("\n", " ");
+
+            // Evolution JSON
+            String evolutionURL = objMapper.readTree(speciesJSON).get("evolution_chain").get("url").asText();
+            String evolutionJSON = getJSON(evolutionURL);
+            JsonNode evolutionRoot = objMapper.readTree(evolutionJSON);
+
+            // Evolution Chain
+            List<String[]> evolutionChain = new ArrayList<>();
+            JsonNode evolutionChainNode = evolutionRoot.get("chain");
+            do {
+                String speciesName = evolutionChainNode.get("species").get("name").asText();
+                speciesName = StringUtils.convertFromURIFormat(speciesName);
+                String speciesURL = evolutionChainNode.get("species").get("url").asText();
+                evolutionChain.add(new String[]{speciesName, speciesURL});
+                evolutionChainNode = evolutionChainNode.get("evolves_to").get(0);
+            } while (evolutionChainNode != null);
+
+            // Location JSON
+            String locationsURL = objMapper.readTree(pokemonJSON).get("location_area_encounters").asText();
+            String locationJSON = getJSON(locationsURL);
+            JsonNode locationRoot = objMapper.readTree(locationJSON);
+
+            // Locations/Versions
+            List<Map<String, String>> locations = new ArrayList<Map<String,String>>();
+            List<Map<String, String>> versions = new ArrayList<Map<String,String>>();
+
+            for (JsonNode locationNode : locationRoot) {
+                // Location
+                Map<String, String> locationMap = new HashMap<>();
+
+                String locationName = locationNode.get("location_area").get("name").asText();
+                locationName = StringUtils.convertFromURIFormat(locationName);
+                locationMap.put ("locationName", locationName);
+
+                String locationURL = locationNode.get("location_area").get("url").asText();
+                locationMap.put ("locationURL", locationURL);
+
+                locations.add (locationMap);
+                
+                // Versions
+                JsonNode versionNodes = locationNode.get("version_details");
+                for (JsonNode versionNode : versionNodes) {
+                    Map<String, String> versionMap = new HashMap<>();
+                    String maxChance = versionNode.get("max_chance").asText() + "%";
+                    versionMap.put("maxChance", maxChance);
+
+                    String version = versionNode.get("version").get("name").asText();
+                    versionMap.put("versionName", version);
+
+                    versions.add(versionMap);
+                }
+            }
+
+            pokemon = new Pokemon (
+                id,
+                name,
+                height,
+                weight,
+                types,
+                baseStats,
+                imageURL,
+                generation,
+                category,
+                description,
+                evolutionChain,
+                locations,
+                versions
+            );
+            return pokemon;
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * https://pokeapi.co/docs/v2#pokemon
      * Name
@@ -171,7 +302,7 @@ public class PokemonService {
             for (JsonNode jsonNode : root.get("stats")) {
                 String baseStatNumber = jsonNode.get("base_stat").asText();
                 String baseStatName = jsonNode.get("stat").get("name").asText();
-                System.out.println(baseStatName + ": " + baseStatNumber);
+                System.out.println("\t" + baseStatName + ": " + baseStatNumber);
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -192,7 +323,7 @@ public class PokemonService {
 
             // Generation
             String generation = root.get("generation").get("name").asText();
-            System.out.println("Generation: " + generation);
+            System.out.println("Generation: " + StringUtils.convertFromURIFormat(generation));
 
             // Category
             String category = root.get("genera").get(7).get("genus").asText();
