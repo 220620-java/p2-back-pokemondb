@@ -174,3 +174,6 @@ HELP.md
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
+
+# Github Apache Maven Repo
+.m2/

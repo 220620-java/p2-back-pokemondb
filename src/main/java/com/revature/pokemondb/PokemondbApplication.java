@@ -1,5 +1,7 @@
 package com.revature.pokemondb;
 
+import java.util.Scanner;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -11,10 +13,23 @@ public class PokemondbApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PokemondbApplication.class, args);
-		testCall();
 		RestTemplateBuilder restBuilder = new RestTemplateBuilder();
 		PokemonService pokeService = new PokemonService(restBuilder);
-		pokeService.getPokemon("pikachu");
+
+		// pokeService.printPokemonInformation("pikachu");
+		// pokeService.printPokemonInformation("ditto");
+		// pokeService.printPokemonInformation("spheal");
+		// pokeService.printPokemonInformation("Mr. Mime");
+		Scanner keyboard = new Scanner(System.in);
+		String input;
+		do {
+			System.out.print("Enter a Pokemon: ");
+			input = keyboard.nextLine();
+			if (input != "\n" || input != "") {
+				pokeService.printPokemonInformation(input);
+			}
+		} while (input != "\n" || input != "");
+		keyboard.close();
 	}
 
 	public static void testCall () {
