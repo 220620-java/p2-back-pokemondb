@@ -70,6 +70,17 @@ public class PokemonService {
     }
 
     /**
+     * External API CALL - Grab Pokemon by Id
+     * 
+     * @param pokemonName
+     * @return
+     */
+    public String getPokemonJSON(int pokemonId) {
+        String url = "https://pokeapi.co/api/v2/pokemon/" + pokemonId;
+        return getJSON(url);
+    }
+
+    /**
      * External API CALL - Grab Pokemon by Name
      * 
      * @param pokemonName
@@ -118,11 +129,18 @@ public class PokemonService {
         return pokemonMap;
     }
 
+    public Pokemon createPokemon (int pokemonId) {
+        return createPokemonObject(getPokemonJSON(pokemonId));
+    }
+
     public Pokemon createPokemon (String pokemonName) {
+        return createPokemonObject(getPokemonJSON(pokemonName));
+    }
+
+    public Pokemon createPokemonObject (String pokemonJSON) {
         Pokemon pokemon;
         try {
-            // Pokemon JSON
-            String pokemonJSON = getPokemonJSON(pokemonName);
+
             JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
             
             // Id
@@ -158,7 +176,7 @@ public class PokemonService {
             String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
 
             // Species JSON
-            String speciesJSON = getPokemonSpeciesJSON(pokemonName);
+            String speciesJSON = getPokemonSpeciesJSON(name);
             JsonNode speciesRoot = objMapper.readTree(speciesJSON);
 
             // Generation

@@ -41,7 +41,13 @@ public class PokemonController {
 	)
 	public ResponseEntity<String> getPokemonByName(@PathVariable String pokemonName) {
 		// Create pokemon object
-		Pokemon pokemon = pokemonService.createPokemon(pokemonName);
+		Pokemon pokemon;
+		try {
+			pokemon = pokemonService.createPokemon(Integer.valueOf(pokemonName));
+		} catch (NumberFormatException e) {
+			pokemon = pokemonService.createPokemon(pokemonName);
+		}
+
 		String pokemonJSON;
 		try {
 			// Turn pokemon into JSON
