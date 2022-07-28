@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping(path="/pokemon")
+@RequestMapping(path="/pokemon-comment")
 public class PokemonCommentController {
     private PokemonCommentImpl commentService;
     private ObjectMapper JsonMapper;
@@ -18,21 +18,33 @@ public class PokemonCommentController {
         this.JsonMapper = JsonMapper;
     }
 
+    /*
+     *
+     */
     @PutMapping
     protected ResponseEntity<String> editComment(){
      return null;
     }
 
+    /*
+     *
+     */
     @PostMapping
     protected ResponseEntity<String> storeComment() {
         return null;
     }
 
+    /*
+     *
+     */
     @DeleteMapping
     protected ResponseEntity<String> deleteComment() {
         return null;
     }
 
+    /*
+     *
+     */
     @GetMapping
     protected ResponseEntity<String> getComments() {
         return null;
