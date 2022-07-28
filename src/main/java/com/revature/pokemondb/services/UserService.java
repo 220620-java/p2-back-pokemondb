@@ -2,7 +2,7 @@ package com.revature.pokemondb.services;
 
 import com.revature.pokemondb.models.User;
 
-public interface UserServiceImpl {
+public interface UserService {
 	
 	User login(String username, String password);
 	
