@@ -42,7 +42,7 @@ public class FanartController {
 	@GetMapping(path = "/{id}}")
 	public ResponseEntity<String> getFanartById(@PathVariable int id) {
 		// Create fanart object
-		Fanart fanart = FanartService.getFanart(id);
+		Fanart fanart = FanartRepository.findById(id);
 		String fanartJSON;
 		try {
 			// Turn fanart into JSON

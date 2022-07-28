@@ -1,4 +1,4 @@
-package com.revature.pokemondb.repositorys;
+package com.revature.pokemondb.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
