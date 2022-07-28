@@ -40,12 +40,12 @@ public class FanartController {
 	 * @return
 	 */
 	@GetMapping(path = "/{id}}")
-	public ResponseEntity<String> getPokemonByName(@PathVariable int id) {
-		// Create pokemon object
-		Fanart fanart = FanartRepository.findByID(id);
+	public ResponseEntity<String> getFanartById(@PathVariable int id) {
+		// Create fanart object
+		Fanart fanart = FanartService.getFanart(id);
 		String fanartJSON;
 		try {
-			// Turn pokemon into JSON
+			// Turn fanart into JSON
 			fanartJSON = objectMapper.writeValueAsString(fanart);
 			if (fanart != null) {
 				// OK sets status code to 200
