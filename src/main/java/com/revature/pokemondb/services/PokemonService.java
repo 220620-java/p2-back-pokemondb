@@ -2,13 +2,17 @@ package com.revature.pokemondb.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringJoiner;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,6 +74,17 @@ public class PokemonService {
     }
 
     /**
+     * External API CALL - Grab Pokemon by Id
+     * 
+     * @param pokemonName
+     * @return
+     */
+    public String getPokemonJSON(int pokemonId) {
+        String url = "https://pokeapi.co/api/v2/pokemon/" + pokemonId;
+        return getJSON(url);
+    }
+
+    /**
      * External API CALL - Grab Pokemon by Name
      * 
      * @param pokemonName
@@ -118,11 +133,18 @@ public class PokemonService {
         return pokemonMap;
     }
 
+    public Pokemon createPokemon (int pokemonId) {
+        return createPokemonObject(getPokemonJSON(pokemonId));
+    }
+
     public Pokemon createPokemon (String pokemonName) {
+        return createPokemonObject(getPokemonJSON(pokemonName));
+    }
+
+    public Pokemon createPokemonObject (String pokemonJSON) {
         Pokemon pokemon;
         try {
-            // Pokemon JSON
-            String pokemonJSON = getPokemonJSON(pokemonName);
+
             JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
             
             // Id
@@ -158,12 +180,13 @@ public class PokemonService {
             String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
 
             // Species JSON
-            String speciesJSON = getPokemonSpeciesJSON(pokemonName);
+            String speciesJSON = getPokemonSpeciesJSON(name);
             JsonNode speciesRoot = objMapper.readTree(speciesJSON);
 
             // Generation
             String generation = speciesRoot.get("generation").get("name").asText();
-            generation = StringUtils.convertFromURIFormat(generation);
+            String number = generation.split("-")[1];
+            generation = String.valueOf(StringUtils.getNumberFromRomanNumeral(number));
 
             // Category
             String category = speciesRoot.get("genera").get(7).get("genus").asText();
@@ -196,33 +219,45 @@ public class PokemonService {
             JsonNode locationRoot = objMapper.readTree(locationJSON);
 
             // Locations/Versions
-            List<Map<String, String>> locations = new ArrayList<Map<String,String>>();
-            List<Map<String, String>> versions = new ArrayList<Map<String,String>>();
+            List<Map<String,String>> locationVersions = new ArrayList<>();
 
             for (JsonNode locationNode : locationRoot) {
                 // Location
-                Map<String, String> locationMap = new HashMap<>();
-
                 String locationName = locationNode.get("location_area").get("name").asText();
                 locationName = StringUtils.convertFromURIFormat(locationName);
-                locationMap.put ("locationName", locationName);
 
                 String locationURL = locationNode.get("location_area").get("url").asText();
-                locationMap.put ("locationURL", locationURL);
-
-                locations.add (locationMap);
                 
                 // Versions
                 JsonNode versionNodes = locationNode.get("version_details");
                 for (JsonNode versionNode : versionNodes) {
                     Map<String, String> versionMap = new HashMap<>();
+
+                    // Location Name
+                    versionMap.put ("locationName", locationName);
+                    
+                    // URL
+                    versionMap.put ("locationURL", locationURL);
+
+                    // Encounter Method
+                    JsonNode encounterNode = versionNode.get("encounter_details");
+                    Set<String> encounterSet = new HashSet<>();
+                    
+                    // StringJoiner joiner = new StringJoiner(",");
+                    for (JsonNode encounter : encounterNode) {
+                        encounterSet.add(encounter.get("method").get("name").asText());
+                    }
+                    versionMap.put ("methods", encounterSet.toString());
+
+                    // Max Chance
                     String maxChance = versionNode.get("max_chance").asText() + "%";
                     versionMap.put("maxChance", maxChance);
 
+                    // Version
                     String version = versionNode.get("version").get("name").asText();
                     versionMap.put("versionName", version);
 
-                    versions.add(versionMap);
+                    locationVersions.add(versionMap);
                 }
             }
 
@@ -238,8 +273,7 @@ public class PokemonService {
                 category,
                 description,
                 evolutionChain,
-                locations,
-                versions
+                locationVersions
             );
             return pokemon;
         } catch (JsonProcessingException e) {
