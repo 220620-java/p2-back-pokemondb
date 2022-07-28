@@ -36,4 +36,51 @@ public class StringUtils {
         inputString = inputString.replace('-', ' ');
         return convertToTitleCase (inputString);
     }
+
+    public static int getNumberFromRomanNumeral (String romanNumeral) {
+        switch (romanNumeral.toLowerCase()) {
+            case ("i"):
+                return 1;
+            case ("ii"):
+                return 2;
+            case ("iii"):
+                return 3;
+            case ("iv"):
+                return 4;
+            case ("v"):
+                return 5;
+            case ("vi"):
+                return 6;
+            case ("vii"):
+                return 7;
+            case ("viii"):
+                return 8;
+            case ("ix"):
+                return 9;
+            case ("x"):
+                return 10;
+            case ("xi"):
+                return 11;
+            case ("xii"):
+                return 12;
+            case ("xiii"):
+                return 13;
+            case ("xiv"):
+                return 14;
+            case ("xv"):
+                return 15;
+            case ("xvi"):
+                return 16;
+            case ("xvii"):
+                return 17;
+            case ("xviii"):
+                return 18;
+            case ("xix"):
+                return 19;
+            case ("xx"):
+                return 20;
+            default:
+                return 0;
+        }
+    }
 }
