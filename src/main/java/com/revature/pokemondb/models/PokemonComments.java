@@ -18,18 +18,18 @@ public class PokemonComments {
 	
 	 @Id
 	 @Column(name="id", updatable=false, insertable=false)
-     @GeneratedValue(strategy=GenerationType.AUTO, generator="CUST_SEQ")
-	private Long id;
-	@ManyToOne
-	@JoinColumn(name = "pokemonId", referencedColumnName="id")
-	private Pokemon pokemon;
-	@ManyToOne
-	@JoinColumn(name = "userId", referencedColumnName="id")
-	private User user;
-	private String comment_content;
-	private Boolean is_flagged;
-	private Integer likes;
-	private Instant posted_at;
+	 @GeneratedValue(strategy=GenerationType.AUTO, generator="CUST_SEQ")
+	 private Long id;
+	 @ManyToOne
+	 @JoinColumn(name = "pokemonId", referencedColumnName="id")
+	 private Pokemon pokemon;
+	 @ManyToOne
+	 @JoinColumn(name = "userId", referencedColumnName="id")
+	 private User user;
+	 private String comment_content;
+	 private Boolean is_flagged;
+	 private Integer likes;
+	 private Instant posted_at;
 	
 	
 	public PokemonComments() {
