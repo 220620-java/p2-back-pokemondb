@@ -50,7 +50,7 @@ CREATE TABLE pokemon_db.banned_users (
 -- pokemon_db.pokemon_comments definition
 
 -- Drop table
- 
+
 -- DROP TABLE pokemon_db.pokemon_comments;
 
 CREATE TABLE pokemon_db.pokemon_comments (
@@ -60,12 +60,12 @@ CREATE TABLE pokemon_db.pokemon_comments (
 	comment_content text NULL,
 	is_flagged bool NULL,
 	likes int4 NULL,
+	reports int4 NULL,
 	posted_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT pokemon_comments_pkey PRIMARY KEY (id),
 	CONSTRAINT pokemon_comments_pokemon_id_fkey FOREIGN KEY (pokemon_id) REFERENCES pokemon_db.pokemon(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT pokemon_comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES pokemon_db.users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
 
 -- pokemon_db.pokemon_fanart definition
 
