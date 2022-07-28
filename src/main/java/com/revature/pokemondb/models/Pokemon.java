@@ -1,25 +1,37 @@
 package com.revature.pokemondb.models;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+@Entity
 public class Pokemon {
+	
+	@Id
+	@Column
     private int id;
+	@Column(name="pokemon")
     private String name;
+	@Transient 
     private int height;
+	@Transient
     private int weight;
-    private String[] types;
-    private Map<String, Integer> baseStats;
-    private String imageUrl;
+	@Transient
+	private String[] types;
+	@Transient
+	private Map<String, Integer> baseStats;
+	@Transient
+	private String imageUrl;
+	@Transient
     private String generation;
+	@Transient
     private String category;
+	@Transient
     private String description;
+	@Transient
     private List<String[]> evolutionChain;
+    @Transient
     private List<Map<String, String>> location_versions;
 
     public Pokemon (
