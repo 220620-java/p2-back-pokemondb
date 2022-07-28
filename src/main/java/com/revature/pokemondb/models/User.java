@@ -1,18 +1,39 @@
 package com.revature.pokemondb.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * @author Colby Tang
  */
+@Entity
+@Table(name = "users", schema = "pokemon_db")
 public class User {
-	private int userId; 
+	@Id
+	@Column(name="id", updatable=false, insertable=false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long userId; 
 	private String username;
 	private String email; 
 	private String password;
 	private byte[] salt;
 
-	public User () { }
+	public User () {
+		this.userId = 0l;
+		this.username = "";
+		this.email = "";
+		this.password = "";
+		
+	}
 
-    public User(int userId, String username, String email, String phone, String password) {
+	@Autowired
+    public User(Long userId, String username, String email, String phone, String password) {
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
@@ -23,7 +44,7 @@ public class User {
 		// this.password = WebUtils.generateEncryptedPassword(password, this.salt);
 	}
 	
-	public User(int userId, String username, String email, String password, byte[] salt) {
+	public User(Long userId, String username, String email, String password, byte[] salt) {
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
@@ -43,14 +64,14 @@ public class User {
 	/** 
 	 * @return int
 	 */
-	public int getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 	
 	/** 
 	 * @param customer_id
 	 */
-	public void setUserId(int customer_id) {
+	public void setUserId(Long customer_id) {
 		this.userId = customer_id;
 	}
 	

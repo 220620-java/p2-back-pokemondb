@@ -1,9 +1,8 @@
 package com.revature.pokemondb.models;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
+<<<<<<< Updated upstream
 public class Pokemon {
     private int id;
     private String name;
@@ -124,11 +123,13 @@ public class Pokemon {
     public Map<String, Integer> getBaseStats() {
         return baseStats;
     }
+=======
+import javax.persistence.*;
+>>>>>>> Stashed changes
 
-    public void setBaseStats(Map<String, Integer> baseStats) {
-        this.baseStats = baseStats;
-    }
+import org.springframework.beans.factory.annotation.Autowired;
 
+<<<<<<< Updated upstream
     public String getImageUrl() {
         return imageUrl;
     }
@@ -225,4 +226,71 @@ public class Pokemon {
     }
 
     
+=======
+@Entity
+@Table(name="pokemon")
+public class Pokemon {
+	
+	@Id
+	@Column(name="id", updatable=false, insertable=false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String name;
+	private	Long evo_id;
+	
+	
+	public Pokemon() {
+		this.id = 0l;
+		this.name = "";
+		this.evo_id = 0l;
+	}
+
+	@Autowired
+	public Pokemon(Long id, String name, Long evo_id) {
+		this.id = id;
+		this.name = name;
+		this.evo_id = evo_id;
+	}
+	
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Long getEvo_id() {
+		return evo_id;
+	}
+	public void setEvo_id(Long evo_id) {
+		this.evo_id = evo_id;
+	}
+	
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(evo_id, id, name);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pokemon other = (Pokemon) obj;
+		return Objects.equals(evo_id, other.evo_id) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+	@Override
+	public String toString() {
+		return "Pokemon [id=" + id + ", name=" + name + ", evo_id=" + evo_id + "]";
+	}
+>>>>>>> Stashed changes
 }

@@ -8,6 +8,7 @@ import com.revature.pokemondb.models.User;
  */
 public class UserDTO {
 	private int userId; 
+	private Long userId;
 	private String username;
 	private String email; 
 	private String token = "";
@@ -15,6 +16,7 @@ public class UserDTO {
 	public UserDTO () {}
 
     public UserDTO(int userId, String username, String email) {
+    public UserDTO(Long userId, String username, String email) {
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
@@ -40,6 +42,7 @@ public class UserDTO {
 	 * @return int
 	 */
 	public int getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 	
@@ -47,6 +50,7 @@ public class UserDTO {
 	 * @param customer_id
 	 */
 	public void setUserId(int customer_id) {
+	public void setUserId(Long customer_id) {
 		this.userId = customer_id;
 	}
 	
