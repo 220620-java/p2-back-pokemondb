@@ -26,37 +26,35 @@ import javax.persistence.Table;
 public class Fanart {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
-	@ManyToOne
-	@JoinColumn(name = "id")
-	@Column(name = "user_id")
-	private int author;
+	private Long id;
+	@Column(name="user_id")
+	private Long author;
 	@Column(name = "image")
 	private String url;
 	//private String title;
 	@Column(name="uploaded_at")
 	private Date postDate;
-	@ManyToMany
+	/*@ManyToMany
 	@JoinTable(name="fanart_comments",
 		joinColumns = @JoinColumn(name="fanart_id"),
 		inverseJoinColumns = @JoinColumn(name="user_id"))
-	private List<ArtComment> comments;
+	private List<ArtComment> comments;*/
 	
 	public Fanart() {
-		this.id = 0;
-		this.author = 0;
+		this.id = 0l;
+		this.author = 0l;
 		this.url = "";
 		this.postDate = Date.valueOf(LocalDate.now());
-		this.comments = new ArrayList<ArtComment>();
+		//this.comments = new ArrayList<ArtComment>();
 	}
 	
-	public Fanart(long id, int author, String url, Date postDate, List<ArtComment> comments) {
+	public Fanart(long id, Long author, String url, Date postDate, List<ArtComment> comments) {
 		super();
 		this.id = id;
 		this.author = author;
 		this.url = url;
 		this.postDate = postDate;
-		this.comments = comments;
+		//this.comments = comments;
 	}
 	/*Getters and Setters*/
 	public long getId() {
@@ -65,10 +63,10 @@ public class Fanart {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public int getAuthor() {
+	public Long getAuthor() {
 		return author;
 	}
-	public void setAuthor(int author) {
+	public void setAuthor(Long author) {
 		this.author = author;
 	}
 	public String getUrl() {
@@ -83,10 +81,10 @@ public class Fanart {
 	public void setPostDate(Date postDate) {
 		this.postDate = postDate;
 	}
-	public List<ArtComment> getComments() {
+	/*public List<ArtComment> getComments() {
 		return comments;
-	}
+	}*//*
 	public void setComments(List<ArtComment> comments) {
 		this.comments = comments;
-	}
+	}*/
 }

@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 @Entity
 public class PokemonComments {
 	
@@ -30,19 +28,7 @@ public class PokemonComments {
 	 private Boolean is_flagged;
 	 private Integer likes;
 	 private Instant posted_at;
-	
-	
-	public PokemonComments() {
-		this.id = 0l;
-		//this.pokemon = new Pokemon();
-		this.user = new User();
-		this.comment_content = "";
-		this.is_flagged = false;
-		this.likes = 0;
-		this.posted_at = Instant.now();
-	}
 
-	@Autowired
 	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged, Integer likes,
 			Instant posted_at) {
 		this.id = id;
