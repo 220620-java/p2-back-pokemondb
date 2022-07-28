@@ -34,7 +34,7 @@ public class PokemonComments {
 	
 	public PokemonComments() {
 		this.id = 0l;
-		this.pokemon = new Pokemon();
+		//this.pokemon = new Pokemon();
 		this.user = new User();
 		this.comment_content = "";
 		this.is_flagged = false;
