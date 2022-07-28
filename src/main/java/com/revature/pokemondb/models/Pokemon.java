@@ -1,8 +1,12 @@
 package com.revature.pokemondb.models;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Pokemon {
     private int id;
@@ -125,10 +129,6 @@ public class Pokemon {
         return baseStats;
     }
 
-    public void setBaseStats(Map<String, Integer> baseStats) {
-        this.baseStats = baseStats;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -223,6 +223,4 @@ public class Pokemon {
         retString += "]";
         return retString;
     }
-
-    
 }

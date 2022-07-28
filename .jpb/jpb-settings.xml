@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaPluginProjectSettings" reExcludeTablePrefixes="" reExcludeColumnPrefixes="">
+    <option name="entityNameTemplate" value="${className.underscore()}" />
+    <option name="generateJpaOnGetter" value="true" />
+    <option name="generateSerialVersionUID" value="true" />
+    <option name="generateTypeOnEntity" value="true" />
+    <option name="useConstantsForEntities" value="true" />
+    <option name="useBuilderSetters" value="true" />
+    <option name="useLazyOnToOneAssociations" value="true" />
+    <option name="scaffoldingLanguage" />
+  </component>
+  <component name="ReverseEngineeringSettings">
+    <database-infos>
+      <database-info dbms-id="postgres">
+        <mapping-types>
+          <mapping-type sql-type="bigint" java-class="java.lang.Integer" />
+          <mapping-type sql-type="varchar" java-class="java.lang.String" />
+          <mapping-type sql-type="boolean" java-class="java.lang.Boolean" />
+          <mapping-type sql-type="serial" java-class="java.lang.Long" />
+          <mapping-type sql-type="timestamp" java-class="java.time.Instant" />
+          <mapping-type sql-type="text[]" java-class="java.lang.String" />
+          <mapping-type sql-type="int8" java-class="java.lang.Integer" />
+          <mapping-type sql-type="bytea" java-class="java.lang.Byte[]" />
+          <mapping-type sql-type="bool" java-class="java.lang.Boolean" />
+        </mapping-types>
+      </database-info>
+    </database-infos>
+  </component>
+</project>

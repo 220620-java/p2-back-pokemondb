@@ -260,9 +260,7 @@ public class PokemonService {
                 }
             }
 
-            pokemon = new Pokemon (
-                id,
-                name,
+           /* pokemon = new Pokemon (id, name,
                 height,
                 weight,
                 types,
@@ -274,7 +272,7 @@ public class PokemonService {
                 evolutionChain,
                 locationVersions
             );
-            return pokemon;
+            return pokemon;*/
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
