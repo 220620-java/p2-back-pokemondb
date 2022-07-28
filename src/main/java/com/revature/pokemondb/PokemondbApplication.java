@@ -2,7 +2,6 @@ package com.revature.pokemondb;
 
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.function.ObjIntConsumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
