@@ -7,7 +7,6 @@ import com.revature.pokemondb.models.User;
  * @author Colby Tang
  */
 public class UserDTO {
-	private int userId; 
 	private Long userId;
 	private String username;
 	private String email; 
@@ -15,7 +14,6 @@ public class UserDTO {
 
 	public UserDTO () {}
 
-    public UserDTO(int userId, String username, String email) {
     public UserDTO(Long userId, String username, String email) {
 		this.userId = userId;
 		this.username = username;
@@ -41,7 +39,6 @@ public class UserDTO {
 	/** 
 	 * @return int
 	 */
-	public int getUserId() {
 	public Long getUserId() {
 		return userId;
 	}
@@ -49,7 +46,6 @@ public class UserDTO {
 	/** 
 	 * @param customer_id
 	 */
-	public void setUserId(int customer_id) {
 	public void setUserId(Long customer_id) {
 		this.userId = customer_id;
 	}
