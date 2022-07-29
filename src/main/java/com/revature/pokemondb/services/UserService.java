@@ -4,11 +4,11 @@ import com.revature.pokemondb.models.User;
 
 public interface UserService {
 	
-	User login(String username, String password);
+	public User login(String username, String password);
 	
-	User registerUser(User user);
+	public User registerUser(User user);
 	
-	User banUser(User user);
+	public User banUser(User user);
 	
-	User unBanUser(User user);
+	public User unBanUser(User user);
 }
