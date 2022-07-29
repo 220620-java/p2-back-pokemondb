@@ -82,12 +82,14 @@ public class FanartController {
 	
 	/**
 	 * Get the lowest and highest available fanart ids and return them as a single string
+	 * Returned in format of "{idLow}/{idHigh}"
 	 * @return
 	 */
 	@GetMapping(path= "/info/")
 	public ResponseEntity<String> getIdLimiters() {
 		String idLimiters = "";
 		idLimiters += fanartService.getLowestID();
+		idLimiters += "/";
 		idLimiters += fanartService.getHighestID();
 		if (idLimiters.contains("-1")) {
 			return ResponseEntity.notFound().build();
