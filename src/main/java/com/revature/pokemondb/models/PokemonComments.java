@@ -10,8 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="pokemon_comments", schema = "pokemon_db")
 public class PokemonComments {
 	
 	 @Id
@@ -19,10 +21,10 @@ public class PokemonComments {
 	 @GeneratedValue(strategy=GenerationType.AUTO, generator="CUST_SEQ")
 	 private Long id;
 	 @ManyToOne
-	 @JoinColumn(name = "pokemonId", referencedColumnName="id")
+	 @JoinColumn(name = "pokemon_id", referencedColumnName="id")
 	 private Pokemon pokemon;
 	 @ManyToOne
-	 @JoinColumn(name = "userId", referencedColumnName="id")
+	 @JoinColumn(name = "user_id", referencedColumnName="id")
 	 private User user;
 	 private String comment_content;
 	 private Boolean is_flagged;

@@ -18,15 +18,15 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "pokemon_fanart")
+@Table(name = "fanart_comments", schema = "pokemon_db")
 public class ArtComment {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+	private int id;
 	@JoinColumn(name = "fanart_id", referencedColumnName="id")
-	private Long fanartId;
+	private int fanartId;
 	@JoinColumn(name = "user_id", referencedColumnName="id")
-	private Long author;
+	private int author;
 	@Column(name = "comment_content")
 	private String content;
 	private Integer likes;

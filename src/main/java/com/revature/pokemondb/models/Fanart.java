@@ -24,17 +24,17 @@ import javax.persistence.ForeignKey;
  *
  */
 @Entity
-@Table(name = "pokemon_fanart")
+@Table(name = "pokemon_fanart", schema = "pokemon_db")
 public class Fanart {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
-	//@ManyToOne
-	//@JoinColumn(name = "pokemon_id", foreignKey=@ForeignKey(name = "id"))
-	private int pokemon;
-	//@ManyToOne
-	//@JoinColumn(name = "user_id", foreignKey=@ForeignKey(name = "id"))
-	private int author;
+	private long id;
+	@ManyToOne(targetEntity= Pokemon.class)
+	@JoinColumn(name = "pokemon_id", foreignKey=@ForeignKey(name = "pokemon_fanart_pokemon_id_fkey"))
+	private long pokemon;
+	@ManyToOne(targetEntity= User.class)
+	@JoinColumn(name = "user_id", foreignKey=@ForeignKey(name = "pokemon_fanart_user_id_fkey"))
+	private long author;
 	private String title;
 	private String tags;
 	@Column(name = "image")
@@ -136,7 +136,7 @@ public class Fanart {
 	public void setPokemon(int pokemon) {
 		this.pokemon = pokemon;
 	}
-	public int getAuthor() {
+	public long getAuthor() {
 		return author;
 	}
 	public void setAuthor(int author) {
