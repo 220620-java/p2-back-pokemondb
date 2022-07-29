@@ -4,6 +4,7 @@ import com.revature.pokemondb.models.Fanart;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.FanartRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,34 @@ public class FanartService {
 	}
 	
 	/*Methods*/
+	
+	/**
+	 * Retrieves the lowest Id for an available fanart in the database. 
+	 * This will be used to determine the lower limit for accessing fanart
+	 * @return an id
+	 */
+	public long getLowestID() {
+		List<Fanart> fanart = artRepo.findByIsFlagged(false);
+		if (fanart != null) {
+			return fanart.get(0).getId();
+		} else {
+			return -1;
+		}
+	}
+	
+	/**
+	 * Retrieves the highest Id for an available fanart in the database. 
+	 * This will be used to determine the upper limit for accessing fanart
+	 * @return an id
+	 */
+	public long getHighestID() {
+		List<Fanart> fanart = artRepo.findByIsFlaggedOrderByIdDesc(false);
+		if (fanart != null) {
+			return fanart.get(0).getId();
+		} else {
+			return -1;
+		}
+	}
 	
 	/**
 	 * Retrieves a specific fanart object given its id
