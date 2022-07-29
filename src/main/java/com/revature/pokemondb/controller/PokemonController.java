@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Pokemon;
-import com.revature.pokemondb.services.PokemonService;
+import com.revature.pokemondb.services.PokemonServiceImpl;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
 @RequestMapping(path="/pokemon")
 public class PokemonController {
-    private PokemonService pokemonService;
+    private PokemonServiceImpl pokemonService;
 	private ObjectMapper objectMapper;
 
-    public PokemonController(PokemonService pokemonService, ObjectMapper objectMapper) {
+    public PokemonController(PokemonServiceImpl pokemonService, ObjectMapper objectMapper) {
         this.pokemonService = pokemonService;
         this.objectMapper = objectMapper;
     }

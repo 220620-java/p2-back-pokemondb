@@ -2,7 +2,7 @@ package com.revature.pokemondb.repositories;
 
 import org.springframework.stereotype.Repository;
 
-import com.revature.pokemondb.models.ArtComment;
+import com.revature.pokemondb.models.RatePokeComm;
 
 import java.util.List;
 
@@ -10,10 +10,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * 
- * @author Barry Norton
+ * @author
  *
  */
 @Repository
-public interface ArtCommRepository extends JpaRepository<ArtComment, Integer>{
+public interface RatePokeCommRepository extends JpaRepository<RatePokeComm, Integer>{
 	
 }
