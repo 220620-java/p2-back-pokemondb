@@ -1,23 +1,114 @@
 package com.revature.pokemondb.models;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * 
+ * @author Barry Norton
+ *
+ */
 @Entity
-@Table(name="report_fanart")
+@Table(name="report_fanart", schema = "pokemon_db")
 public class ReportArt {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
-	private int fanart_id;
-	@Column(name="user_id")
-	private int author;
+	@ManyToOne
+	@JoinColumn(name="fanart_id")
+	private Fanart fanartId;
+	@ManyToOne
+	@JoinColumn(name="user_id")
+	private User author;
 	@Column(name="is_reported")
 	private Boolean isReported;
 	@Column(name="report_reason")
-	private String reportReason; 
+	private String reportReason;
+	
+	/*Constructors*/
+	
+	public ReportArt() {
+		super();
+		this.id = 0;
+		this.fanartId = null;
+		this.author = null;
+		this.isReported = false;
+		this.reportReason = "";
+	}
+	
+	public ReportArt(int id, Fanart fanartId, User author, Boolean isReported, String reportReason) {
+		super();
+		this.id = id;
+		this.fanartId = fanartId;
+		this.author = author;
+		this.isReported = isReported;
+		this.reportReason = reportReason;
+	}
+	
+	/*Overrides*/
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(author, fanartId, id, isReported, reportReason);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ReportArt other = (ReportArt) obj;
+		return Objects.equals(author, other.author) && Objects.equals(fanartId, other.fanartId) && id == other.id
+				&& Objects.equals(isReported, other.isReported) && Objects.equals(reportReason, other.reportReason);
+	}
+	
+	@Override
+	public String toString() {
+		return "ReportArt [id=" + id + ", fanartId=" + fanartId + ", author=" + author + ", isReported=" + isReported
+				+ ", reportReason=" + reportReason + "]";
+	}
+	
+	/*Getters and Setters*/
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
+	public Fanart getFanartId() {
+		return fanartId;
+	}
+	public void setFanartId(Fanart fanartId) {
+		this.fanartId = fanartId;
+	}
+	public User getAuthor() {
+		return author;
+	}
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+	public Boolean getIsReported() {
+		return isReported;
+	}
+	public void setIsReported(Boolean isReported) {
+		this.isReported = isReported;
+	}
+	public String getReportReason() {
+		return reportReason;
+	}
+	public void setReportReason(String reportReason) {
+		this.reportReason = reportReason;
+	}	
 }
