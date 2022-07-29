@@ -6,10 +6,14 @@ import java.util.Scanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.services.PokemonService;
+import com.revature.pokemondb.services.PokemonServiceImpl;
 
 @SpringBootApplication
 public class PokemondbApplication {
@@ -17,8 +21,8 @@ public class PokemondbApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PokemondbApplication.class, args);
 		RestTemplateBuilder restBuilder = new RestTemplateBuilder();
-		PokemonService pokeService = new PokemonService(restBuilder);
 		ObjectMapper objectMapper = new ObjectMapper();
+		PokemonService pokeService = new PokemonServiceImpl(objectMapper, restBuilder);
 
 		Scanner keyboard = new Scanner(System.in);
 		String input;
@@ -41,8 +45,24 @@ public class PokemondbApplication {
 		System.exit(0);
 	}
 
+	@Bean
+	public WebMvcConfigurer corsConfig() {
+		return new WebMvcConfigurer() {
+			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/**")
+					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+					.allowedOrigins("null")
+					.allowedHeaders("*")
+					.exposedHeaders("Auth")
+					.allowCredentials(false);
+			}
+		};
+	}
+
 	public static void testCall () {
 		System.out.println("Hello World");
 	}
+
+
 
 }
