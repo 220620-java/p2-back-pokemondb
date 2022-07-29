@@ -29,12 +29,12 @@ public class Fanart {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
-	@ManyToOne(targetEntity= Pokemon.class)
-	@JoinColumn(name = "pokemon_id", foreignKey=@ForeignKey(name = "pokemon_fanart_pokemon_id_fkey"))
-	private long pokemon;
-	@ManyToOne(targetEntity= User.class)
-	@JoinColumn(name = "user_id", foreignKey=@ForeignKey(name = "pokemon_fanart_user_id_fkey"))
-	private long author;
+	@ManyToOne
+	@JoinColumn(name = "pokemon_id")
+	private Pokemon pokemon;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User author;
 	private String title;
 	private String tags;
 	@Column(name = "image")
@@ -65,7 +65,8 @@ public class Fanart {
 	
 	public Fanart() {
 		this.id = 0;
-		this.author = 0;
+		this.pokemon = null;
+		this.author = null;
 		this.url = "";
 		this.likes = 0;
 		this.reports = 0;
@@ -74,7 +75,7 @@ public class Fanart {
 		this.comments = new ArrayList<ArtComment>();
 	}
 	
-	public Fanart(int id, int pokemon, int author, String title, String tags, String url, int likes, int reports,
+	public Fanart(int id, Pokemon pokemon, User author, String title, String tags, String url, int likes, int reports,
 			Boolean isFlagged, Date postDate, List<ArtComment> comments) {
 		super();
 		this.id = id;
@@ -89,6 +90,8 @@ public class Fanart {
 		this.postDate = postDate;
 		this.comments = comments;
 	}
+	
+	/*Overrides*/
 	
 	@Override
 	public int hashCode() {
@@ -130,16 +133,16 @@ public class Fanart {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public long getPokemon() {
+	public Pokemon getPokemon() {
 		return pokemon;
 	}
-	public void setPokemon(int pokemon) {
+	public void setPokemon(Pokemon pokemon) {
 		this.pokemon = pokemon;
 	}
-	public long getAuthor() {
+	public User getAuthor() {
 		return author;
 	}
-	public void setAuthor(int author) {
+	public void setAuthor(User author) {
 		this.author = author;
 	}
 	public String getTitle() {
