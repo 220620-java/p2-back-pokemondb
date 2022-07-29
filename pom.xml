@@ -52,18 +52,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- AWS Secrets Manager -->
-		<!-- <dependency>
-			<groupId>com.amazonaws.secretsmanager</groupId>
-			<artifactId>aws-secretsmanager-jdbc</artifactId>
-			<version>1.0.5</version>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-secretsmanager</artifactId>
-			<version>1.11.355 </version>
-		</dependency> -->
-
 		<!-- jwts -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
