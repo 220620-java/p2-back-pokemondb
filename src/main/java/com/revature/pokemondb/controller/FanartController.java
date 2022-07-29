@@ -2,7 +2,6 @@ package com.revature.pokemondb.controller;
 
 import com.revature.pokemondb.repositories.FanartRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,13 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Fanart;
-import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.services.PokemonService;
+import com.revature.pokemondb.services.FanartService;
 
 @RestController
 @RequestMapping(path="/fanart")
 public class FanartController {
     private PokemonService pokemonService;
+    private FanartService fanartService;
 	private ObjectMapper objectMapper;
 
     public FanartController(PokemonService pokemonService, ObjectMapper objectMapper) {
@@ -43,7 +43,7 @@ public class FanartController {
 	@GetMapping(path = "/{id}}")
 	public ResponseEntity<String> getFanartById(@PathVariable int id) {
 		// Create fanart object
-		Fanart fanart = FanartRepository.findById(id);
+		Fanart fanart = fanartService.getFanart(id);
 		String fanartJSON;
 		try {
 			// Turn fanart into JSON
