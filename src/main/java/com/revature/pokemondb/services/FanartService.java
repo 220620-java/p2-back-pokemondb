@@ -1,6 +1,7 @@
 package com.revature.pokemondb.services;
 
 import com.revature.pokemondb.models.Fanart;
+import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.FanartRepository;
 
 import java.util.List;
@@ -20,12 +21,13 @@ public class FanartService {
 	
 	/**
 	 * A Constructor intended to be used for dependency injection by the Spring application
-	 * @param artRepo an Instance of the FanantRepository class
+	 * @param artRepo an instance of the FanantRepository class
 	 */
 	public FanartService(FanartRepository artRepo) {
 		this.artRepo = artRepo;
 	}
 	
+	/*Methods*/
 	
 	/**
 	 * Retrieves a specific fanart object given its id
@@ -43,7 +45,7 @@ public class FanartService {
 	
 	/**
 	 * Retrieves all available fanart. Availability is contingent on whether it has been flagged
-	 * @return all fanart with the value of 'true' for the isFlagged field
+	 * @return all fanart with the value of 'false' for the isFlagged field
 	 */
 	public List<Fanart> getAvailableFanart(){
 		List<Fanart> fanart = artRepo.findByIsFlagged(false);
@@ -52,10 +54,10 @@ public class FanartService {
 	
 	/**
 	 * Retrieves flagged fanart. Should only be used by admins
-	 * @return all fanart with the value of 'false' for the isFlagged field
+	 * @return all fanart with the value of 'true' for the isFlagged field
 	 */
 	public List<Fanart> getFlaggedFanart(){
-		List<Fanart> fanart = artRepo.findByIsFlagged(false);
+		List<Fanart> fanart = artRepo.findByIsFlagged(true);
 		return fanart;
 	}
 	
@@ -65,6 +67,59 @@ public class FanartService {
 	 */
 	public List<Fanart> getReportedFanart(){
 		List<Fanart> fanart = artRepo.findByReportsGreaterThanOrderByReportsDesc(0);
+		return fanart;
+	}
+	
+	/**
+	 * Retrieves all available fanart. Availability is contingent on whether it has been flagged.
+	 * Returned fanarts are ordered by likes, highest to lowest
+	 * @return all fanart with the value of 'false' for the isFlagged field ordered by the amount of likes
+	 */
+	public List<Fanart> getAvailableFanartOrderedByLikesDesc(){
+		List<Fanart> fanart = artRepo.findByIsFlaggedOrderByLikesDesc(false);
+		return fanart;
+	}
+	
+	/**
+	 * Retrieves all available fanart. Availability is contingent on whether it has been flagged.
+	 * Returned fanarts are ordered by post date
+	 * @param orderAsc represents the order in which the fanarts will be ordered. 'true' for ascending order and 'false' for descending order
+	 * @return all fanart with the value of 'false' for the isFlagged field ordered by post date
+	 */
+	public List<Fanart> getAvailableFanartOrderedByPostDate(Boolean orderAsc){
+		List<Fanart> fanart;
+		if (orderAsc) {
+			fanart = artRepo.findByIsFlaggedOrderByPostDate(false);
+		} else {
+			fanart = artRepo.findByIsFlaggedOrderByPostDateDesc(false);
+		}
+		return fanart;
+	}
+	
+	/**
+	 * Retrieves all available fanart with the tags value containing the parameter. Availability is contingent on whether it has been flagged
+	 * @return all fanart with the value of 'false' for the isFlagged field and a value containing the parameter for tags
+	 */
+	public List<Fanart> getAvailableFanartWithTags(String tags){
+		List<Fanart> fanart = artRepo.findByTagsContainsAndIsFlagged(tags, false);
+		return fanart;
+	}
+	
+	/**
+	 * Retrieves all available fanart with the title value containing the parameter. Availability is contingent on whether it has been flagged
+	 * @return all fanart with the value of 'false' for the isFlagged field and a value containing the parameter for title
+	 */
+	public List<Fanart> getAvailableFanartWithTitle(String title){
+		List<Fanart> fanart = artRepo.findByTitleContainsAndIsFlagged(title, false);
+		return fanart;
+	}
+	
+	/**
+	 * Retrieves all fanart posted by a given author. Intended to be used by admin or the author
+	 * @return all fanart with the a value containing the parameter for author
+	 */
+	public List<Fanart> getFanartByAuthor(User author){
+		List<Fanart> fanart = artRepo.findByAuthorEquals(author);
 		return fanart;
 	}
 	
