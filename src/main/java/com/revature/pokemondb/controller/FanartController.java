@@ -40,7 +40,7 @@ public class FanartController {
 	 * @param id
 	 * @return
 	 */
-	@GetMapping(path = "/{id}}")
+	@GetMapping(path = "/{id}")
 	public ResponseEntity<String> getFanartById(@PathVariable int id) {
 		// Create fanart object
 		Fanart fanart = fanartService.getFanart(id);
