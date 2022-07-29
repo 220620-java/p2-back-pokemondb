@@ -46,7 +46,7 @@ public class FanartService {
 	 * @return all fanart with the value of 'true' for the isFlagged field
 	 */
 	public List<Fanart> getAvailableFanart(){
-		List<Fanart> fanart = artRepo.findAllByIsFlagged(false);
+		List<Fanart> fanart = artRepo.findByIsFlagged(false);
 		return fanart;
 	}
 	
@@ -55,7 +55,7 @@ public class FanartService {
 	 * @return all fanart with the value of 'false' for the isFlagged field
 	 */
 	public List<Fanart> getFlaggedFanart(){
-		List<Fanart> fanart = artRepo.findAllByIsFlagged(false);
+		List<Fanart> fanart = artRepo.findByIsFlagged(false);
 		return fanart;
 	}
 	
@@ -64,7 +64,7 @@ public class FanartService {
 	 * @return all fanart with a value greater than zero for the reports field
 	 */
 	public List<Fanart> getReportedFanart(){
-		List<Fanart> fanart = artRepo.findAllWhereReportsGreaterThanOrderByReportsDesc(0);
+		List<Fanart> fanart = artRepo.findByReportsGreaterThanOrderByReportsDesc(0);
 		return fanart;
 	}
 	

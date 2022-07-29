@@ -20,12 +20,12 @@ public interface FanartRepository extends JpaRepository<Fanart, Integer>{
 	 * @param isFlagged a Boolean to represent whether a fanart is flagged
 	 * @return a list of fanart objects
 	 */
-	public List<Fanart> findAllByIsFlagged(Boolean isFlagged);
+	public List<Fanart> findByIsFlagged(Boolean isFlagged);
 
 	/**
 	 * Returns all fanart objects with the value of reports being greater than the parameter
 	 * @param reports an integer to represent how many users have reported a given fanart
 	 * @return a list of fanart objects
 	 */
-	public List<Fanart> findAllWhereReportsGreaterThanOrderByReportsDesc(int reports);
+	public List<Fanart> findByReportsGreaterThanOrderByReportsDesc(int reports);
 }
