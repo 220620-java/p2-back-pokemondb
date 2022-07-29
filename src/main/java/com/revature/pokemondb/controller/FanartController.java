@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Fanart;
-import com.revature.pokemondb.services.PokemonService;
+import com.revature.pokemondb.services.PokemonServiceImpl;
 import com.revature.pokemondb.services.FanartService;
 
 @RestController
 @RequestMapping(path="/fanart")
 public class FanartController {
-    private PokemonService pokemonService;
+    private PokemonServiceImpl pokemonService;
     private FanartService fanartService;
 	private ObjectMapper objectMapper;
 
-    public FanartController(PokemonService pokemonService, ObjectMapper objectMapper) {
+    public FanartController(PokemonServiceImpl pokemonService, ObjectMapper objectMapper) {
         this.pokemonService = pokemonService;
         this.objectMapper = objectMapper;
     }
