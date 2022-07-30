@@ -17,7 +17,7 @@ public class LoggingAspect {
     @Around("allPokeApp()")
     public Object logAdvice(ProceedingJoinPoint joinpoint) throws Throwable {
 		// getting the class that the joinpoint is part of so that the logger matches
-		Class joinPointClass = joinpoint.getTarget().getClass();
+		Class<?> joinPointClass = joinpoint.getTarget().getClass();
 		
 		// this creates a logger for that class
 		Logger logger = LoggerFactory.getLogger(joinPointClass);

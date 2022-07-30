@@ -59,9 +59,7 @@ public class PokemonServiceImpl implements PokemonService{
      * @return
      */
     public String getJSON(String url) {
-        System.out.println("Before");
         Mono<String> response  = client.get().uri(url).retrieve().bodyToMono(String.class);
-        System.out.println("After");
         return response.block();
     }
 
