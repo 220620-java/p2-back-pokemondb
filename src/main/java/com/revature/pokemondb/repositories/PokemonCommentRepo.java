@@ -8,5 +8,4 @@ import com.revature.pokemondb.models.PokemonComments;
 @Repository
 public interface PokemonCommentRepo extends JpaRepository<PokemonComments, Long> {
 
-
 }

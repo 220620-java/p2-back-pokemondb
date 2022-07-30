@@ -23,7 +23,6 @@ public class PokemonController {
         this.pokemonService = pokemonService;
         this.objectMapper = objectMapper;
     }
-
 	
 	@GetMapping("/")
 	public ResponseEntity<String> getHelloWorld () {
@@ -39,13 +38,47 @@ public class PokemonController {
 		path = "/{pokemonName}", 
 		produces="application/json"
 	)
-	public ResponseEntity<String> getPokemonByName(@PathVariable String pokemonName) {
+	public ResponseEntity<String> getPokemonByNameOrID(@PathVariable String pokemonName) {
 		// Create pokemon object
 		Pokemon pokemon;
 		try {
+			// Is this an id?
 			pokemon = pokemonService.createPokemon(Integer.valueOf(pokemonName));
 		} catch (NumberFormatException e) {
+			// No, it's a name
 			pokemon = pokemonService.createPokemon(pokemonName);
+		}
+
+		String pokemonJSON;
+		try {
+			// Turn pokemon into JSON
+			pokemonJSON = objectMapper.writeValueAsString(pokemon);
+			if (pokemon != null) {
+				// OK sets status code to 200
+				return ResponseEntity.ok(pokemonJSON);
+			} else {
+				// notFound sets status code to 404
+				return ResponseEntity.notFound().build();
+			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.notFound().build();
+	}
+
+	@GetMapping(
+		path = "/poke/{pokemonName}", 
+		produces="application/json"
+	)
+	public ResponseEntity<String> getPokemonByNameOrIDShort(@PathVariable String pokemonName) {
+		// Create pokemon object
+		Pokemon pokemon;
+		try {
+			// Is this an id?
+			pokemon = pokemonService.getReferencePokemon(Integer.valueOf(pokemonName));
+		} catch (NumberFormatException e) {
+			// No, it's a name
+			pokemon = pokemonService.getReferencePokemon(pokemonName);
 		}
 
 		String pokemonJSON;
