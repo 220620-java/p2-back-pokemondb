@@ -62,7 +62,7 @@ public class FanartController {
 	 * @return a string representing a fanart object
 	 */
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<String> getFanartById(@PathVariable long id) {
+	public ResponseEntity<String> getFanartById(@PathVariable int id) {
 		// Create fanart object
 		Fanart fanart = fanartService.getFanart(id);
 		String fanartJSON;
@@ -98,5 +98,24 @@ public class FanartController {
 		} else {
 			return ResponseEntity.ok(idLimiters);
 		}
+	}
+	
+	/**
+	 * Get information on a fanart's existence and isFlagged status
+	 * Returned in format of string representing a boolean
+	 * @return
+	 */
+	@GetMapping(path= "/info/{id}")
+	public ResponseEntity<String> getArtInfo(@PathVariable int id) {
+		Boolean canShowArt = true;
+		Fanart test = null;
+		canShowArt = fanartService.getExistsById(id);
+		if(canShowArt) {//Id exists
+			test = fanartService.getFanart(id);
+			if(test.getIsFlagged() == true) {//Art has been flagged
+				canShowArt = false;
+			}
+		}
+		return ResponseEntity.ok(canShowArt.toString());
 	}
 }
