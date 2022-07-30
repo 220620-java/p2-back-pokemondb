@@ -63,8 +63,8 @@ public class FanartService {
 	 * @param id the id of the requested fanart object
 	 * @return the requested fanart object or null if the id does not exist
 	 */
-	public Fanart getFanart(long id) {
-		Optional<Fanart> artOpt = artRepo.findById((int) id);
+	public Fanart getFanart(int id) {
+		Optional<Fanart> artOpt = artRepo.findById(id);
 		if (artOpt.isPresent()) {
 			return artOpt.get();
 		} else {
@@ -150,6 +150,10 @@ public class FanartService {
 	public List<Fanart> getFanartByAuthor(User author){
 		List<Fanart> fanart = artRepo.findByAuthorEquals(author);
 		return fanart;
+	}
+	
+	public Boolean getExistsById(int id) {
+		return artRepo.existsById(id);
 	}
 	
 	/**
