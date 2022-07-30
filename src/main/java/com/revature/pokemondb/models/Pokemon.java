@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@Table(name= "pokemon", schema="pokemon_db")
 public class Pokemon {
 	
 	@Id

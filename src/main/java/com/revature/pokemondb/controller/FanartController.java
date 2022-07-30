@@ -5,6 +5,7 @@ import com.revature.pokemondb.repositories.FanartRepository;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,14 +18,15 @@ import com.revature.pokemondb.services.PokemonServiceImpl;
 import com.revature.pokemondb.services.FanartService;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping(path="/fanart")
 public class FanartController {
     private PokemonServiceImpl pokemonService;
     private FanartService fanartService;
 	private ObjectMapper objectMapper;
 
-    public FanartController(PokemonServiceImpl pokemonService, ObjectMapper objectMapper) {
-        this.pokemonService = pokemonService;
+    public FanartController(FanartService fanartService, ObjectMapper objectMapper) {
+        this.fanartService = fanartService;
         this.objectMapper = objectMapper;
     }
 
@@ -60,7 +62,7 @@ public class FanartController {
 	 * @return a string representing a fanart object
 	 */
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<String> getFanartById(@PathVariable int id) {
+	public ResponseEntity<String> getFanartById(@PathVariable long id) {
 		// Create fanart object
 		Fanart fanart = fanartService.getFanart(id);
 		String fanartJSON;
@@ -82,12 +84,14 @@ public class FanartController {
 	
 	/**
 	 * Get the lowest and highest available fanart ids and return them as a single string
+	 * Returned in format of "{idLow}/{idHigh}"
 	 * @return
 	 */
 	@GetMapping(path= "/info/")
 	public ResponseEntity<String> getIdLimiters() {
 		String idLimiters = "";
 		idLimiters += fanartService.getLowestID();
+		idLimiters += "/";
 		idLimiters += fanartService.getHighestID();
 		if (idLimiters.contains("-1")) {
 			return ResponseEntity.notFound().build();

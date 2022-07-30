@@ -24,6 +24,7 @@ public class User {
 	private Long userId; 
 	private String username;
 	private String email; 
+	@Column(name = "passwd")
 	private String password;
 	private byte[] salt;
 
