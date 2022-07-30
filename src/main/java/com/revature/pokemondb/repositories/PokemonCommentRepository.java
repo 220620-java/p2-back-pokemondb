@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.revature.pokemondb.models.PokemonComments;
 
 @Repository
-public interface PokemonCommentRepo extends JpaRepository<PokemonComments, Integer>{
+public interface PokemonCommentRepository extends JpaRepository<PokemonComments, Integer>{
 
 }

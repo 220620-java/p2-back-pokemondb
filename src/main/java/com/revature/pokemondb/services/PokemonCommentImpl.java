@@ -3,17 +3,17 @@ package com.revature.pokemondb.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.models.User;
-import com.revature.pokemondb.repositories.PokemonCommentRepo;
+import com.revature.pokemondb.repositories.PokemonCommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PokemonCommentImpl implements PokemonCommentService{
-    private PokemonCommentRepo pokeRepo;
+    private PokemonCommentRepository pokeRepo;
     private ObjectMapper JsonMapper;
 
     @Autowired
-    public PokemonCommentImpl(PokemonCommentRepo pokeRepo, ObjectMapper JsonMapper) {
+    public PokemonCommentImpl(PokemonCommentRepository pokeRepo, ObjectMapper JsonMapper) {
 
     }
 

@@ -33,7 +33,6 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
-		
 	}
 
 	@Autowired
