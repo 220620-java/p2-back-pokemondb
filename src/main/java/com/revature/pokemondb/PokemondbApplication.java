@@ -20,9 +20,8 @@ public class PokemondbApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PokemondbApplication.class, args);
-		RestTemplateBuilder restBuilder = new RestTemplateBuilder();
 		ObjectMapper objectMapper = new ObjectMapper();
-		PokemonService pokeService = new PokemonServiceImpl(objectMapper, restBuilder);
+		PokemonService pokeService = new PokemonServiceImpl(objectMapper);
 
 		Scanner keyboard = new Scanner(System.in);
 		String input;

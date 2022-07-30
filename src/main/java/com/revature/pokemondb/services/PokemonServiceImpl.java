@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.utils.StringUtils;
+
+import reactor.core.publisher.Mono;
 
 // GRAB FROM pokemon-species for description, generation, and evolution chain
 // https://pokeapi.co/docs/v2#pokemon-species
@@ -45,22 +45,22 @@ import com.revature.pokemondb.utils.StringUtils;
 @Service
 public class PokemonServiceImpl implements PokemonService{
     private ObjectMapper objMapper;
+    private WebClient client;
 
-    private final RestTemplate restTemplate;
-
-    public PokemonServiceImpl(ObjectMapper objMapper, RestTemplateBuilder restBuilder) {
-        this.restTemplate = restBuilder.build();
+    public PokemonServiceImpl(ObjectMapper objMapper) {
+        this.client = WebClient.create();
         this.objMapper = objMapper;
     }
 
     /**
      * Send Get Request to External API
-     * 
+     * https://reflectoring.io/spring-webclient/
      * @param url
      * @return
      */
-    public String getJSON(String url) throws RestClientException {
-        return this.restTemplate.getForObject(url, String.class);
+    public String getJSON(String url) {
+        Mono<String> response  = client.get().uri(url).retrieve().bodyToMono(String.class);
+        return response.block();
     }
 
     /**
@@ -192,10 +192,21 @@ public class PokemonServiceImpl implements PokemonService{
             String category = speciesRoot.get("genera").get(7).get("genus").asText();
             
             // Description
-            String description = speciesRoot.get("flavor_text_entries").get(0).get("flavor_text").asText();
-            description += " " + speciesRoot.get("flavor_text_entries").get(1).get("flavor_text").asText();
-            description = description.replace("\f", " ");
-            description = description.replace("\n", " ");
+            String description = "No Description";
+            int flavorTextSize = speciesRoot.get("flavor_text_entries").size();
+            for (int i = 0; i < flavorTextSize; i++) {
+                JsonNode currentNode = speciesRoot.get("flavor_text_entries").get(i);
+                String languageName = currentNode.get("language").get("name").asText();
+
+                // String uses equals instead of == so it won't be false
+                // Grab the first English flavor text description
+                if (languageName.equals("en")) {
+                    description = speciesRoot.get("flavor_text_entries").get(i).get("flavor_text").asText();
+                    description = description.replace("\f", " ");
+                    description = description.replace("\n", " ");
+                    break;
+                }
+            }
 
             // Evolution JSON
             String evolutionURL = objMapper.readTree(speciesJSON).get("evolution_chain").get("url").asText();

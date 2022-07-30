@@ -1,11 +1,9 @@
 package com.revature.pokemondb.services;
 
-import org.springframework.web.client.RestClientException;
-
 import com.revature.pokemondb.models.Pokemon;
 
 public interface PokemonService {
-    public String getJSON(String url) throws RestClientException;
+    public String getJSON(String url);
     public String getPokemon();
     public String getPokemonJSON(int pokemonId);
     public String getPokemonJSON(String pokemonName);

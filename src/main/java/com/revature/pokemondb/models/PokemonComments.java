@@ -20,7 +20,7 @@ public class PokemonComments {
 	 private Pokemon pokemon;
 	 @ManyToOne
 	 @JoinColumn(name = "user_id", referencedColumnName="id")
-	 private user;
+	 private User user;
 	 private String comment_content;
 	 private Boolean is_flagged;
 	 private Integer likes;

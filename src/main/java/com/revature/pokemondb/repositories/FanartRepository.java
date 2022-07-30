@@ -22,6 +22,12 @@ public interface FanartRepository extends JpaRepository<Fanart, Integer>{
 	 * @return a list of fanart objects
 	 */
 	public List<Fanart> findByIsFlagged(Boolean isFlagged);
+	/**
+	 * Returns all fanart objects with the value of isFlagged matching the parameter
+	 * @param isFlagged a Boolean to represent whether a fanart is flagged
+	 * @return a list of fanart objects
+	 */
+	public List<Fanart> findByIsFlaggedOrderByIdDesc(Boolean isFlagged);
 
 	/**
 	 * Returns all fanart objects with the value of reports being greater than the parameter
@@ -36,6 +42,20 @@ public interface FanartRepository extends JpaRepository<Fanart, Integer>{
 	 * @return a list of fanart objects ordered by amount of likes, highest to lowest
 	 */
 	public List<Fanart> findByIsFlaggedOrderByLikesDesc(Boolean isFlagged);
+
+	/**
+	 * Returns all fanart objects with the value of isFlagged matching the parameter
+	 * @param isFlagged a Boolean to represent whether a fanart is flagged
+	 * @return a list of fanart objects ordered by post date, newest to oldest
+	 */
+	public List<Fanart> findByIsFlaggedOrderByPostDateDesc(Boolean isFlagged);
+
+	/**
+	 * Returns all fanart objects with the value of isFlagged matching the parameter
+	 * @param isFlagged a Boolean to represent whether a fanart is flagged
+	 * @return a list of fanart objects ordered by post date, oldest to newest
+	 */
+	public List<Fanart> findByIsFlaggedOrderByPostDate(Boolean isFlagged);
 	
 	/**
 	 * Returns all fanart objects with the value of isFlagged matching the isFlagged parameter

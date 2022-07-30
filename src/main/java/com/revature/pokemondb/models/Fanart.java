@@ -28,7 +28,7 @@ import javax.persistence.ForeignKey;
 public class Fanart {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private int id;
 	@ManyToOne
 	@JoinColumn(name = "pokemon_id")
 	private Pokemon pokemon;
