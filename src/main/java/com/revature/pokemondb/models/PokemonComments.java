@@ -1,16 +1,11 @@
 package com.revature.pokemondb.models;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.time.Instant;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="pokemon_comments", schema = "pokemon_db")
@@ -25,12 +20,16 @@ public class PokemonComments {
 	 private Pokemon pokemon;
 	 @ManyToOne
 	 @JoinColumn(name = "user_id", referencedColumnName="id")
-	 private User user;
+	 private user;
 	 private String comment_content;
 	 private Boolean is_flagged;
 	 private Integer likes;
 	 private Instant posted_at;
 
+
+	public PokemonComments() {
+
+	}
 	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged, Integer likes,
 			Instant posted_at) {
 		this.id = id;
@@ -41,8 +40,7 @@ public class PokemonComments {
 		this.likes = likes;
 		this.posted_at = posted_at;
 	}
-	
-	
+
 	public Long getId() {
 		return id;
 	}
