@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Pokemon;
+import com.revature.pokemondb.repositories.PokemonRepository;
 import com.revature.pokemondb.utils.StringUtils;
 
 import reactor.core.publisher.Mono;
@@ -44,12 +46,14 @@ import reactor.core.publisher.Mono;
  */
 @Service
 public class PokemonServiceImpl implements PokemonService{
+    private PokemonRepository pokeRepo;
     private ObjectMapper objMapper;
     private WebClient client;
 
-    public PokemonServiceImpl(ObjectMapper objMapper) {
+    public PokemonServiceImpl(ObjectMapper objMapper, PokemonRepository pRepo) {
         this.client = WebClient.create();
         this.objMapper = objMapper;
+        this.pokeRepo = pRepo;
     }
 
     /**
@@ -133,12 +137,28 @@ public class PokemonServiceImpl implements PokemonService{
         return map;
     }
 
+    public Pokemon getReferencePokemon(int id) {
+        Optional<Pokemon> pokemon = pokeRepo.findById(id);
+        if (pokemon.isPresent()) {return pokemon.get();}
+        return null;
+    }
+
+    public Pokemon getReferencePokemon(String pokemonName) {
+        Optional<Pokemon> pokemon = pokeRepo.findByName(pokemonName);
+        if (pokemon.isPresent()) {return pokemon.get();}
+        return null;
+    }
+
     public Pokemon createPokemon (int pokemonId) {
-        return createPokemonObject(getPokemonJSON(pokemonId));
+        Pokemon pokemon = createPokemonObject(getPokemonJSON(pokemonId));
+        pokeRepo.save(pokemon);
+        return pokemon;
     }
 
     public Pokemon createPokemon (String pokemonName) {
-        return createPokemonObject(getPokemonJSON(pokemonName));
+        Pokemon pokemon = createPokemonObject(getPokemonJSON(pokemonName));
+        pokeRepo.save(pokemon);
+        return pokemon;
     }
 
     public Pokemon createPokemonObject (String pokemonJSON) {
@@ -151,7 +171,7 @@ public class PokemonServiceImpl implements PokemonService{
             int id = pokemonRoot.get("id").asInt();
 
             // Name
-            String name = StringUtils.convertToTitleCase(pokemonRoot.get("name").asText());
+            String name = pokemonRoot.get("name").asText();
 
             // Height
             int height = pokemonRoot.get("height").asInt();
@@ -186,7 +206,7 @@ public class PokemonServiceImpl implements PokemonService{
             // Generation
             String generation = speciesRoot.get("generation").get("name").asText();
             String number = generation.split("-")[1];
-            generation = String.valueOf(StringUtils.getNumberFromRomanNumeral(number));
+            int genNum = Integer.valueOf(StringUtils.getNumberFromRomanNumeral(number));
 
             // Category
             String category = speciesRoot.get("genera").get(7).get("genus").asText();
@@ -278,7 +298,7 @@ public class PokemonServiceImpl implements PokemonService{
                 types,
                 baseStats,
                 imageURL,
-                generation,
+                genNum,
                 category,
                 description,
                 evolutionChain,

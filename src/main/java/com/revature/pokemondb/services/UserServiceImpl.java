@@ -33,8 +33,9 @@ public class UserServiceImpl implements UserService {
 	 * @return a User is returned
 	 */
 	public User getUserByUsername (String username) {
-		User user = userRepo.findByUsername(username);
-		return user;
+		Optional<User> user = userRepo.findByUsername(username);
+		if (user.isPresent()) { return user.get(); }
+		else { return null;}
 	}
 	
 	/**
@@ -52,6 +53,10 @@ public class UserServiceImpl implements UserService {
 	 */
 	public User registerUser(User user) throws UsernameAlreadyExistsException {
 		System.out.println("Registering new user");
+		Optional<User> findUser = userRepo.findById(Math.toIntExact(user.getUserId()));
+		if (findUser.isPresent()) {
+			throw new UsernameAlreadyExistsException();
+		}
 		User savedUser = userRepo.save(user);
 		return savedUser;
 	}
