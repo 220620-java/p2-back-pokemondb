@@ -156,9 +156,9 @@ CREATE TABLE pokemon_db.report_fanart (
 	user_id int8 NULL,
 	is_reported bool NULL,
 	report_reason text NULL,
-	CONSTRAINT rate_fanart_pkey PRIMARY KEY (id),
-	CONSTRAINT rate_fanart_fanart_id_fkey FOREIGN KEY (fanart_id) REFERENCES pokemon_db.pokemon_fanart(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT rate_fanart_user_id_fkey FOREIGN KEY (user_id) REFERENCES pokemon_db.users(id) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT report_fanart_pkey PRIMARY KEY (id),
+	CONSTRAINT report_fanart_fanart_id_fkey FOREIGN KEY (fanart_id) REFERENCES pokemon_db.pokemon_fanart(id) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT report_fanart_user_id_fkey FOREIGN KEY (user_id) REFERENCES pokemon_db.users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 --pokemon_db.rate_art_comm definition
