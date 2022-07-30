@@ -1,7 +1,6 @@
 package com.revature.pokemondb.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.services.PokemonCommentImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
