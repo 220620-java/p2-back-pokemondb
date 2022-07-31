@@ -1,12 +1,10 @@
 package com.revature.pokemondb.services;
 
 import com.revature.pokemondb.models.ArtComment;
-import com.revature.pokemondb.models.Fanart;
+import com.revature.pokemondb.models.dtos.FanartDTO;
 import com.revature.pokemondb.repositories.ArtCommRepository;
-import com.revature.pokemondb.repositories.FanartRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -29,6 +27,17 @@ public class ArtCommService {
 	}
 	
 	/*Methods*/
+	
+	/**
+	 * Retrieves all available comments for a given fanart. Availability is contingent on whether it has been flagged
+	 * @param artId the id of the fanart
+	 * @return a list of available comments
+	 */
+	public List<ArtComment> getAvailibleFanartComments(int artId) {
+		FanartDTO dtoObj = new FanartDTO(artId);
+		List<ArtComment> fanart = commRepo.findByFanartIdAndIsFlagged(dtoObj, false);
+		return fanart;
+	}
 	
 	/**
 	 * Saves a given comment object to the database

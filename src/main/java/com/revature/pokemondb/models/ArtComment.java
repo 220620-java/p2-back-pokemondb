@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.revature.pokemondb.models.dtos.FanartDTO;
+
 /**
  * 
  * @author Barry Norton
@@ -26,7 +28,7 @@ public class ArtComment {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name = "fanart_id")
-	private Fanart fanartId;
+	private FanartDTO fanartId;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User author;
@@ -40,8 +42,18 @@ public class ArtComment {
 	private Date postDate;
 	
 	/*Constructors*/
+	public ArtComment() {
+		this.id = 0;
+		this.fanartId = null;
+		this.author = null;
+		this.content = "";
+		this.likes = 0;
+		this.reports = 0;
+		this.isFlagged = false;
+		this.postDate = Date.valueOf(LocalDate.now());
+	}
 	
-	public ArtComment(int id, Fanart fanartId, User author, String content, Integer likes, Integer reports,
+	public ArtComment(int id, FanartDTO fanartId, User author, String content, Integer likes, Integer reports,
 			Boolean isFlagged, Date postDate) {
 		super();
 		this.id = id;
@@ -92,11 +104,11 @@ public class ArtComment {
 		this.id = id;
 	}
 
-	public Fanart getFanartId() {
+	public FanartDTO getFanartId() {
 		return fanartId;
 	}
 
-	public void setFanartId(Fanart fanartId) {
+	public void setFanartId(FanartDTO fanartId) {
 		this.fanartId = fanartId;
 	}
 
