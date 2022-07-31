@@ -16,7 +16,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.ForeignKey;
 
 /**
  * 
@@ -45,21 +44,6 @@ public class Fanart {
 	private Boolean isFlagged;
 	@Column(name="uploaded_at")
 	private Date postDate;
-	@ManyToMany
-	@JoinTable(name="fanart_comments",
-		joinColumns = @JoinColumn(name="fanart_id"),
-		inverseJoinColumns = @JoinColumn(name="user_id"))
-	private List<ArtComment> comments;
-	@ManyToMany
-	@JoinTable(name="rate_fanart",
-		joinColumns = @JoinColumn(name="fanart_id"),
-		inverseJoinColumns = @JoinColumn(name="user_id"))
-	private List<RateArt> likedBy;
-	@ManyToMany
-	@JoinTable(name="report_fanart",
-		joinColumns = @JoinColumn(name="fanart_id"),
-		inverseJoinColumns = @JoinColumn(name="user_id"))
-	private List<ReportArt> reportedBy;
 	
 	/*Constructors*/
 	
@@ -72,7 +56,6 @@ public class Fanart {
 		this.reports = 0;
 		this.isFlagged = false;
 		this.postDate = Date.valueOf(LocalDate.now());
-		this.comments = new ArrayList<ArtComment>();
 	}
 	
 	public Fanart(int id, Pokemon pokemon, User author, String title, String tags, String url, int likes, int reports,
@@ -88,14 +71,13 @@ public class Fanart {
 		this.reports = reports;
 		this.isFlagged = isFlagged;
 		this.postDate = postDate;
-		this.comments = comments;
 	}
 	
 	/*Overrides*/
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(author, comments, id, isFlagged, likedBy, likes, pokemon, postDate, reportedBy, reports,
+		return Objects.hash(author, id, isFlagged, likes, pokemon, postDate, reports,
 				tags, title, url);
 	}
 
@@ -108,20 +90,18 @@ public class Fanart {
 		if (getClass() != obj.getClass())
 			return false;
 		Fanart other = (Fanart) obj;
-		return author == other.author && Objects.equals(comments, other.comments) && id == other.id
-				&& Objects.equals(isFlagged, other.isFlagged) && Objects.equals(likedBy, other.likedBy)
+		return author == other.author && id == other.id	&& Objects.equals(isFlagged, other.isFlagged)
 				&& Objects.equals(likes, other.likes) && pokemon == other.pokemon
-				&& Objects.equals(postDate, other.postDate) && Objects.equals(reportedBy, other.reportedBy)
-				&& Objects.equals(reports, other.reports) && Objects.equals(tags, other.tags)
-				&& Objects.equals(title, other.title) && Objects.equals(url, other.url);
+				&& Objects.equals(postDate, other.postDate)&& Objects.equals(reports, other.reports) 
+				&& Objects.equals(tags, other.tags)	&& Objects.equals(title, other.title) 
+				&& Objects.equals(url, other.url);
 	}
 
 	@Override
 	public String toString() {
 		return "Fanart [id=" + id + ", pokemon=" + pokemon + ", author=" + author + ", title=" + title + ", tags="
 				+ tags + ", url=" + url + ", likes=" + likes + ", reports=" + reports + ", isFlagged=" + isFlagged
-				+ ", postDate=" + postDate + ", comments=" + comments + ", likedBy=" + likedBy + ", reportedBy="
-				+ reportedBy + "]";
+				+ ", postDate=" + postDate + "]";
 	}
 
 	
@@ -186,11 +166,5 @@ public class Fanart {
 	}
 	public void setPostDate(Date postDate) {
 		this.postDate = postDate;
-	}
-	public List<ArtComment> getComments() {
-		return comments;
-	}
-	public void setComments(List<ArtComment> comments) {
-		this.comments = comments;
 	}
 }

@@ -1,7 +1,5 @@
 package com.revature.pokemondb.controller;
 
-import com.revature.pokemondb.repositories.FanartRepository;
-
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -14,14 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Fanart;
-import com.revature.pokemondb.services.PokemonServiceImpl;
 import com.revature.pokemondb.services.FanartService;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
 @RequestMapping(path="/fanart")
 public class FanartController {
-    private PokemonServiceImpl pokemonService;
     private FanartService fanartService;
 	private ObjectMapper objectMapper;
 
