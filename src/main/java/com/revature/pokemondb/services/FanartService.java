@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author Barry Norton
- * */
+ */
 @Service
 public class FanartService {
 	private FanartRepository artRepo;
 	private ArtCommRepository commRepo;
+
 	public Fanart getFanart(int id) {
 		Optional<Fanart> artOpt = artRepo.findById(id);
 		if (artOpt.isPresent()) {

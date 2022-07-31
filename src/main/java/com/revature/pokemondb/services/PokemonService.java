@@ -133,20 +133,20 @@ public class PokemonService {
         return pokemonMap;
     }
 
-    public Pokemon createPokemon (int pokemonId) {
+    public Pokemon createPokemon(int pokemonId) {
         return createPokemonObject(getPokemonJSON(pokemonId));
     }
 
-    public Pokemon createPokemon (String pokemonName) {
+    public Pokemon createPokemon(String pokemonName) {
         return createPokemonObject(getPokemonJSON(pokemonName));
     }
 
-    public Pokemon createPokemonObject (String pokemonJSON) {
+    public Pokemon createPokemonObject(String pokemonJSON) {
         Pokemon pokemon;
         try {
 
             JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
-            
+
             // Id
             int id = pokemonRoot.get("id").asInt();
 
@@ -177,7 +177,8 @@ public class PokemonService {
             }
 
             // Image URL
-            String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
+            String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default")
+                    .asText();
 
             // Species JSON
             String speciesJSON = getPokemonSpeciesJSON(name);
@@ -190,7 +191,7 @@ public class PokemonService {
 
             // Category
             String category = speciesRoot.get("genera").get(7).get("genus").asText();
-            
+
             // Description
             String description = speciesRoot.get("flavor_text_entries").get(0).get("flavor_text").asText();
             description += " " + speciesRoot.get("flavor_text_entries").get(1).get("flavor_text").asText();
@@ -209,7 +210,7 @@ public class PokemonService {
                 String speciesName = evolutionChainNode.get("species").get("name").asText();
                 speciesName = StringUtils.convertFromURIFormat(speciesName);
                 String speciesURL = evolutionChainNode.get("species").get("url").asText();
-                evolutionChain.add(new String[]{speciesName, speciesURL});
+                evolutionChain.add(new String[] { speciesName, speciesURL });
                 evolutionChainNode = evolutionChainNode.get("evolves_to").get(0);
             } while (evolutionChainNode != null);
 
@@ -219,7 +220,7 @@ public class PokemonService {
             JsonNode locationRoot = objMapper.readTree(locationJSON);
 
             // Locations/Versions
-            List<Map<String,String>> locationVersions = new ArrayList<>();
+            List<Map<String, String>> locationVersions = new ArrayList<>();
 
             for (JsonNode locationNode : locationRoot) {
                 // Location
@@ -227,27 +228,27 @@ public class PokemonService {
                 locationName = StringUtils.convertFromURIFormat(locationName);
 
                 String locationURL = locationNode.get("location_area").get("url").asText();
-                
+
                 // Versions
                 JsonNode versionNodes = locationNode.get("version_details");
                 for (JsonNode versionNode : versionNodes) {
                     Map<String, String> versionMap = new HashMap<>();
 
                     // Location Name
-                    versionMap.put ("locationName", locationName);
-                    
+                    versionMap.put("locationName", locationName);
+
                     // URL
-                    versionMap.put ("locationURL", locationURL);
+                    versionMap.put("locationURL", locationURL);
 
                     // Encounter Method
                     JsonNode encounterNode = versionNode.get("encounter_details");
                     Set<String> encounterSet = new HashSet<>();
-                    
+
                     // StringJoiner joiner = new StringJoiner(",");
                     for (JsonNode encounter : encounterNode) {
                         encounterSet.add(encounter.get("method").get("name").asText());
                     }
-                    versionMap.put ("methods", encounterSet.toString());
+                    versionMap.put("methods", encounterSet.toString());
 
                     // Max Chance
                     String maxChance = versionNode.get("max_chance").asText() + "%";
@@ -261,19 +262,21 @@ public class PokemonService {
                 }
             }
 
-           /* pokemon = new Pokemon (id, name,
-                height,
-                weight,
-                types,
-                baseStats,
-                imageURL,
-                generation,
-                category,
-                description,
-                evolutionChain,
-                locationVersions
-            );
-            return pokemon;*/
+            /*
+             * pokemon = new Pokemon (id, name,
+             * height,
+             * weight,
+             * types,
+             * baseStats,
+             * imageURL,
+             * generation,
+             * category,
+             * description,
+             * evolutionChain,
+             * locationVersions
+             * );
+             * return pokemon;
+             */
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -304,20 +307,20 @@ public class PokemonService {
             // Id
             Integer id = root.get("id").asInt();
             System.out.println("Id: " + id);
-    
+
             // Name
             String name = root.get("name").asText();
-            // Title Case 
+            // Title Case
             name = StringUtils.convertToTitleCase(name);
             System.out.println("Name: " + name);
-    
+
             // Height in decimetres
             Integer height = root.get("height").asInt();
             Float heightInInches = height * 3.937f;
             Integer feet = (int) (heightInInches / 12);
             String inches = StringUtils.formatDecimalPlaces(heightInInches % 12, 2);
             System.out.println("Height: " + height + " decimetres | " + feet + "\'" + inches + "\"");
-    
+
             // Weight in hectograms
             Integer weight = root.get("weight").asInt();
             Float pounds = weight / 4.536f;
@@ -346,6 +349,7 @@ public class PokemonService {
      * Category
      * Generation
      * Evolution Chain
+     * 
      * @param json
      */
     public void printPokemonSpeciesJSON(String json) {
@@ -388,7 +392,7 @@ public class PokemonService {
                 String speciesName = currentNode.get("species").get("name").asText();
                 speciesName = StringUtils.convertFromURIFormat(speciesName);
                 String speciesURL = currentNode.get("species").get("url").asText();
-                evolutionChain.add(new String[]{speciesName, speciesURL});
+                evolutionChain.add(new String[] { speciesName, speciesURL });
                 currentNode = currentNode.get("evolves_to").get(0);
             } while (currentNode != null);
             System.out.println("Evolution Chain: ");
@@ -401,7 +405,7 @@ public class PokemonService {
         }
     }
 
-    public void printLocationJSON (String json) {
+    public void printLocationJSON(String json) {
         try {
             JsonNode root = objMapper.readTree(json);
             System.out.println("Locations: ");
@@ -424,7 +428,7 @@ public class PokemonService {
         }
     }
 
-    public void printPokemonInformation (String pokemonName) {
+    public void printPokemonInformation(String pokemonName) {
         System.out.println("-------------------");
         String pokemonJSON = getPokemonJSON(pokemonName);
         printPokemonJSON(pokemonJSON);

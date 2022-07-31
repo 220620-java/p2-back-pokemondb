@@ -14,28 +14,31 @@ import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.services.PokemonService;
 
 @RestController
-@RequestMapping(path="/fanart")
+@RequestMapping(path = "/fanart")
 public class FanartController {
-    private PokemonService pokemonService;
+	private PokemonService pokemonService;
 	private ObjectMapper objectMapper;
 
-    public FanartController(PokemonService pokemonService, ObjectMapper objectMapper) {
-        this.pokemonService = pokemonService;
-        this.objectMapper = objectMapper;
-    }
+	public FanartController(PokemonService pokemonService, ObjectMapper objectMapper) {
+		this.pokemonService = pokemonService;
+		this.objectMapper = objectMapper;
+	}
 
-    /**
+	/**
 	 * Get urls, titles, and ids for all availible fanart
+	 * 
 	 * @param id
 	 * @return
 	 */
 	@GetMapping("/")
-	public ResponseEntity<String> getAll () {
+	public ResponseEntity<String> getAll() {
 		return ResponseEntity.ok(null);
 	}
 
 	/**
-	 * Get a specific fanart's details and associated comments and return it as a string
+	 * Get a specific fanart's details and associated comments and return it as a
+	 * string
+	 * 
 	 * @param id
 	 * @return
 	 */
