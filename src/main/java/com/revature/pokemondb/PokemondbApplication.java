@@ -35,10 +35,11 @@ public class PokemondbApplication {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
 					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-					.allowedOrigins("null")
+					.allowedOrigins("*")
 					.allowedHeaders("*")
-					.exposedHeaders("Auth")
-					.allowCredentials(false);
+					.exposedHeaders("*")
+					.allowCredentials(false)
+					.maxAge(3600);
 			}
 		};
 	}
