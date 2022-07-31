@@ -34,15 +34,15 @@ public class PokemonCommentImpl implements PokemonCommentService{
             throw new RuntimeException(e);
         }
     }
-
+    
     @Override
     public Optional<PokemonComments> storeNewComment(JsonNode comment) {
-        try {
+        /*try {
             Optional<PokemonComments> pokemonCommentsOptional = commentRepo.save(objectMapper.treeToValue(comment,);
             return  pokemonCommentsOptional;
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 

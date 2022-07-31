@@ -4,7 +4,6 @@ import com.revature.pokemondb.models.Fanart;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.FanartRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
