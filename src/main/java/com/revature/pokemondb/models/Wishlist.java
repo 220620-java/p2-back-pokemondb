@@ -89,5 +89,11 @@ public class Wishlist {
         this.lists = lists;
     }
 
+    @Override
+    public String toString() {
+        return "Wishlist [createdAt=" + createdAt + ", id=" + id + ", lists=" + lists + ", pokemon=" + pokemon
+                + ", wisher=" + wisher + "]";
+    }
+
     
 }
