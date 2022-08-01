@@ -14,35 +14,36 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.pokemondb.models.ArtComment;
-import com.revature.pokemondb.services.ArtCommService;
+import com.revature.pokemondb.models.RateArt;
+import com.revature.pokemondb.services.RateArtService;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-@RequestMapping(path="/artcomm")
-public class ArtCommController {
-    private ArtCommService artCommService;
+@RequestMapping(path="/rateart")
+public class RateArtController {
+    private RateArtService rateArtService;
 	private ObjectMapper objectMapper;
 
-    public ArtCommController(ArtCommService artCommService, ObjectMapper objectMapper) {
-        this.artCommService = artCommService;
+    public RateArtController(RateArtService rateArtService, ObjectMapper objectMapper) {
+        this.rateArtService = rateArtService;
         this.objectMapper = objectMapper;
     }
 
 	/**
-	 * Get available comments associated with a given fanart
-	 * @param id
-	 * @return a string representing a fanart object
+	 * Get rating of a fanart as posted by a given user
+	 * @param artId the fanart that is rated
+	 * @param userId the user associated with the rating
+	 * @return a string representing a RateArt object or 404 if rating is not found
 	 */
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<String> getCommentsByArtId(@PathVariable int id) {
+	public ResponseEntity<String> getFanartRating(@PathVariable int artId, @RequestBody int userId) {
 		// Create fanart object
-		List<ArtComment> fanart = artCommService.getAvailibleFanartComments(id);
+		RateArt rateArt = rateArtService.getRatingByUserAndFanartId(artId, userId);
 		String artCommJSON;
 		try {
 			// Turn fanart into JSON
-			artCommJSON = objectMapper.writeValueAsString(fanart);
-			if (fanart != null) {
+			artCommJSON = objectMapper.writeValueAsString(rateArt);
+			if (rateArt != null) {
 				// OK sets status code to 200
 				return ResponseEntity.ok(artCommJSON);
 			} else {
@@ -54,20 +55,20 @@ public class ArtCommController {
 		}
 		return ResponseEntity.notFound().build();
 	}
-	
 	/**
-	 * Saves a given ArtComment object to the database
-	 * @param artComm the fanart comment to be saved
+	 * Saves a given RateArt object to the database
+	 * @param rateArt the fanart rating to be saved
 	 * @return a response with a status code to reflect the operation's success
 	 */
-	@PostMapping(path = "/create")
-	public ResponseEntity<String> postComment(@RequestBody ArtComment artComm) {
+	@PostMapping(path="/")
+	public ResponseEntity<String> postFanartRating(@RequestBody RateArt rateArt) {
 		Boolean success = true;
-		success = artCommService.addComment(artComm);
+		success = rateArtService.saveRating(rateArt);
 		if (success) {
 			return ResponseEntity.ok(null);
 		} else {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
 		}
 	}
+	
 }

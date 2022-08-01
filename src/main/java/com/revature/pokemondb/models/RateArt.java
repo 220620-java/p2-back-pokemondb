@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.revature.pokemondb.models.dtos.FanartDTO;
+import com.revature.pokemondb.models.dtos.UserIdDTO;
+
 /**
  * 
  * @author Barry Norton
@@ -24,10 +27,10 @@ public class RateArt {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name="fanart_id")
-	private Fanart fanartId;
+	private FanartDTO fanartId;
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	private User author;
+	private UserIdDTO author;
 	@Column(name="is_liked")
 	private Boolean isLiked;
 	
@@ -40,7 +43,7 @@ public class RateArt {
 		this.isLiked = false;
 	}
 	
-	public RateArt(int id, Fanart fanart_id, User author, Boolean isLiked) {
+	public RateArt(int id, FanartDTO fanart_id, UserIdDTO author, Boolean isLiked) {
 		super();
 		this.id = id;
 		this.fanartId = fanart_id;
@@ -80,16 +83,16 @@ public class RateArt {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Fanart getFanart_id() {
+	public FanartDTO getFanart_id() {
 		return fanartId;
 	}
-	public void setFanart_id(Fanart fanart_id) {
+	public void setFanart_id(FanartDTO fanart_id) {
 		this.fanartId = fanart_id;
 	}
-	public User getAuthor() {
+	public UserIdDTO getAuthor() {
 		return author;
 	}
-	public void setAuthor(User author) {
+	public void setAuthor(UserIdDTO author) {
 		this.author = author;
 	}
 	public Boolean getIsLiked() {
