@@ -1,5 +1,7 @@
 package com.revature.pokemondb.services;
 
+import java.util.List;
+
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,29 +16,36 @@ import com.revature.pokemondb.repositorys.PokemonRepo;
 @Service
 public class WishlistService {
     private WishlistRepository listRepo;
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    private final RestTemplate restTemplate;
-
-    public WishlistService(RestTemplateBuilder restBuilder) {
-        this.restTemplate = restBuilder.build();
-    }
-
-    public String getJSON(String url) {
-        return this.restTemplate.getForObject(url, responseType: String.class);
+    private PokemonRepository pokemonRepo;
+    
+    public WishlistService(PokemonRepository pokemonRepo) {
+        this.pokemonRepo = pokemonRepo;
     }
 
     // add pokemon to wish list
-    public String addPokemonJSONString(int pokemonId) {
-        String url = "https://pokeapi.co/api/v2/pokemon/" + pokemonId;
-        listRepo.save(pokemonId);
-        return getJSON(url);
-
+    public Boolean addPokemon(int pokemonid) {
+        try {
+            pokemonRepo.add(pokemonid);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     // delete pokemon from wish list
-    public Wishlist deletePokemon(Wishlist pokemonid) {
-        listRepo.delete(pokemonid);
-        return null;
+    public boolean deletePokemon(int pokemonid) {
+        try {
+            listRepo.deleteById(pokemonid);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Pokemon> getAllPokemon() {
+        List<Pokemon> pokemon = pokemonRepo.findAll(false);
+        return pokemon;
     }
 }

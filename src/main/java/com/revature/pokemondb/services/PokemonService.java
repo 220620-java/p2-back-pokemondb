@@ -59,7 +59,7 @@ public class PokemonService {
      * @param url
      * @return
      */
-    public String getJSON(String url) {
+    public List<Pokemon> getJSON(String url) {
         return this.restTemplate.getForObject(url, String.class);
     }
 
