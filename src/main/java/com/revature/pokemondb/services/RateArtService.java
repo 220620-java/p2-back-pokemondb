@@ -5,6 +5,7 @@ import com.revature.pokemondb.models.dtos.FanartDTO;
 import com.revature.pokemondb.models.dtos.UserIdDTO;
 import com.revature.pokemondb.repositories.RateArtRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class RateArtService {
 	
 	/**
 	 * A Constructor intended to be used for dependency injection by the Spring application
-	 * @param commRepo an instance of the ArtCommRepository class
+	 * @param rateArtRepo an instance of the RateArtRepository class
 	 */
 	public RateArtService(RateArtRepository rateArtRepo) {
 		this.rateArtRepo = rateArtRepo;
@@ -38,10 +39,10 @@ public class RateArtService {
 	public RateArt getRatingByUserAndFanartId(int artId, int userId) {
 		FanartDTO artDtoObj = new FanartDTO(artId);
 		UserIdDTO userDtoObj = new UserIdDTO(userId);
-		List<RateArt> rateArtList = rateArtRepo.findByFanartIdAndUserId(artDtoObj, userDtoObj);
+		List<RateArt> rateArtList = rateArtRepo.findByFanartIdAndAuthor(artDtoObj, userDtoObj);
 		RateArt rateArt;
 		
-		if(rateArtList != null) {
+		if(!rateArtList.equals(new ArrayList<>())) {
 			rateArt = rateArtList.get(0);
 		} else {
 			rateArt = null;

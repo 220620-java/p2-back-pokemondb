@@ -19,11 +19,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RateArtRepository extends JpaRepository<RateArt, Integer>{
 
 	/**
-	 * 
+	 * Retrieve art ratings with the given art Id and author
 	 * @param artDtoObj
 	 * @param userDtoObj
 	 * @return
 	 */
-	public List<RateArt> findByFanartIdAndUserId(FanartDTO artDtoObj, UserIdDTO userDtoObj);
+	public List<RateArt> findByFanartIdAndAuthor(FanartDTO artDtoObj, UserIdDTO userDtoObj);
 	
 }
