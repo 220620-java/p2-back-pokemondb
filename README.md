@@ -19,9 +19,10 @@ Administrators can moderate comments and fanart and even ban users from posting.
 * PostgreSQL
 
 ### Installing
-Clone the repository and deploy on a server:
+Clone the repository, compile and package with Maven, and deploy on a server:
 ```
 git clone https://github.com/220620-java/p2-back-pokemondb.git
+mvn clean package
 ```
 
 ### Usage
