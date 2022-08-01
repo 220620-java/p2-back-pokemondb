@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.repositories.PokemonCommentRepo;
 import com.revature.pokemondb.utils.Json;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,33 +28,44 @@ public class PokemonCommentImpl implements PokemonCommentService{
     }
 
     @Override
-    public List<JsonNode> getAllComments() {
+    public String getAllComments() {
         try {
-            Optional<List<PokemonComments>> pokemonCommentsOptional = Optional.of(commentRepo.findAll());
-            return objectMapper.valueToTree(pokemonCommentsOptional);
+            Optional<List<PokemonComments>> pokemonCommentsOptional = Optional.of(commentRepo.findAllByIsflaggedFalse());
+            return objectMapper.valueToTree(pokemonCommentsOptional).toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Optional<PokemonComments> storeNewComment(JsonNode comment) {
+    public Optional<PokemonComments> storeNewComment(PokemonComments comment) {
+        return getPokemonComments(objectMapper.valueToTree(comment));
+    }
+
+    @Override
+    public void deleteComment(PokemonComments comment) {
         try {
-            Optional<PokemonComments> pokemonCommentsOptional = commentRepo.save(objectMapper.treeToValue(comment,);
-            return  pokemonCommentsOptional;
+            commentRepo.delete(comment);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
     }
 
     @Override
-    public Optional<PokemonComments> deleteComment(JsonNode comment) {
-        return null;
+    public Optional<PokemonComments> updateComment(PokemonComments comment) {
+        return getPokemonComments(objectMapper.valueToTree(comment));
     }
 
-    @Override
-    public Optional<PokemonComments> updateComment(JsonNode comment) {
+    @Nullable
+    private Optional<PokemonComments> getPokemonComments(JsonNode comment) {
+        PokemonComments pokemonComments = new PokemonComments();
+        pokemonComments.getClass();
+        try {
+            PokemonComments pokemonCommentsOptional = commentRepo.save(objectMapper.treeToValue(comment,pokemonComments.getClass()));
+            return Optional.of(pokemonCommentsOptional);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }
