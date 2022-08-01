@@ -23,7 +23,7 @@ public class Wishlist {
     @ManyToOne
     @JoinColumn(name = "id")
     @Column(name = "pokemon_id")
-    private Pokemon pokemon;
+    private int pokemon;
     @ManyToOne
     @JoinColumn(name = "id")
     @Column(name = "user_id")
@@ -41,7 +41,7 @@ public class Wishlist {
         this.lists = new ArrayList<Wishlist>();
     }
 
-    public Wishlist(long id, Pokemon pokemon, int wisher, Instant createdAt, List<Wishlist> lists) {
+    public Wishlist(long id, int pokemon, int wisher, Instant createdAt, List<Wishlist> lists) {
         this.id = id;
         this.pokemon = pokemon;
         this.wisher = wisher;
@@ -57,11 +57,11 @@ public class Wishlist {
         this.id = id;
     }
 
-    public Pokemon getPokemon() {
+    public int getPokemon() {
         return pokemon;
     }
 
-    public void setPokemon(Pokemon pokemon) {
+    public void setPokemon(int pokemon) {
         this.pokemon = pokemon;
     }
 

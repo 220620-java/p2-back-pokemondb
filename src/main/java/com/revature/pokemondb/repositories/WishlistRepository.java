@@ -9,6 +9,5 @@ import com.revature.pokemondb.models.Wishlist;
 @Repository
 public interface WishlistRepository extends JpaRepository<Wishlist, Integer> {
 
-    void save(int pokemonId);
     
 }
