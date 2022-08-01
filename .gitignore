@@ -2,7 +2,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=maven,java,eclipse,windows
 
 database.properties
-application.properties
 
 ### Eclipse ###
 .metadata

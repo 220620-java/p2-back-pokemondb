@@ -8,12 +8,12 @@ import java.util.Optional;
 
 public interface PokemonCommentService {
 
-    List<JsonNode> getAllComments();
+    String getAllComments();
 
-    Optional<PokemonComments> storeNewComment(JsonNode comment);
+    Optional<PokemonComments> storeNewComment(PokemonComments comment);
 
-    Optional<PokemonComments> deleteComment(JsonNode comment);
+    void deleteComment(PokemonComments comment);
 
-    Optional<PokemonComments> updateComment(JsonNode comment);
+    Optional<PokemonComments> updateComment(PokemonComments comment);
 
 }

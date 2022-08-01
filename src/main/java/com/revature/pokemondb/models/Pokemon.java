@@ -49,7 +49,20 @@ public class Pokemon {
         this.evolutionChain = null;
         this.location_versions = null;
     }
-
+    public Pokemon (int id) {
+        this.id = id;
+        this.name = null;
+        this.height = 0;
+        this.weight = 0;
+        this.types = null;
+        this.baseStats = null;
+        this.imageUrl = null;
+        this.generation = 1;
+        this.category = null;
+        this.description = null;
+        this.evolutionChain = null;
+        this.location_versions = null;
+    }
     public Pokemon (
         int id,
         String name,

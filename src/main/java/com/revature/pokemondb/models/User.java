@@ -35,6 +35,13 @@ public class User {
 		this.password = "";
 	}
 
+	public User (long id) {
+		this.userId = id;
+		this.username = "";
+		this.email = "";
+		this.password = "";
+	}
+
 	@Autowired
     public User(Long userId, String username, String email, String phone, String password) {
 		this.userId = userId;
