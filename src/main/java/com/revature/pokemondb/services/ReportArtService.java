@@ -22,7 +22,7 @@ public class ReportArtService {
 	
 	/**
 	 * A Constructor intended to be used for dependency injection by the Spring application
-	 * @param commRepo an instance of the ArtCommRepository class
+	 * @param reportArtRepo an instance of the ReportArtRepository class
 	 */
 	public ReportArtService(ReportArtRepository reportArtRepo) {
 		this.reportArtRepo = reportArtRepo;
@@ -31,7 +31,7 @@ public class ReportArtService {
 	/*Methods*/
 	
 	/**
-	 * Retrieves a user's rating of a given fanart. 
+	 * Retrieves details of a user's report of a given fanart. 
 	 * Should only be one per user
 	 * @param artId the id of the fanart
 	 * @return a list of available comments
@@ -51,11 +51,11 @@ public class ReportArtService {
 	}
 	
 	/**
-	 * Saves a given comment object to the database
-	 * @param comment an object representing a new comment to be added to the DB
+	 * Saves a given ReportArt object to the database
+	 * @param reportArt an object representing a new report to be added to the DB
 	 * @return a Boolean representing the success of the operation
 	 */
-	public Boolean saveRating(ReportArt reportArt) {
+	public Boolean saveReport(ReportArt reportArt) {
 		try {
 			reportArtRepo.save(reportArt);
 			return true;

@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.revature.pokemondb.models.dtos.ArtCommDTO;
+import com.revature.pokemondb.models.dtos.UserIdDTO;
+
 /**
  * 
  * @author Barry Norton
@@ -24,10 +27,10 @@ public class ReportArtComm {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name="comment_id")
-	private ArtComment commentId;
+	private ArtCommDTO commentId;
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	private User author;
+	private UserIdDTO author;
 	@Column(name="is_reported")
 	private Boolean isReported;
 	@Column(name="report_reason")
@@ -44,7 +47,7 @@ public class ReportArtComm {
 		this.reportReason = "";
 	}
 	
-	public ReportArtComm(int id, ArtComment commentId, User author, Boolean isReported, String reportReason) {
+	public ReportArtComm(int id, ArtCommDTO commentId, UserIdDTO author, Boolean isReported, String reportReason) {
 		super();
 		this.id = id;
 		this.commentId = commentId;
@@ -87,16 +90,16 @@ public class ReportArtComm {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public ArtComment getCommentId() {
+	public ArtCommDTO getCommentId() {
 		return commentId;
 	}
-	public void setCommentId(ArtComment commentId) {
+	public void setCommentId(ArtCommDTO commentId) {
 		this.commentId = commentId;
 	}
-	public User getAuthor() {
+	public UserIdDTO getAuthor() {
 		return author;
 	}
-	public void setAuthor(User author) {
+	public void setAuthor(UserIdDTO author) {
 		this.author = author;
 	}
 	public Boolean getIsReported() {
