@@ -24,6 +24,6 @@ public interface RateArtRepository extends JpaRepository<RateArt, Integer>{
 	 * @param userDtoObj
 	 * @return
 	 */
-	public List<RateArt> findByFanartIdAndUserId(FanartDTO artDtoObj, UserIdDTO userDtoObj);
+	public List<RateArt> findByFanartIdAndAuthor(FanartDTO artDtoObj, UserIdDTO userDtoObj);
 	
 }

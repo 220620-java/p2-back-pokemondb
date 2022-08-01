@@ -24,5 +24,5 @@ public interface ReportArtRepository extends JpaRepository<ReportArt, Integer>{
 	 * @param userDtoObj
 	 * @return
 	 */
-	public List<ReportArt> findByFanartIdAndUserId(FanartDTO artDtoObj, UserIdDTO userDtoObj);
+	public List<ReportArt> findByFanartIdAndAuthor(FanartDTO artDtoObj, UserIdDTO userDtoObj);
 }

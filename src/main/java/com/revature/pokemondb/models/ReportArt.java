@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.revature.pokemondb.models.dtos.FanartDTO;
 import com.revature.pokemondb.models.dtos.UserIdDTO;
 
 /**
@@ -26,7 +27,7 @@ public class ReportArt {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name="fanart_id")
-	private Fanart fanartId;
+	private FanartDTO fanartId;
 	@ManyToOne
 	@JoinColumn(name="user_id")
 	private UserIdDTO author;
@@ -46,7 +47,7 @@ public class ReportArt {
 		this.reportReason = "";
 	}
 	
-	public ReportArt(int id, Fanart fanartId, UserIdDTO author, Boolean isReported, String reportReason) {
+	public ReportArt(int id, FanartDTO fanartId, UserIdDTO author, Boolean isReported, String reportReason) {
 		super();
 		this.id = id;
 		this.fanartId = fanartId;
@@ -89,10 +90,10 @@ public class ReportArt {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Fanart getFanartId() {
+	public FanartDTO getFanartId() {
 		return fanartId;
 	}
-	public void setFanartId(Fanart fanartId) {
+	public void setFanartId(FanartDTO fanartId) {
 		this.fanartId = fanartId;
 	}
 	public UserIdDTO getAuthor() {

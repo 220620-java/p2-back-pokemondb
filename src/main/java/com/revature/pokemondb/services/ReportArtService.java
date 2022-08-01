@@ -1,9 +1,9 @@
 package com.revature.pokemondb.services;
 
-import com.revature.pokemondb.models.RateArt;
+import com.revature.pokemondb.models.ReportArt;
 import com.revature.pokemondb.models.dtos.FanartDTO;
 import com.revature.pokemondb.models.dtos.UserIdDTO;
-import com.revature.pokemondb.repositories.RateArtRepository;
+import com.revature.pokemondb.repositories.ReportArtRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
  * @author Barry Norton
  * */
 @Service
-public class RateArtService {
+public class ReportArtService {
 	/*Class Variables*/
-	private RateArtRepository rateArtRepo;
+	private ReportArtRepository reportArtRepo;
 	
 	/*Constructors*/
 	
@@ -24,8 +24,8 @@ public class RateArtService {
 	 * A Constructor intended to be used for dependency injection by the Spring application
 	 * @param commRepo an instance of the ArtCommRepository class
 	 */
-	public RateArtService(RateArtRepository rateArtRepo) {
-		this.rateArtRepo = rateArtRepo;
+	public ReportArtService(ReportArtRepository reportArtRepo) {
+		this.reportArtRepo = reportArtRepo;
 	}
 	
 	/*Methods*/
@@ -36,18 +36,18 @@ public class RateArtService {
 	 * @param artId the id of the fanart
 	 * @return a list of available comments
 	 */
-	public RateArt getRatingByUserAndFanartId(int artId, int userId) {
+	public ReportArt getRatingByUserAndFanartId(int artId, int userId) {
 		FanartDTO artDtoObj = new FanartDTO(artId);
 		UserIdDTO userDtoObj = new UserIdDTO(userId);
-		List<RateArt> rateArtList = rateArtRepo.findByFanartIdAndAuthor(artDtoObj, userDtoObj);
-		RateArt rateArt;
+		List<ReportArt> reportArtList = reportArtRepo.findByFanartIdAndAuthor(artDtoObj, userDtoObj);
+		ReportArt reportArt;
 		
-		if(!rateArtList.equals(new ArrayList<>())) {
-			rateArt = rateArtList.get(0);
+		if(!reportArtList.equals(new ArrayList<>())) {
+			reportArt = reportArtList.get(0);
 		} else {
-			rateArt = null;
+			reportArt = null;
 		}
-		return rateArt;
+		return reportArt;
 	}
 	
 	/**
@@ -55,9 +55,9 @@ public class RateArtService {
 	 * @param comment an object representing a new comment to be added to the DB
 	 * @return a Boolean representing the success of the operation
 	 */
-	public Boolean saveRating(RateArt rateArt) {
+	public Boolean saveRating(ReportArt reportArt) {
 		try {
-			rateArtRepo.save(rateArt);
+			reportArtRepo.save(reportArt);
 			return true;
 		}
 		catch (Exception e) {
