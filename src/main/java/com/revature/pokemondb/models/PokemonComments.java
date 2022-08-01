@@ -1,6 +1,11 @@
 package com.revature.pokemondb.models;
 
+import com.revature.pokemondb.controller.PokemonController;
+import com.revature.pokemondb.repositories.UserRepository;
+import com.revature.pokemondb.services.UserService;
+import com.revature.pokemondb.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 
 import java.time.Instant;
 import java.util.Objects;
@@ -13,16 +18,16 @@ public class PokemonComments {
 	
 	 @Id
 	 @Column(name="id", updatable=false, insertable=false)
-	 @GeneratedValue(strategy=GenerationType.AUTO, generator="CUST_SEQ")
 	 private Long id;
-	 @ManyToOne
+	 @ManyToOne(targetEntity = Pokemon.class, fetch = FetchType.LAZY)
 	 @JoinColumn(name = "pokemon_id", referencedColumnName="id")
 	 private Pokemon pokemon;
-	 @ManyToOne
+	 @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	 @JoinColumn(name = "user_id", referencedColumnName="id")
 	 private User user;
 	 private String comment_content;
-	 private Boolean is_flagged;
+	 @Column(name = "is_flagged")
+	 private Boolean isflagged;
 	 private Integer likes;
 	 private Instant posted_at;
 
@@ -36,7 +41,7 @@ public class PokemonComments {
 		this.pokemon = pokemon;
 		this.user = user_id;
 		this.comment_content = comment_content;
-		this.is_flagged = is_flagged;
+		this.isflagged = is_flagged;
 		this.likes = likes;
 		this.posted_at = posted_at;
 	}
@@ -47,14 +52,14 @@ public class PokemonComments {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Pokemon getPokemon_id() {
-		return pokemon;
+	public int getPokemon_id() {
+		return pokemon.getId();
 	}
 	public void setPokemon_id(Pokemon pokemon) {
 		this.pokemon = pokemon;
 	}
-	public User getUser_id() {
-		return user;
+	public Long getUser_id() {
+		return user.getUserId();
 	}
 	public void setUser_id(User user) {
 		this.user = user;
@@ -66,10 +71,10 @@ public class PokemonComments {
 		this.comment_content = comment_content;
 	}
 	public Boolean isIs_flagged() {
-		return is_flagged;
+		return isflagged;
 	}
 	public void setIs_flagged(Boolean is_flagged) {
-		this.is_flagged = is_flagged;
+		this.isflagged = is_flagged;
 	}
 	public Integer getLikes() {
 		return likes;
@@ -87,7 +92,7 @@ public class PokemonComments {
 	
 	@Override
 	public int hashCode() {
-		return Objects.hash(comment_content, id, is_flagged, likes, pokemon, posted_at, user);
+		return Objects.hash(comment_content, id, isflagged, likes, pokemon, posted_at, user);
 	}
 
 	@Override
@@ -100,7 +105,7 @@ public class PokemonComments {
 			return false;
 		PokemonComments other = (PokemonComments) obj;
 		return Objects.equals(comment_content, other.comment_content) && Objects.equals(id, other.id)
-				&& Objects.equals(is_flagged, other.is_flagged) && Objects.equals(likes, other.likes)
+				&& Objects.equals(isflagged, other.isflagged) && Objects.equals(likes, other.likes)
 				&& Objects.equals(pokemon, other.pokemon) && Objects.equals(posted_at, other.posted_at)
 				&& Objects.equals(user, other.user);
 	}
@@ -109,7 +114,7 @@ public class PokemonComments {
 	@Override
 	public String toString() {
 		return "PokemonComments [id=" + id + ", pokemon=" + pokemon.getName() + ", user=" + user.getUsername()
-				+ ", comment_content=" + comment_content + ", is_flagged=" + is_flagged + ", likes=" + likes
+				+ ", comment_content=" + comment_content + ", is_flagged=" + isflagged + ", likes=" + likes
 				+ ", posted_at=" + posted_at + "]";
 	}
 }
