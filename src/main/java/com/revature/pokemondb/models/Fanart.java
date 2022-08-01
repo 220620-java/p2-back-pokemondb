@@ -107,7 +107,7 @@ public class Fanart {
 	
 	/*Getters and Setters*/
 	
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 	public void setId(int id) {

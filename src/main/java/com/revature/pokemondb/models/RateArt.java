@@ -83,11 +83,11 @@ public class RateArt {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public FanartDTO getFanart_id() {
+	public FanartDTO getFanartId() {
 		return fanartId;
 	}
-	public void setFanart_id(FanartDTO fanart_id) {
-		this.fanartId = fanart_id;
+	public void setFanart_id(FanartDTO fanartId) {
+		this.fanartId = fanartId;
 	}
 	public UserIdDTO getAuthor() {
 		return author;
