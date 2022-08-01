@@ -1,27 +1,68 @@
 package com.revature.pokemondb.models;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
+@Entity
+@Table(name= "pokemon", schema="pokemon_db")
 public class Pokemon {
+	
+	@Id
+	@Column
     private int id;
+	@Column(name="name")
     private String name;
+	@Transient 
     private int height;
+	@Transient
     private int weight;
-    private String[] types;
-    private Map<String, Integer> baseStats;
-    private String imageUrl;
-    private String generation;
+	@Transient
+	private String[] types;
+	@Transient
+	private Map<String, Integer> baseStats;
+	@Column(name="sprite")
+	private String imageUrl;
+	@Column(name="gen")
+    private int generation;
+	@Transient
     private String category;
+	@Transient
     private String description;
+	@Transient
     private List<String[]> evolutionChain;
+    @Transient
     private List<Map<String, String>> location_versions;
 
+    public Pokemon () {
+        this.id = 0;
+        this.name = null;
+        this.height = 0;
+        this.weight = 0;
+        this.types = null;
+        this.baseStats = null;
+        this.imageUrl = null;
+        this.generation = 1;
+        this.category = null;
+        this.description = null;
+        this.evolutionChain = null;
+        this.location_versions = null;
+    }
+    public Pokemon (int id) {
+        this.id = id;
+        this.name = null;
+        this.height = 0;
+        this.weight = 0;
+        this.types = null;
+        this.baseStats = null;
+        this.imageUrl = null;
+        this.generation = 1;
+        this.category = null;
+        this.description = null;
+        this.evolutionChain = null;
+        this.location_versions = null;
+    }
     public Pokemon (
         int id,
         String name,
@@ -30,7 +71,7 @@ public class Pokemon {
         String[] types,
         Map<String, Integer> baseStats,
         String imageUrl,
-        String generation,
+        int generation,
         String category,
         String description,
         List<String[]> evolutionChain,
@@ -137,11 +178,11 @@ public class Pokemon {
         this.imageUrl = imageUrl;
     }
 
-    public String getGeneration() {
+    public int getGeneration() {
         return generation;
     }
 
-    public void setGeneration(String generation) {
+    public void setGeneration(int generation) {
         this.generation = generation;
     }
 
@@ -186,10 +227,12 @@ public class Pokemon {
         
         // Base Stats
         retString += "[baseStats: \n";
-        for (String stat : baseStats.keySet()) {
-            String baseStatName = stat;
-            Integer baseStatNumber = baseStats.get(stat);
-            retString += "\t" + baseStatName + ": " + baseStatNumber + "\n";
+        if (baseStats != null) {
+            for (String stat : baseStats.keySet()) {
+                String baseStatName = stat;
+                Integer baseStatNumber = baseStats.get(stat);
+                retString += "\t" + baseStatName + ": " + baseStatNumber + "\n";
+            }
         }
         retString += "] \n";
 
@@ -201,24 +244,28 @@ public class Pokemon {
 
         // Evolution Chain
         retString += "[evolutionChain: \n";
-        for (String[] evolution : evolutionChain) {
-            String evolutionName = evolution[0];
-            String evolutionURL = evolution[1];
-            retString += "\t" + evolutionName + ": " + evolutionURL + "\n";
+        if (evolutionChain != null) {
+            for (String[] evolution : evolutionChain) {
+                String evolutionName = evolution[0];
+                String evolutionURL = evolution[1];
+                retString += "\t" + evolutionName + ": " + evolutionURL + "\n";
+            }
         }
         retString += "] \n";
         
         // Locations/Versions
         retString += "[locations: \n";
-        for (Map<String, String> location : location_versions) {
-            String locationName = location.get("locationName");
-            String locationURL = location.get("locationURL");
-            String versionName = location.get("versionName");
-            String maxChance = location.get("maxChance");
-            String methods = location.get("methods");
-            retString += "\t" + locationName + ": " + locationURL + "\n";
-            retString += "\t\t" + versionName + ": " + maxChance + " " + methods;
-            retString += "\n";
+        if (location_versions != null) {
+            for (Map<String, String> location : location_versions) {
+                String locationName = location.get("locationName");
+                String locationURL = location.get("locationURL");
+                String versionName = location.get("versionName");
+                String maxChance = location.get("maxChance");
+                String methods = location.get("methods");
+                retString += "\t" + locationName + ": " + locationURL + "\n";
+                retString += "\t\t" + versionName + ": " + maxChance + " " + methods;
+                retString += "\n";
+            }
         }
         retString += "]";
         return retString;

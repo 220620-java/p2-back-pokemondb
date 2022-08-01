@@ -1,5 +1,8 @@
 package com.revature.pokemondb.models;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +24,7 @@ public class User {
 	private Long userId; 
 	private String username;
 	private String email; 
+	@Column(name = "passwd")
 	private String password;
 	private byte[] salt;
 
@@ -29,7 +33,13 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
-		
+	}
+
+	public User (long id) {
+		this.userId = id;
+		this.username = "";
+		this.email = "";
+		this.password = "";
 	}
 
 	@Autowired
@@ -52,6 +62,29 @@ public class User {
 		this.password = password;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(salt);
+		result = prime * result + Objects.hash(email, password, userId, username);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(email, other.email) && Objects.equals(password, other.password)
+				&& Arrays.equals(salt, other.salt) && Objects.equals(userId, other.userId)
+				&& Objects.equals(username, other.username);
+	}
+
 	/** 
 	 * @return String
 	 */
