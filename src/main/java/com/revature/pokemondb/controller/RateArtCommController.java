@@ -1,7 +1,5 @@
 package com.revature.pokemondb.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,37 +12,36 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.pokemondb.models.RateArt;
-import com.revature.pokemondb.models.ReportArt;
-import com.revature.pokemondb.services.ReportArtService;
+import com.revature.pokemondb.models.RateArtComm;
+import com.revature.pokemondb.services.RateArtCommService;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-@RequestMapping(path="/reportart")
-public class ReportArtController {
-    private ReportArtService reportArtService;
+@RequestMapping(path="/rateartcomm")
+public class RateArtCommController {
+    private RateArtCommService rateArtCommService;
 	private ObjectMapper objectMapper;
 
-    public ReportArtController(ReportArtService reportArtService, ObjectMapper objectMapper) {
-        this.reportArtService = reportArtService;
+    public RateArtCommController(RateArtCommService rateArtCommService, ObjectMapper objectMapper) {
+        this.rateArtCommService = rateArtCommService;
         this.objectMapper = objectMapper;
     }
 
 	/**
-	 * Get rating of a fanart as posted by a given user
-	 * @param artId the fanart that is Reportd
+	 * Get rating of a art comment as posted by a given user
+	 * @param commId the comment that is rated
 	 * @param userId the user associated with the rating
-	 * @return a string representing a ReportArt object or 404 if rating is not found
+	 * @return a string representing a RateArt object or 404 if rating is not found
 	 */
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<String> getFanartRating(@PathVariable int artId, @RequestBody int userId) {
+	public ResponseEntity<String> getCommentRating(@PathVariable int commId, @RequestBody int userId) {
 		// Create fanart object
-		ReportArt ReportArt = reportArtService.getRatingByUserAndFanartId(artId, userId);
+		RateArtComm rateArtComm = rateArtCommService.getRatingByUserAndCommentId(commId, userId);
 		String artCommJSON;
 		try {
 			// Turn fanart into JSON
-			artCommJSON = objectMapper.writeValueAsString(ReportArt);
-			if (ReportArt != null) {
+			artCommJSON = objectMapper.writeValueAsString(rateArtComm);
+			if (rateArtComm != null) {
 				// OK sets status code to 200
 				return ResponseEntity.ok(artCommJSON);
 			} else {
@@ -58,22 +55,22 @@ public class ReportArtController {
 	}
 	
 	/**
-	 * Saves a given ReportArt object to the database
-	 * @param reportArt the fanart rating to be saved
+	 * Saves a given RateArt object to the database
+	 * @param rateArt the fanart rating to be saved
 	 * @return a response with a status code to reflect the operation's success
 	 */
 	@PostMapping(path="/")
-	public ResponseEntity<String> postFanartRating(@RequestBody ReportArt reportArt) {
+	public ResponseEntity<String> postFanartRating(@RequestBody RateArtComm rateArtComm) {
 		Boolean success = true;
-		ReportArt existsTest = 
-				reportArtService.getRatingByUserAndFanartId(reportArt.getFanartId().getId(), reportArt.getAuthor().getId());
+		RateArtComm existsTest = 
+				rateArtCommService.getRatingByUserAndCommentId(rateArtComm.getCommentId().getId(), rateArtComm.getAuthor().getId());
 		//Testing for existence of rating
 		if(existsTest != null) { //Rating exists. Set ID of new entry to match
-			reportArt.setId(existsTest.getId());
+			rateArtComm.setId(existsTest.getId());
 		}
 		
 		//Save rateArt
-		success = reportArtService.saveReport(reportArt);
+		success = rateArtCommService.saveRating(rateArtComm);
 		if (success) {
 			return ResponseEntity.ok(null);
 		} else {

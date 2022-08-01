@@ -22,7 +22,7 @@ public class RateArtService {
 	
 	/**
 	 * A Constructor intended to be used for dependency injection by the Spring application
-	 * @param commRepo an instance of the ArtCommRepository class
+	 * @param rateArtRepo an instance of the RateArtRepository class
 	 */
 	public RateArtService(RateArtRepository rateArtRepo) {
 		this.rateArtRepo = rateArtRepo;
