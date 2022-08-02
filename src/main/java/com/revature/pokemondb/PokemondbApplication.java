@@ -32,6 +32,7 @@ public class PokemondbApplication {
 	@Bean
 	public WebMvcConfigurer corsConfig() {
 		return new WebMvcConfigurer() {
+			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
 					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
@@ -43,11 +44,7 @@ public class PokemondbApplication {
 			}
 		};
 	}
-
-	public static void testCall () {
-		System.out.println("Hello World");
-	}
-
+	
 	public static void printLogo () {
 		BufferedReader reader = null;
 
