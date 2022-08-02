@@ -39,20 +39,15 @@ public class ReportArtController {
 	 * @param userId the user associated with the rating
 	 * @return a string representing a ReportArt object or 404 if rating is not found
 	 */
-	@GetMapping(path = "/params/")
+	@GetMapping
 	public ResponseEntity<String> getFanartRating(@RequestParam int artId, @RequestParam int userId) {
 		ReportArt ReportArt = reportArtService.getRatingByUserAndFanartId(artId, userId);
 		String artCommJSON;
 		try {
 			// Turn fanart into JSON
 			artCommJSON = objectMapper.writeValueAsString(ReportArt);
-			if (ReportArt != null) {
-				// OK sets status code to 200
-				return ResponseEntity.ok(artCommJSON);
-			} else {
-				// notFound sets status code to 404
-				return ResponseEntity.notFound().build();
-			}
+			// OK sets status code to 200
+			return ResponseEntity.ok(artCommJSON);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
