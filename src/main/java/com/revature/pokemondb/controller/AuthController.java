@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.dtos.UserDTO;
+import com.revature.pokemondb.services.TokenService;
 import com.revature.pokemondb.services.UserService;
 
 @RestController
 @RequestMapping(path="/auth")
 public class AuthController {
     private UserService userService;
+    private TokenService tokenService;
 
     public AuthController (UserService userService) {
         this.userService = userService;
@@ -28,11 +30,10 @@ public class AuthController {
 		String password = credentials.get("password");
 		
 		User user = userService.login(username, password);
-        if (user!=null) {
+        if (user != null) {
 			UserDTO userDto = new UserDTO(user);
-			// String jws = tokenServ.createToken(user);
-			// return ResponseEntity.status(200).header("Auth", jws).body(userDto);
-			return ResponseEntity.status(200).body(userDto);
+			String jws = tokenService.createToken(user);
+			return ResponseEntity.status(200).header("Auth", jws).body(userDto);
 		}
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }

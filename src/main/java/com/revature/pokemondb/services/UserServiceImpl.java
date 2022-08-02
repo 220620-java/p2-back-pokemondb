@@ -1,16 +1,19 @@
 package com.revature.pokemondb.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.repositories.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
+	private TokenService tokenService;
 
 	public UserServiceImpl (UserRepository repo) {
 		this.userRepo = repo;
@@ -45,20 +48,35 @@ public class UserServiceImpl implements UserService {
 	 * A token should be generated for authentication.
 	 */
 	public User login(String username, String password) {
+		Optional<User> oUser = userRepo.findByUsername(username);
+		if (oUser.isPresent()) {
+			User user = oUser.get();
+			String dbPass = user.getPassword();
+
+			// Password is correct
+			if (password.equals(dbPass)) {
+				return user;
+			}
+		}
 		return null;
 	}
 	
 	/**
-	 * Inserts the user into the database.
+	 * Inserts the user into the database. Throws an exception if username already exists.
 	 */
 	public User registerUser(User user) throws UsernameAlreadyExistsException {
-		System.out.println("Registering new user");
-		Optional<User> findUser = userRepo.findByUsername(user.getUsername());
-		if (findUser.isPresent()) {
+		if (userRepo.existsById(user.getUserId())) {
 			throw new UsernameAlreadyExistsException();
 		}
-		User savedUser = userRepo.save(user);
-		return savedUser;
+		return userRepo.save(user);
+	}
+
+	/**
+	 * Returns all users from the database.
+	 * @return
+	 */
+	public List<User> getAllUsers() {
+		return userRepo.findAll();
 	}
 	
 	/**
