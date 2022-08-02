@@ -35,7 +35,7 @@ public class UserControllerTest {
     void testGetUserById() throws Exception {
         User mockUser = new User();
 
-        Mockito.when(userService.getUserById(1)).thenReturn(mockUser);
+        Mockito.when(userService.getUserById(1l)).thenReturn(mockUser);
 
         mockMvc.perform(get("/user/1"))
         .andExpect(status().isOk())
@@ -45,7 +45,7 @@ public class UserControllerTest {
     @Test
     void testGetUserByIdNotFound() throws Exception {
         // If the service cannot find user
-        Mockito.when(userService.getUserById(1)).thenReturn(null);
+        Mockito.when(userService.getUserById(1l)).thenReturn(null);
 
         mockMvc.perform(get("/user/1"))
         .andExpect(status().isNotFound());

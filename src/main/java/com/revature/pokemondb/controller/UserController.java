@@ -1,5 +1,7 @@
 package com.revature.pokemondb.controller;
 
+import java.util.Map;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.UserService;
 
 @RestController
@@ -30,7 +33,7 @@ public class UserController {
 	}
 
 	@RequestMapping(path="/", method=RequestMethod.OPTIONS)
-	public ResponseEntity<?> optionsRequest () {
+	public ResponseEntity<String> optionsRequest () {
 		return ResponseEntity
           .ok()
           .allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.PATCH, HttpMethod.OPTIONS)
@@ -43,8 +46,16 @@ public class UserController {
 	 * @return
 	 */
     @GetMapping("/{id}")
-	public ResponseEntity<User> getUser (@PathVariable Integer id) {
-		User user = userService.getUserById(id);
+	public ResponseEntity<User> getUser (@PathVariable String id) {
+		User user;
+		try {
+			// Is this an id?
+			user = userService.getUserById(Long.valueOf(id));
+		} catch (NumberFormatException e) {
+			// No, it's a name
+			user = userService.getUserByUsername(String.valueOf(id));
+		}
+
 		if (user != null) {
 			return ResponseEntity.ok(user);
 		}
@@ -52,13 +63,14 @@ public class UserController {
 	}
 
     @PostMapping("/")
-	public ResponseEntity<User> createUser (@RequestBody User user) {
+	public ResponseEntity<User> createUser (@RequestBody Map<String, String> map) {
+		User newUser = new User(map);
 		try {
-			user = userService.registerUser (user);
+			newUser = userService.registerUser (newUser);
 		} catch (UsernameAlreadyExistsException e) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(user);
+		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
 	}
 
     @PutMapping("/")
