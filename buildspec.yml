@@ -6,8 +6,8 @@ phases:
       - mvn clean && mvn verify
   post_build:
     commands:
-      - mv target/*.jar ./pokemondb-0.0.1-SNAPSHOT.jar.jar
+      - mv target/*.jar ./pokemondb-0.0.1-SNAPSHOT.jar
 
   artifacts:
     files:
-      - pokemondb-0.0.1-SNAPSHOT.jar.jar
+      - pokemondb-0.0.1-SNAPSHOT.jar
