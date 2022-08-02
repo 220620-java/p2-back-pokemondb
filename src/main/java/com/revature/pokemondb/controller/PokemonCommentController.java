@@ -1,23 +1,23 @@
 package com.revature.pokemondb.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.services.PokemonCommentImpl;
-import org.springframework.boot.actuate.trace.http.HttpTrace;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @CrossOrigin
 @RequestMapping(path="/pokemon-comment")
 public class PokemonCommentController {
     private PokemonCommentImpl commentService;
+    private final ObjectMapper objectMapper;
 
-    public PokemonCommentController(PokemonCommentImpl commentService){
+    public PokemonCommentController(PokemonCommentImpl commentService, ObjectMapper objectMapper){
         this.commentService = commentService;
+        this.objectMapper = objectMapper;
     }
 
     @RequestMapping(path = "/Options", method=RequestMethod.OPTIONS)
@@ -29,19 +29,25 @@ public class PokemonCommentController {
     }
 
     @GetMapping(path = "/flagged")
-    protected ResponseEntity<String> getAllFlagged() {
-        return ResponseEntity.ok(commentService.getFlagged().toString());
+    protected ResponseEntity<String> getAllFlagged() throws JsonProcessingException {
+        PokemonComments pokemonComments = new PokemonComments();
+        return ResponseEntity.ok(objectMapper.writeValueAsString(objectMapper.valueToTree(pokemonComments.getClass())));
     }
     @GetMapping(path = "/{id}")
-    protected ResponseEntity<String> findById(@PathVariable Integer id) {
-        return ResponseEntity.ok(commentService.getById(id).toString());
+    protected ResponseEntity<String> findById(@PathVariable Integer id) throws JsonProcessingException {
+        PokemonComments pokemonComments = new PokemonComments(id.longValue());
+        return ResponseEntity.ok(objectMapper.writeValueAsString(objectMapper.valueToTree(pokemonComments.getClass())));
     }
     /*
      *
      */
     @PutMapping
-    protected ResponseEntity<String> editComment(@RequestBody PokemonComments pokeComment){
-        return ResponseEntity.ok(commentService.updateComment(pokeComment).toString());
+    protected ResponseEntity<String> editComment(@RequestBody PokemonComments pokeComment) {
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(objectMapper.valueToTree(pokeComment.getClass())));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /*
@@ -49,8 +55,11 @@ public class PokemonCommentController {
      */
     @PostMapping
     protected ResponseEntity<String> storeComment(@RequestBody PokemonComments pokeComment) {
-        ResponseEntity.ok(commentService.storeNewComment(pokeComment).toString());
-        return null;
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(objectMapper.valueToTree(pokeComment.getClass())));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /*
@@ -58,8 +67,11 @@ public class PokemonCommentController {
      */
     @DeleteMapping
     protected ResponseEntity<String> deleteComment(@RequestBody PokemonComments pokeComment) {
-        commentService.deleteComment(pokeComment);
-        return null;
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(objectMapper.valueToTree(pokeComment.getClass())));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /*
@@ -67,6 +79,11 @@ public class PokemonCommentController {
      */
     @GetMapping
     protected ResponseEntity<String> getComments() {
-        return ResponseEntity.ok(commentService.getAllComments().toString());
+        PokemonComments pokemonComments = new PokemonComments();
+        try {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(objectMapper.valueToTree(pokemonComments.getClass())));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
