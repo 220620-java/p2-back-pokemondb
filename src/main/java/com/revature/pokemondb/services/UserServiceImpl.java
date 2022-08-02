@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 	 * @param id
 	 * @return an Optional User is returned
 	 */
-	public User getUserById (int id) {
+	public User getUserById (Long id) {
 		Optional<User> user = userRepo.findById(id);
 		if (user.isPresent()) { return user.get();}
 		else { return null;}
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	public User registerUser(User user) throws UsernameAlreadyExistsException {
 		System.out.println("Registering new user");
-		Optional<User> findUser = userRepo.findById(Math.toIntExact(user.getUserId()));
+		Optional<User> findUser = userRepo.findByUsername(user.getUsername());
 		if (findUser.isPresent()) {
 			throw new UsernameAlreadyExistsException();
 		}
