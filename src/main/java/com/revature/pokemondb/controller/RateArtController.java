@@ -1,6 +1,7 @@
 package com.revature.pokemondb.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,11 +11,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.RateArt;
+import com.revature.pokemondb.models.dtos.UserIdDTO;
 import com.revature.pokemondb.services.RateArtService;
 
 @RestController
@@ -35,8 +38,8 @@ public class RateArtController {
 	 * @param userId the user associated with the rating
 	 * @return a string representing a RateArt object or 404 if rating is not found
 	 */
-	@GetMapping(path = "/{id}")
-	public ResponseEntity<String> getFanartRating(@PathVariable int artId, @RequestBody int userId) {
+	@GetMapping(path = "/params/")
+	public ResponseEntity<String> getFanartRating(@RequestParam int artId, @RequestParam int userId) {
 		// Create fanart object
 		RateArt rateArt = rateArtService.getRatingByUserAndFanartId(artId, userId);
 		String artCommJSON;
