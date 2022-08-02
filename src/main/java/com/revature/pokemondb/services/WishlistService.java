@@ -23,8 +23,6 @@ public class WishlistService {
         this.pokemonRepo = pokemonRepo;
     }
 
-
-    
     // add pokemon to wish list
     public Boolean addWishlist(Wishlist wishlist) {
 
