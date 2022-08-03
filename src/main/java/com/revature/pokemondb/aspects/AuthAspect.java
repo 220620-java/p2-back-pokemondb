@@ -1,6 +1,5 @@
 package com.revature.pokemondb.aspects;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +38,12 @@ public class AuthAspect {
 		String requiredRole = authAnnotation.requiredRole();
 		
 		String jws = currentReq.getHeader("Auth");
+
+		// If user has an empty token header
+		if (jws == null || jws.equals("")) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Empty token.");
+		}
+
 		Optional<UserDTO> userDtoOpt = Optional.empty();
 		try {
 			userDtoOpt = tokenServ.validateToken(jws);
@@ -64,6 +69,6 @@ public class AuthAspect {
 		return joinpoint.proceed();
 	}
 	
-	@Pointcut("@annotation(com.revature.petapp.auth.Auth)")
+	@Pointcut("@annotation(com.revature.pokemondb.auth.Auth)")
 	public void methodsWithAuthAnnotation() {}
 }

@@ -7,13 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
-import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.repositories.UserRepository;
 
 @Service
 public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
-	private TokenService tokenService;
 
 	public UserServiceImpl (UserRepository repo) {
 		this.userRepo = repo;
@@ -65,7 +63,7 @@ public class UserServiceImpl implements UserService {
 	 * Inserts the user into the database. Throws an exception if username already exists.
 	 */
 	public User registerUser(User user) throws UsernameAlreadyExistsException {
-		if (userRepo.existsById(user.getUserId())) {
+		if (userRepo.usernameExists(user.getUsername())) {
 			throw new UsernameAlreadyExistsException();
 		}
 		return userRepo.save(user);

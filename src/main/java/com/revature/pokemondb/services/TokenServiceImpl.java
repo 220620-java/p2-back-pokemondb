@@ -36,6 +36,7 @@ public class TokenServiceImpl implements TokenService {
             jws = Jwts.builder()
                 .setId(String.valueOf(user.getUserId()))
                 .setSubject(user.getUsername())
+                .claim("role", user.getRole())
                 .setIssuer("pokepost")
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + jwtConfig.getExpiration()))
@@ -76,10 +77,11 @@ public class TokenServiceImpl implements TokenService {
     private UserDTO parseUser(Claims claims) {
 		Long id = Long.parseLong(claims.getId());
 		String username = claims.getSubject();
-		// Role role = new Role();
-		// role.setName(claims.get("role").toString());
+		String role = claims.get("role").toString();
+
+        UserDTO user = new UserDTO(id, username);
+        user.setRole(role);
 		
-		// return new UserDTO(id, username, role, null);
-		return new UserDTO(id, username);
+		return user;
 	}
 }

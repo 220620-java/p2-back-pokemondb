@@ -24,9 +24,11 @@ public class User {
 	@Id
 	@Column(name="id", updatable=false, insertable=false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long userId; 
+	private Long userId = 0l; 
 	private String username;
-	private String email; 
+	private String email;
+	@Column(name = "role")
+	private String role;
 	@Column(name = "passwd")
 	private String password;
 	private byte[] salt;
@@ -36,6 +38,7 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
+		this.role = "";
 	}
 
 	public User (long id) {
@@ -43,6 +46,7 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
+		this.role = "";
 	}
 
 	public User (User user) {
@@ -51,12 +55,14 @@ public class User {
 		this.email = user.getEmail();
 		this.salt = user.getSalt();
 		this.password = user.getPassword();
+		this.role = user.getRole();
 	}
 
 	public User (UserDTO user) {
 		this.userId = user.getUserId();
 		this.username = user.getUsername();
 		this.email = user.getEmail();
+		this.role = user.getRole();
 	}
 
 	public User (Map<String, String> map) {
@@ -188,6 +194,14 @@ public class User {
 	public void setSalt(byte[] salt) {
         this.salt = salt;
     }
+
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole (String role) {
+		this.role = role;
+	}
 
 	// public void setEncryptedPassword () {
 	// 	this.salt = WebUtils.generateSalt();
