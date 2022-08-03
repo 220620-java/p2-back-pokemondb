@@ -16,34 +16,33 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.revature.pokemondb.models.dtos.PokemonDTO;
+
 @Entity
 @Table(name = "pokemon_wishlists")
 public class Wishlist {
     @Id
+    @Column(name = "id", updatable = false, insertable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne(targetEntity = pokemondto, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
-    @Column(name = "pokemon_id")
-    private int pokemon;
-    @ManyToOne
-    @JoinColumn(name = "id")
-    @Column(name = "user_id")
-    private int wisher;
+    @ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "pokemon_id", referencedColumnName = "id")
+
+    private PokemonDTO pokemon;
+    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+
+    private User wisher;
     private Instant createdAt;
     @OneToMany
     @JoinColumn(name = "user_id")
     private List<Wishlist> lists;
 
     public Wishlist() {
-        this.id = 0;
-        //this.pokemon = pokemon();
-        this.wisher = 0;
-        this.createdAt = Instant.now();
-        this.lists = new ArrayList<Wishlist>();
+
     }
 
-    public Wishlist(long id, int pokemon, int wisher, Instant createdAt, List<Wishlist> lists) {
+    public Wishlist(long id, PokemonDTO pokemon, User wisher, Instant createdAt, List<Wishlist> lists) {
         this.id = id;
         this.pokemon = pokemon;
         this.wisher = wisher;
@@ -59,19 +58,19 @@ public class Wishlist {
         this.id = id;
     }
 
-    public int getPokemon() {
+    public PokemonDTO getPokemon() {
         return pokemon;
     }
 
-    public void setPokemon(int pokemon) {
+    public void setPokemon(PokemonDTO pokemon) {
         this.pokemon = pokemon;
     }
 
-    public int getWisher() {
+    public User getWisher() {
         return wisher;
     }
 
-    public void setWisher(int wisher) {
+    public void setWisher(User wisher) {
         this.wisher = wisher;
     }
 
@@ -97,5 +96,4 @@ public class Wishlist {
                 + ", wisher=" + wisher + "]";
     }
 
-    
 }
