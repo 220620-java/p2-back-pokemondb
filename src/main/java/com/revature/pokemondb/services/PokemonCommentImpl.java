@@ -4,19 +4,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.repositories.PokemonCommentRepo;
-import com.revature.pokemondb.utils.Json;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PokemonCommentImpl implements PokemonCommentService{
+public class PokemonCommentImpl implements PokemonCommentService {
     private PokemonCommentRepo commentRepo;
 
     private ObjectMapper objectMapper;
@@ -38,8 +34,9 @@ public class PokemonCommentImpl implements PokemonCommentService{
     }
 
     @Override
-    public Optional<PokemonComments> storeNewComment(PokemonComments comment) {
-        return getPokemonComments(objectMapper.valueToTree(comment));
+    public PokemonComments storeNewComment(PokemonComments comment) {
+        return commentRepo.save(comment);
+
     }
 
     @Override
@@ -54,6 +51,14 @@ public class PokemonCommentImpl implements PokemonCommentService{
     @Override
     public Optional<PokemonComments> updateComment(PokemonComments comment) {
         return getPokemonComments(objectMapper.valueToTree(comment));
+    }
+
+    public List<PokemonComments> getFlagged() {
+        return commentRepo.findAllByIsflaggedTrue();
+    }
+
+    public PokemonComments getById(Integer id) {
+        return commentRepo.getReferenceById(Long.valueOf(id));
     }
 
     @Nullable
