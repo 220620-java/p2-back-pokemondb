@@ -3,8 +3,13 @@ package com.revature.pokemondb.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.revature.pokemondb.exceptions.RecordNotFound;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.UserRepository;
@@ -12,6 +17,9 @@ import com.revature.pokemondb.repositories.UserRepository;
 @Service
 public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public UserServiceImpl (UserRepository repo) {
 		this.userRepo = repo;
@@ -22,10 +30,10 @@ public class UserServiceImpl implements UserService {
 	 * @param id
 	 * @return an Optional User is returned
 	 */
-	public User getUserById (Long id) {
+	public User getUserById (Long id) throws RecordNotFound {
 		Optional<User> user = userRepo.findById(id);
 		if (user.isPresent()) { return user.get();}
-		else { return null;}
+		else { throw new RecordNotFound();}
 	}
 
 	/**
@@ -33,10 +41,18 @@ public class UserServiceImpl implements UserService {
 	 * @param username
 	 * @return a User is returned
 	 */
-	public User getUserByUsername (String username) {
+	public User getUserByUsername (String username) throws RecordNotFound {
 		Optional<User> user = userRepo.findByUsername(username);
 		if (user.isPresent()) { return user.get(); }
-		else { return null;}
+		else { throw new RecordNotFound();}
+	}
+
+	/**
+	 * Returns all users from the database.
+	 * @return
+	 */
+	public List<User> getAllUsers() {
+		return userRepo.findAll();
 	}
 	
 	/**
@@ -50,9 +66,9 @@ public class UserServiceImpl implements UserService {
 		if (oUser.isPresent()) {
 			User user = oUser.get();
 			String dbPass = user.getPassword();
-
+			String encodedPassword = passwordEncoder.encode(password);
 			// Password is correct
-			if (password.equals(dbPass)) {
+			if (passwordEncoder.matches(dbPass, encodedPassword)) {
 				return user;
 			}
 		}
@@ -66,15 +82,48 @@ public class UserServiceImpl implements UserService {
 		if (userRepo.existsUserByUsername(user.getUsername())) {
 			throw new UsernameAlreadyExistsException();
 		}
+
+		// Make a email checker
+
+		// About BCryptPasswordEncoder https://stackabuse.com/password-encoding-with-spring-security/
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+
 		return userRepo.save(user);
 	}
 
 	/**
-	 * Returns all users from the database.
+	 * Updates the user. Throws a RecordNotFound exception if the user is
+	 * not in the database. Returns the same object that was passed in if successful.
+	 * @param user
 	 * @return
+	 * @throws RecordNotFound
 	 */
-	public List<User> getAllUsers() {
-		return userRepo.findAll();
+	public User updateUser (User user) throws RecordNotFound {
+		if (userRepo.existsUserByUsername(user.getUsername())) {
+			userRepo.save (user);
+			return user;
+		}
+		else {
+			throw new RecordNotFound();
+		}
+	}
+
+	/**
+	 * Removes the user from the database. Throws a RecordNotFound
+	 * exception if the user is not in the database. Returns the
+	 * same object that was passed in if successful.
+	 * @param user
+	 * @return
+	 * @throws RecordNotFound
+	 */
+	public User deleteUser (User user) throws RecordNotFound {
+		if (userRepo.existsUserByUsername(user.getUsername())) {
+			userRepo.delete(user);
+			return user;
+		}
+		else {
+			throw new RecordNotFound();
+		}
 	}
 	
 	/**
@@ -92,4 +141,6 @@ public class UserServiceImpl implements UserService {
 	public User unBanUser(User user) {
 		return null;
 	}
+
+
 }

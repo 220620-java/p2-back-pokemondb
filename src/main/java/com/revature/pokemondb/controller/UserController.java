@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
+import com.revature.pokemondb.exceptions.RecordNotFound;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.services.UserService;
@@ -54,7 +55,15 @@ public class UserController {
 			user = userService.getUserById(Long.valueOf(id));
 		} catch (NumberFormatException e) {
 			// No, it's a name
-			user = userService.getUserByUsername(String.valueOf(id));
+			try {
+				user = userService.getUserByUsername(String.valueOf(id));
+			} catch (RecordNotFound e1) {
+				e1.printStackTrace();
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+		} catch (RecordNotFound e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
 		if (user != null) {
@@ -78,8 +87,12 @@ public class UserController {
 		}
 		return ResponseEntity.notFound().build();
 	}
-
-    @PostMapping("/")
+    
+	/** 
+	 * @param map
+	 * @return ResponseEntity<User>
+	 */
+	@PostMapping("/")
 	public ResponseEntity<User> createUser (@RequestBody Map<String, String> map) {
 		User newUser = new User(map);
 		try {
@@ -89,22 +102,49 @@ public class UserController {
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
 	}
-
-    @PutMapping("/")
+    
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
+	@PutMapping("/")
 	@Auth(requiredRole = "admin")
-	public ResponseEntity<String> updateUserDetails () {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+	public ResponseEntity<User> updateUserDetails (@RequestBody User user) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+		} catch (RecordNotFound e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
 	@PatchMapping("/")
 	@Auth(requiredRole = "admin")
-	public ResponseEntity<String> patchUserDetails () {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+	public ResponseEntity<User> patchUserDetails (@RequestBody User user) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+		} catch (RecordNotFound e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
-
-    @DeleteMapping("/")
+    
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
+	@DeleteMapping("/")
 	@Auth(requiredRole = "admin")
-	public ResponseEntity<String> deleteUser () {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+	public ResponseEntity<User> deleteUser (@RequestBody User user) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+		} catch (RecordNotFound e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 }

@@ -144,10 +144,10 @@ public class User {
 	}
 	
 	/** 
-	 * @param customer_id
+	 * @param userId
 	 */
-	public void setUserId(Long customer_id) {
-		this.userId = customer_id;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	
 	/** 
@@ -213,19 +213,4 @@ public class User {
 	public void setRole (String role) {
 		this.role = role;
 	}
-
-	// public void setEncryptedPassword () {
-	// 	this.salt = WebUtils.generateSalt();
-	// 	this.password = WebUtils.generateEncryptedPassword(this.password, this.salt);
-	// }
-
-	// public void setEncryptedPassword (String password) {
-	// 	this.salt = WebUtils.generateSalt();
-	// 	this.password = WebUtils.generateEncryptedPassword(password, this.salt);
-	// }
-
-	// public void setEncryptedPassword (String password, byte[] salt) {
-	// 	this.salt = salt;
-	// 	this.password = WebUtils.generateEncryptedPassword(password, this.salt);
-	// }
 }
