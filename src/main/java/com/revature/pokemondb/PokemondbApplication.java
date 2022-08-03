@@ -8,9 +8,6 @@ import java.util.Scanner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class PokemondbApplication {
@@ -28,23 +25,6 @@ public class PokemondbApplication {
 		System.exit(0);
 	}
 
-	// This does some cors stuff maybe I think lol
-	@Bean
-	public WebMvcConfigurer corsConfig() {
-		return new WebMvcConfigurer() {
-			@Override
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-					.allowedOrigins("*")
-					.allowedHeaders("*")
-					.exposedHeaders("*")
-					.allowCredentials(false)
-					.maxAge(3600);
-			}
-		};
-	}
-	
 	public static void printLogo () {
 		BufferedReader reader = null;
 
