@@ -37,6 +37,10 @@ public class PokemonComments {
 		this.likes = likes;
 	}
 
+	public PokemonComments() {
+
+	}
+
 	public Long getId() {
 		return id;
 	}

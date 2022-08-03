@@ -3,14 +3,12 @@ package com.revature.pokemondb.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Json {
 
     private static ObjectMapper objectMapper = createObjectMapper();
+
     @Autowired
     private static ObjectMapper createObjectMapper() {
         objectMapper = new ObjectMapper();
@@ -38,7 +36,8 @@ public class Json {
      * @throws JsonProcessingException
      * @throws IllegalArgumentException
      */
-    public static <O> O fromJson(JsonNode node, Class<O> classObj) throws JsonProcessingException, IllegalArgumentException {
+    public static <O> O fromJson(JsonNode node, Class<O> classObj)
+            throws JsonProcessingException, IllegalArgumentException {
         return objectMapper.treeToValue(node, classObj);
     }
 
@@ -74,7 +73,7 @@ public class Json {
     private static String generateString(JsonNode node, boolean type) throws JsonProcessingException {
         ObjectWriter objectWriter = objectMapper.writer();
 
-        if ( type ) {
+        if (type) {
             objectWriter.with(SerializationFeature.INDENT_OUTPUT);
         }
         return objectWriter.writeValueAsString(node);

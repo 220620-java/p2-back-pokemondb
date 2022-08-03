@@ -1,7 +1,6 @@
 package com.revature.pokemondb.controller;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +19,19 @@ import com.revature.pokemondb.services.ArtCommService;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-@RequestMapping(path="/artcomm")
+@RequestMapping(path = "/artcomm")
 public class ArtCommController {
-    private ArtCommService artCommService;
+	private ArtCommService artCommService;
 	private ObjectMapper objectMapper;
 
-    public ArtCommController(ArtCommService artCommService, ObjectMapper objectMapper) {
-        this.artCommService = artCommService;
-        this.objectMapper = objectMapper;
-    }
+	public ArtCommController(ArtCommService artCommService, ObjectMapper objectMapper) {
+		this.artCommService = artCommService;
+		this.objectMapper = objectMapper;
+	}
 
 	/**
 	 * Get available comments associated with a given fanart
+	 * 
 	 * @param id
 	 * @return a string representing a fanart object
 	 */
@@ -55,9 +55,10 @@ public class ArtCommController {
 		}
 		return ResponseEntity.notFound().build();
 	}
-	
+
 	/**
 	 * Saves a given ArtComment object to the database
+	 * 
 	 * @param artComm the fanart comment to be saved
 	 * @return a response with a status code to reflect the operation's success
 	 */

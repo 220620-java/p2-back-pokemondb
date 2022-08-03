@@ -2,14 +2,7 @@ package com.revature.pokemondb.services;
 
 import java.util.List;
 import java.util.Optional;
-
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.Wishlist;
 import com.revature.pokemondb.repositories.WishlistRepository;
 import com.revature.pokemondb.repositories.PokemonRepository;
@@ -18,7 +11,7 @@ import com.revature.pokemondb.repositories.PokemonRepository;
 public class WishlistService {
     private WishlistRepository listRepo;
     private PokemonRepository pokemonRepo;
-    
+
     public WishlistService(PokemonRepository pokemonRepo) {
         this.pokemonRepo = pokemonRepo;
     }
@@ -34,9 +27,9 @@ public class WishlistService {
             return false;
         }
     }
-    
+
     // delete pokemon from wish list
-    public boolean deleteWishlist(int id )  {
+    public boolean deleteWishlist(int id) {
         try {
             listRepo.deleteById(id);
             return true;
@@ -67,7 +60,7 @@ public class WishlistService {
         }
     }
 
-    public Wishlist createWishlist (int Id) {
+    public Wishlist createWishlist(int Id) {
         Wishlist wishlist = createWishlist(Id);
         listRepo.save(wishlist);
         return wishlist;
