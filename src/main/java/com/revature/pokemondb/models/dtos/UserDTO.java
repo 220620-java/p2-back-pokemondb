@@ -9,7 +9,8 @@ import com.revature.pokemondb.models.User;
 public class UserDTO {
 	private Long userId;
 	private String username;
-	private String email; 
+	private String email;
+	private String role = "user";
 	private String token = "";
 
 	public UserDTO () {}
@@ -19,11 +20,24 @@ public class UserDTO {
 		this.username = username;
 		this.email = email;
 	}
-	 
+
+	public UserDTO(Long userId, String username) {
+		this.userId = userId;
+		this.username = username;
+	}
+	
 	public UserDTO (User user) {
 		this.userId = user.getUserId();
 		this.username = user.getUsername();
 		this.email = user.getEmail();
+		this.role = user.getRole();
+	}
+	 
+	public UserDTO (User user, String token) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.token = token;
 	}
 
 	/** 
@@ -46,8 +60,8 @@ public class UserDTO {
 	/** 
 	 * @param customer_id
 	 */
-	public void setUserId(Long customer_id) {
-		this.userId = customer_id;
+	public void setUserId(Long id) {
+		this.userId = id;
 	}
 	
 	/** 
@@ -76,6 +90,22 @@ public class UserDTO {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getRole() {
+		return role;
+	}
+
+	/**
+	 * Sets role name with all lower case
+	 * @param role
+	 */
+	public void setRole(String role) {
+		this.role = role.toLowerCase();
 	}
 
 	/** 
