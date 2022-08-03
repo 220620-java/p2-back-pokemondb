@@ -1,6 +1,7 @@
 package com.revature.pokemondb.models;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -11,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.revature.pokemondb.models.dtos.UserDTO;
 
 /**
  * @author Colby Tang
@@ -42,16 +45,38 @@ public class User {
 		this.password = "";
 	}
 
+	public User (User user) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.salt = user.getSalt();
+		this.password = user.getPassword();
+	}
+
+	public User (UserDTO user) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+	}
+
+	public User (Map<String, String> map) {
+		if ((map.get("userId") != null)) {
+			this.userId = Long.valueOf(map.get("userId"));
+		}
+		this.username = map.get("username");
+		this.email = map.get("email");
+		if (map.get("salt") != null) {
+			this.salt = map.get("salt").getBytes();
+		}
+		this.password = map.get("password");
+	}
+
 	@Autowired
     public User(Long userId, String username, String email, String phone, String password) {
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
 		this.password = password;
-		
-		// Encrypt password
-		// this.salt = WebUtils.generateSalt();
-		// this.password = WebUtils.generateEncryptedPassword(password, this.salt);
 	}
 	
 	public User(Long userId, String username, String email, String password, byte[] salt) {

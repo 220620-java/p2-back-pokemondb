@@ -1,6 +1,7 @@
 package com.revature.pokemondb.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +56,11 @@ public class ArtCommController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	/**
+	 * Saves a given ArtComment object to the database
+	 * @param artComm the fanart comment to be saved
+	 * @return a response with a status code to reflect the operation's success
+	 */
 	@PostMapping(path = "/create")
 	public ResponseEntity<String> postComment(@RequestBody ArtComment artComm) {
 		Boolean success = true;

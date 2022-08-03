@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.revature.pokemondb.models.dtos.ArtCommDTO;
+import com.revature.pokemondb.models.dtos.UserIdDTO;
+
 /**
  * 
  * @author Barry Norton
@@ -24,10 +27,10 @@ public class RateArtComm {
 	private int id;
 	@ManyToOne
 	@JoinColumn(name="comment_id")
-	private ArtComment commentId;
+	private ArtCommDTO commentId;
 	@ManyToOne
 	@JoinColumn(name="user_id")
-	private User author;
+	private UserIdDTO author;
 	@Column(name="is_liked")
 	private Boolean isLiked;
 	
@@ -41,7 +44,7 @@ public class RateArtComm {
 		this.isLiked = false;
 	}
 	
-	public RateArtComm(int id, ArtComment commentId, User author, Boolean isLiked) {
+	public RateArtComm(int id, ArtCommDTO commentId, UserIdDTO author, Boolean isLiked) {
 		super();
 		this.id = id;
 		this.commentId = commentId;
@@ -83,16 +86,16 @@ public class RateArtComm {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public ArtComment getCommentId() {
+	public ArtCommDTO getCommentId() {
 		return commentId;
 	}
-	public void setCommentId(ArtComment commentId) {
+	public void setCommentId(ArtCommDTO commentId) {
 		this.commentId = commentId;
 	}
-	public User getAuthor() {
+	public UserIdDTO getAuthor() {
 		return author;
 	}
-	public void setAuthor(User author) {
+	public void setAuthor(UserIdDTO author) {
 		this.author = author;
 	}
 	public Boolean getIsLiked() {

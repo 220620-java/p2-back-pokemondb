@@ -1,12 +1,6 @@
 package com.revature.pokemondb.models;
 
-import com.revature.pokemondb.controller.PokemonController;
-import com.revature.pokemondb.repositories.UserRepository;
-import com.revature.pokemondb.services.UserService;
-import com.revature.pokemondb.services.UserServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -18,6 +12,7 @@ public class PokemonComments {
 	
 	 @Id
 	 @Column(name="id", updatable=false, insertable=false)
+	 @GeneratedValue(strategy = GenerationType.AUTO)
 	 private Long id;
 	 @ManyToOne(targetEntity = Pokemon.class, fetch = FetchType.LAZY)
 	 @JoinColumn(name = "pokemon_id", referencedColumnName="id")
@@ -29,21 +24,25 @@ public class PokemonComments {
 	 @Column(name = "is_flagged")
 	 private Boolean isflagged;
 	 private Integer likes;
-	 private Instant posted_at;
+	 @GeneratedValue(strategy = GenerationType.AUTO)
+	 private Timestamp posted_at = new Timestamp(System.currentTimeMillis());
 
 
 	public PokemonComments() {
 
 	}
-	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged, Integer likes,
-			Instant posted_at) {
+	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged, Integer likes
+			) {
 		this.id = id;
 		this.pokemon = pokemon;
 		this.user = user_id;
 		this.comment_content = comment_content;
 		this.isflagged = is_flagged;
 		this.likes = likes;
-		this.posted_at = posted_at;
+	}
+
+	public PokemonComments(Long id) {
+		this.id = id;
 	}
 
 	public Long getId() {
@@ -91,12 +90,10 @@ public class PokemonComments {
 	public void setLikes(Integer likes) {
 		this.likes = likes;
 	}
-
-	public Instant getPosted_at() {
+	public Timestamp getPosted_at() {
 		return posted_at;
 	}
-
-	public void setPosted_at(Instant posted_at) {
+	public void setPosted_at(Timestamp posted_at) {
 		this.posted_at = posted_at;
 	}
 

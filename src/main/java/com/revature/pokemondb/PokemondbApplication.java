@@ -32,21 +32,19 @@ public class PokemondbApplication {
 	@Bean
 	public WebMvcConfigurer corsConfig() {
 		return new WebMvcConfigurer() {
+			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
 					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-					.allowedOrigins("null")
+					.allowedOrigins("*")
 					.allowedHeaders("*")
-					.exposedHeaders("Auth")
-					.allowCredentials(false);
+					.exposedHeaders("*")
+					.allowCredentials(false)
+					.maxAge(3600);
 			}
 		};
 	}
-
-	public static void testCall () {
-		System.out.println("Hello World");
-	}
-
+	
 	public static void printLogo () {
 		BufferedReader reader = null;
 

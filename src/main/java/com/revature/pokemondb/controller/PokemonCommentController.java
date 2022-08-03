@@ -1,5 +1,6 @@
 package com.revature.pokemondb.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.services.PokemonCommentImpl;
@@ -12,24 +13,36 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path="/pokemon-comment")
 public class PokemonCommentController {
     private PokemonCommentImpl commentService;
+    private ObjectMapper objectMapper;
 
-    public PokemonCommentController(PokemonCommentImpl commentService){
+    public PokemonCommentController(PokemonCommentImpl commentService, ObjectMapper objectMapper){
         this.commentService = commentService;
+        this.objectMapper = objectMapper;
     }
 
+    @RequestMapping(path = "/Options", method=RequestMethod.OPTIONS)
     public ResponseEntity<?> optionsRequest () {
         return ResponseEntity
                 .ok()
                 .allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.PATCH, HttpMethod.OPTIONS)
                 .build();
     }
+
+    @GetMapping(path = "/flagged")
+    protected ResponseEntity<String> getAllFlagged() {
+
+        return ResponseEntity.ok(commentService.getFlagged().toString());
+    }
+    @GetMapping(path = "/{id}")
+    protected ResponseEntity<String> findById(@PathVariable Integer id) throws JsonProcessingException {
+        return ResponseEntity.ok(commentService.getById(id).toString());
+    }
     /*
      *
      */
     @PutMapping
-    protected ResponseEntity<String> editComment(@RequestBody PokemonComments pokeComment){
-        commentService.updateComment(pokeComment);
-     return null;
+    protected ResponseEntity<String> editComment(@RequestBody PokemonComments pokeComment) {
+            return ResponseEntity.ok(commentService.updateComment(pokeComment).toString());
     }
 
     /*
@@ -37,8 +50,7 @@ public class PokemonCommentController {
      */
     @PostMapping
     protected ResponseEntity<String> storeComment(@RequestBody PokemonComments pokeComment) {
-        commentService.storeNewComment(pokeComment);
-        return null;
+            return ResponseEntity.ok(pokeComment.toString());
     }
 
     /*
@@ -46,8 +58,8 @@ public class PokemonCommentController {
      */
     @DeleteMapping
     protected ResponseEntity<String> deleteComment(@RequestBody PokemonComments pokeComment) {
-        commentService.deleteComment(pokeComment);
-        return null;
+            commentService.deleteComment(pokeComment);
+            return null;
     }
 
     /*
@@ -55,6 +67,7 @@ public class PokemonCommentController {
      */
     @GetMapping
     protected ResponseEntity<String> getComments() {
-        return ResponseEntity.ok(commentService.getAllComments().toString());
+            return ResponseEntity.ok(commentService.getAllComments());
+        }
     }
-}
+
