@@ -38,7 +38,7 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
-		this.role = "";
+		this.role = "user";
 	}
 
 	public User (long id) {
@@ -46,7 +46,7 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
-		this.role = "";
+		this.role = "user";
 	}
 
 	public User (User user) {
@@ -69,12 +69,23 @@ public class User {
 		if ((map.get("userId") != null)) {
 			this.userId = Long.valueOf(map.get("userId"));
 		}
+
 		this.username = map.get("username");
+
 		this.email = map.get("email");
+
 		if (map.get("salt") != null) {
 			this.salt = map.get("salt").getBytes();
 		}
+
 		this.password = map.get("password");
+
+		if (map.get("role") != null) {
+			this.role = map.get("role");
+		}
+		else {
+			this.role = "user";
+		}
 	}
 
 	@Autowired

@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 	 * Inserts the user into the database. Throws an exception if username already exists.
 	 */
 	public User registerUser(User user) throws UsernameAlreadyExistsException {
-		if (userRepo.usernameExists(user.getUsername())) {
+		if (userRepo.existsUserByUsername(user.getUsername())) {
 			throw new UsernameAlreadyExistsException();
 		}
 		return userRepo.save(user);
