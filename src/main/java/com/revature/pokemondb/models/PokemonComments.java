@@ -9,31 +9,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "pokemon_comments", schema = "pokemon_db")
 public class PokemonComments {
-	
-	 @Id
-	 @Column(name="id", updatable=false, insertable=false)
-	 @GeneratedValue(strategy = GenerationType.AUTO)
-	 private Long id;
-	 @ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
-	 @JoinColumn(name = "pokemon_id", referencedColumnName="id")
-	 private PokemonDTO pokemon;
-	 @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-	 @JoinColumn(name = "user_id", referencedColumnName="id")
-	 private User user;
-	 private String comment_content;
-	 @Column(name = "is_flagged")
-	 private Boolean isflagged;
-	 private Integer likes;
-	 @GeneratedValue(strategy = GenerationType.AUTO)
-	 private Timestamp posted_at = new Timestamp(System.currentTimeMillis());
 
 	@Id
 	@Column(name = "id", updatable = false, insertable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@ManyToOne(targetEntity = Pokemon.class, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "pokemon_id", referencedColumnName = "id")
-	private Pokemon pokemon;
+	private PokemonDTO pokemon;
 	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
@@ -44,11 +27,8 @@ public class PokemonComments {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Timestamp posted_at = new Timestamp(System.currentTimeMillis());
 
-	public PokemonComments() {
-
-	}
-	public PokemonComments(Long id, PokemonDTO pokemon, User user_id, String comment_content, Boolean is_flagged, Integer likes
-			) {
+	public PokemonComments(Long id, PokemonDTO pokemon, User user_id, String comment_content, Boolean is_flagged,
+			Integer likes) {
 		this.id = id;
 		this.pokemon = pokemon;
 		this.user = user_id;
@@ -64,9 +44,11 @@ public class PokemonComments {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getPokemon_id() {
-		return pokemon.getId();
+
+	public PokemonDTO getPokemon_id() {
+		return pokemon;
 	}
+
 	public void setPokemon_id(PokemonDTO pokemon) {
 		this.pokemon = pokemon;
 	}
