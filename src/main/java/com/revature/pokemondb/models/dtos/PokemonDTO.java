@@ -6,31 +6,27 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Objects;
 
-/** 
+/**
  * @author Barry Norton
  */
 @Entity
-@Table(name="pokemon", schema="pokemon_db")
+@Table(name = "pokemon", schema = "pokemon_db")
 public class PokemonDTO {
 	@Id
 	@Column
-	private Long id;
+	private int id;
 
-	/*Constructor*/
-
-    public PokemonDTO(Long id) {
+	public PokemonDTO(int id) {
 		this.id = id;
 	}
 
 	public PokemonDTO() {
-		this.id = 0l;
+		this.id = 0;
 	}
-	
-	/*Overrides*/
-	
+
 	@Override
 	public String toString() {
-		return "UserIdDTO [id=" + id + "]";
+		return "PokemonDTO [id=" + id + "]";
 	}
 
 	@Override
@@ -46,17 +42,16 @@ public class PokemonDTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+
 		PokemonDTO other = (PokemonDTO) obj;
 		return id == other.id;
 	}
 
-	/*Getters and Setters*/
-	
-	public Long getId() {
-		return id;
+	public int getId() {
+		return this.id;
 	}
-	
-	public void setId(Long id) {
+
+	public void setId(int id) {
 		this.id = id;
 	}
 }

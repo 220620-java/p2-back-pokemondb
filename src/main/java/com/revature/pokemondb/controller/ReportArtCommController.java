@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,26 +31,21 @@ public class ReportArtCommController {
     }
 
 	/**
-	 * Get rating of a fanart as posted by a given user
-	 * @param artId the fanart that is Reportd
+	 * Get report of a comment as posted by a given user
+	 * @param commId the comment that is reported
 	 * @param userId the user associated with the rating
 	 * @return a string representing a ReportArt object or 404 if rating is not found
 	 */
-	@GetMapping(path = "/{id}")
-	public ResponseEntity<String> getFanartRating(@PathVariable int commId, @RequestBody int userId) {
+	@GetMapping
+	public ResponseEntity<String> getCommentReported(@RequestParam int commId, @RequestParam int userId) {
 		// Create fanart object
 		ReportArtComm reportArtComm = reportArtCommService.getRatingByUserAndCommentId(commId, userId);
 		String reportArtCommJSON;
 		try {
 			// Turn fanart into JSON
 			reportArtCommJSON = objectMapper.writeValueAsString(reportArtComm);
-			if (reportArtComm != null) {
-				// OK sets status code to 200
-				return ResponseEntity.ok(reportArtCommJSON);
-			} else {
-				// notFound sets status code to 404
-				return ResponseEntity.notFound().build();
-			}
+			// OK sets status code to 200
+			return ResponseEntity.ok(reportArtCommJSON);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

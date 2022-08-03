@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author Barry Norton
- * */
+ */
 @Service
 public class FanartService {
 	/*Class Variables*/
