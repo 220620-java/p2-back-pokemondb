@@ -121,21 +121,6 @@ public class PokemonServiceImpl implements PokemonService{
         return getJSON(url);
     }
 
-    /**
-     * Convert the json from PokeAPI into a usable Map
-     * 
-     * @param jsonObj
-     * @return
-     */
-    public Map<?, ?> convertJsonIntoMap(String jsonObj) {
-        Map<?, ?> map = new HashMap<>();
-        try {
-            map = objMapper.readValue(jsonObj, Map.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return map;
-    }
 
     public Pokemon getReferencePokemon(int id) {
         Optional<Pokemon> pokemon = pokeRepo.findById(id);

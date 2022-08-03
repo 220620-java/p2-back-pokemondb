@@ -30,6 +30,7 @@ public class UserDTO {
 		this.userId = user.getUserId();
 		this.username = user.getUsername();
 		this.email = user.getEmail();
+		this.role = user.getRole();
 	}
 	 
 	public UserDTO (User user, String token) {

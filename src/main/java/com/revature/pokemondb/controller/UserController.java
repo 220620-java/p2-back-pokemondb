@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
-import com.revature.pokemondb.exceptions.RecordNotFound;
+import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.services.UserService;
@@ -57,11 +57,11 @@ public class UserController {
 			// No, it's a name
 			try {
 				user = userService.getUserByUsername(String.valueOf(id));
-			} catch (RecordNotFound e1) {
+			} catch (RecordNotFoundException e1) {
 				e1.printStackTrace();
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 			}
-		} catch (RecordNotFound e) {
+		} catch (RecordNotFoundException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
@@ -112,7 +112,7 @@ public class UserController {
 	public ResponseEntity<User> updateUserDetails (@RequestBody User user) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
-		} catch (RecordNotFound e) {
+		} catch (RecordNotFoundException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
@@ -127,7 +127,7 @@ public class UserController {
 	public ResponseEntity<User> patchUserDetails (@RequestBody User user) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
-		} catch (RecordNotFound e) {
+		} catch (RecordNotFoundException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
@@ -142,7 +142,7 @@ public class UserController {
 	public ResponseEntity<User> deleteUser (@RequestBody User user) {
 		try {
 			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
-		} catch (RecordNotFound e) {
+		} catch (RecordNotFoundException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}

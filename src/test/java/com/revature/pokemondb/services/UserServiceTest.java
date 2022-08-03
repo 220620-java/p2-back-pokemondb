@@ -4,13 +4,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Base64;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 import org.bouncycastle.crypto.generators.BCrypt;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
@@ -49,15 +55,6 @@ public class UserServiceTest {
 
         // Assert that we got a user back
         assertNotNull (returnedUser);
-    }
-
-    @Test
-    void testPasswordEncryption () {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String rawPassword = "pass";
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-        System.out.println(encodedPassword);
-        assertTrue(passwordEncoder.matches(rawPassword, encodedPassword));
     }
 
     @Test
