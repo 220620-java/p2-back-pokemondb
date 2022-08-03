@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,21 +34,16 @@ public class RateArtCommController {
 	 * @param userId the user associated with the rating
 	 * @return a string representing a RateArt object or 404 if rating is not found
 	 */
-	@GetMapping(path = "/{id}")
-	public ResponseEntity<String> getCommentRating(@PathVariable int commId, @RequestBody int userId) {
+	@GetMapping
+	public ResponseEntity<String> getCommentRating(@RequestParam int commId, @RequestParam int userId) {
 		// Create fanart object
 		RateArtComm rateArtComm = rateArtCommService.getRatingByUserAndCommentId(commId, userId);
 		String artCommJSON;
 		try {
 			// Turn fanart into JSON
 			artCommJSON = objectMapper.writeValueAsString(rateArtComm);
-			if (rateArtComm != null) {
-				// OK sets status code to 200
-				return ResponseEntity.ok(artCommJSON);
-			} else {
-				// notFound sets status code to 404
-				return ResponseEntity.notFound().build();
-			}
+			// OK sets status code to 200
+			return ResponseEntity.ok(artCommJSON);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
