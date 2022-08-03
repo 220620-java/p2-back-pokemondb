@@ -1,9 +1,9 @@
 package com.revature.pokemondb.models;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Objects;
+import com.revature.pokemondb.models.dtos.PokemonDTO;
 
+import java.sql.Timestamp;
+import java.util.Objects;
 import javax.persistence.*;
 
 @Entity
@@ -14,9 +14,9 @@ public class PokemonComments {
 	 @Column(name="id", updatable=false, insertable=false)
 	 @GeneratedValue(strategy = GenerationType.AUTO)
 	 private Long id;
-	 @ManyToOne(targetEntity = Pokemon.class, fetch = FetchType.LAZY)
+	 @ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
 	 @JoinColumn(name = "pokemon_id", referencedColumnName="id")
-	 private Pokemon pokemon;
+	 private PokemonDTO pokemon;
 	 @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	 @JoinColumn(name = "user_id", referencedColumnName="id")
 	 private User user;
@@ -31,7 +31,7 @@ public class PokemonComments {
 	public PokemonComments() {
 
 	}
-	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged, Integer likes
+	public PokemonComments(Long id, PokemonDTO pokemon, User user_id, String comment_content, Boolean is_flagged, Integer likes
 			) {
 		this.id = id;
 		this.pokemon = pokemon;
@@ -41,20 +41,16 @@ public class PokemonComments {
 		this.likes = likes;
 	}
 
-	public PokemonComments(Long id) {
-		this.id = id;
-	}
-
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public int getPokemon_id() {
+	public Long getPokemon_id() {
 		return pokemon.getId();
 	}
-	public void setPokemon_id(Pokemon pokemon) {
+	public void setPokemon_id(PokemonDTO pokemon) {
 		this.pokemon = pokemon;
 	}
 	public Long getUser_id() {
@@ -112,7 +108,7 @@ public class PokemonComments {
 	
 	@Override
 	public String toString() {
-		return "PokemonComments [id=" + id + ", pokemon=" + pokemon.getName() + ", user=" + user.getUsername()
+		return "PokemonComments [id=" + id + ", pokemon=" + pokemon + ", user=" + user.getUsername()
 				+ ", comment_content=" + comment_content + ", is_flagged=" + isflagged + ", likes=" + likes
 				+ ", posted_at=" + posted_at + "]";
 	}

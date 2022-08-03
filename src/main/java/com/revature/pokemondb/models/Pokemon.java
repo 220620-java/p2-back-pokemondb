@@ -1,9 +1,7 @@
 package com.revature.pokemondb.models;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name= "pokemon", schema="pokemon_db")
@@ -37,32 +35,33 @@ public class Pokemon {
 
     public Pokemon () {
         this.id = 0;
-        this.name = null;
+        this.name = "";
         this.height = 0;
         this.weight = 0;
         this.types = null;
-        this.baseStats = null;
-        this.imageUrl = null;
+        this.baseStats = new HashMap<>();
+        this.imageUrl = "";
         this.generation = 1;
-        this.category = null;
-        this.description = null;
-        this.evolutionChain = null;
-        this.location_versions = null;
+        this.category = "";
+        this.description = "";
+        this.evolutionChain = new ArrayList<>();
+        this.location_versions = new ArrayList<>();
     }
     public Pokemon (int id) {
         this.id = id;
-        this.name = null;
+        this.name = "";
         this.height = 0;
         this.weight = 0;
         this.types = null;
-        this.baseStats = null;
-        this.imageUrl = null;
+        this.baseStats = new HashMap<>();
+        this.imageUrl = "";
         this.generation = 1;
-        this.category = null;
-        this.description = null;
-        this.evolutionChain = null;
-        this.location_versions = null;
+        this.category = "";
+        this.description = "";
+        this.evolutionChain = new ArrayList<>();
+        this.location_versions = new ArrayList<>();
     }
+   // @Autowired
     public Pokemon (
         int id,
         String name,
