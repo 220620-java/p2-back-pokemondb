@@ -6,17 +6,17 @@ package com.revature.pokemondb.exceptions;
  * is not in the database!
  * @author Colby Tang
  */
-public class RecordNotFound extends Exception {
+public class RecordNotFoundException extends Exception {
 
-    public RecordNotFound () {
+    public RecordNotFoundException () {
         super("Could not find record in the database!");
     }
 
-    public RecordNotFound (Object object) {
+    public RecordNotFoundException (Object object) {
         super("Could not find record " + object.getClass().getName() + " in the database!");
     }
 
-    public RecordNotFound (String message) {
+    public RecordNotFoundException (String message) {
         super(message);
     }
 

@@ -2,8 +2,6 @@ package com.revature.pokemondb.services;
 
 import com.revature.pokemondb.models.PokemonComments;
 
-import java.util.Optional;
-
 public interface PokemonCommentService {
 
     String getAllComments();
@@ -12,6 +10,6 @@ public interface PokemonCommentService {
 
     void deleteComment(PokemonComments comment);
 
-    Optional<PokemonComments> updateComment(PokemonComments comment);
+    PokemonComments updateComment(PokemonComments comment);
 
 }

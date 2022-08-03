@@ -1,19 +1,20 @@
 package com.revature.pokemondb.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.services.PokemonCommentImpl;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
 
 @RestController
 @CrossOrigin
 @RequestMapping(path="/pokemon-comment")
 public class PokemonCommentController {
-    private PokemonCommentImpl commentService;
-    private ObjectMapper objectMapper;
+    private final PokemonCommentImpl commentService;
+    private final ObjectMapper objectMapper;
 
     public PokemonCommentController(PokemonCommentImpl commentService, ObjectMapper objectMapper){
         this.commentService = commentService;
@@ -34,7 +35,7 @@ public class PokemonCommentController {
         return ResponseEntity.ok(commentService.getFlagged().toString());
     }
     @GetMapping(path = "/{id}")
-    protected ResponseEntity<String> findById(@PathVariable Integer id) throws JsonProcessingException {
+    protected ResponseEntity<String> findById(@PathVariable Integer id) {
         return ResponseEntity.ok(commentService.getById(id).toString());
     }
     /*
@@ -49,8 +50,8 @@ public class PokemonCommentController {
      *
      */
     @PostMapping
-    protected ResponseEntity<String> storeComment(@RequestBody PokemonComments pokeComment) {
-            return ResponseEntity.ok(pokeComment.toString());
+    protected ResponseEntity<String> storeComment(@RequestBody PokemonComments pokeComment) throws IOException {
+            return ResponseEntity.ok(objectMapper.writeValueAsString(objectMapper.valueToTree(commentService.storeNewComment(pokeComment))));
     }
 
     /*
