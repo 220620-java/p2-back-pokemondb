@@ -1,10 +1,8 @@
 package com.revature.pokemondb.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.repositories.PokemonCommentRepo;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,8 +47,8 @@ public class PokemonCommentImpl implements PokemonCommentService {
     }
 
     @Override
-    public Optional<PokemonComments> updateComment(PokemonComments comment) {
-        return getPokemonComments(objectMapper.valueToTree(comment));
+    public PokemonComments updateComment(PokemonComments comment) {
+        return commentRepo.save(comment);
     }
 
     public List<PokemonComments> getFlagged() {
@@ -59,18 +57,5 @@ public class PokemonCommentImpl implements PokemonCommentService {
 
     public PokemonComments getById(Integer id) {
         return commentRepo.getReferenceById(Long.valueOf(id));
-    }
-
-    @Nullable
-    private Optional<PokemonComments> getPokemonComments(JsonNode comment) {
-        PokemonComments pokemonComments = new PokemonComments();
-        pokemonComments.getClass();
-        try {
-            PokemonComments pokemonCommentsOptional = commentRepo.save(objectMapper.treeToValue(comment,pokemonComments.getClass()));
-            return Optional.of(pokemonCommentsOptional);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
