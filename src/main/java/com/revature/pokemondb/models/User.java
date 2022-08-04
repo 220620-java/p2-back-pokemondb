@@ -49,6 +49,33 @@ public class User {
 		this.role = "user";
 	}
 
+	public User(String username, String email) {
+		this.username = username;
+		this.email = email;
+	}
+
+	public User(String username, String email, String password) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
+	}
+
+	@Autowired
+    public User(Long userId, String username, String email, String password) {
+		this.userId = userId;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+	}
+	
+	public User(Long userId, String username, String email, String password, byte[] salt) {
+		this.userId = userId;
+		this.username = username;
+		this.email = email;
+		this.salt = salt;
+		this.password = password;
+	}
+
 	public User (User user) {
 		this.userId = user.getUserId();
 		this.username = user.getUsername();
@@ -86,22 +113,6 @@ public class User {
 		else {
 			this.role = "user";
 		}
-	}
-
-	@Autowired
-    public User(Long userId, String username, String email, String phone, String password) {
-		this.userId = userId;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-	}
-	
-	public User(Long userId, String username, String email, String password, byte[] salt) {
-		this.userId = userId;
-		this.username = username;
-		this.email = email;
-		this.salt = salt;
-		this.password = password;
 	}
 	
 	@Override

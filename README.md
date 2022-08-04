@@ -21,8 +21,14 @@ Administrators can moderate comments and fanart and even ban users from posting.
 ### Installing
 Clone the repository, compile and package with Maven, and deploy on a server:
 ```
+// Clone this repository
 git clone https://github.com/220620-java/p2-back-pokemondb.git
+
+// Build the jar file
 mvn clean package
+
+// To run the Spring Application
+java -jar target/pokemondb-0.0.1-SNAPSHOT.jar
 ```
 
 ### Usage
