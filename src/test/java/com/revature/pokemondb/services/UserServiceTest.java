@@ -1,11 +1,9 @@
 package com.revature.pokemondb.services;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -35,6 +33,12 @@ class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Test
+    void testGetAllUsers() {
+        Mockito.when(userRepo.findAll()).thenReturn(new ArrayList<User>());
+        assertNotNull(userService.getAllUsers());
+    }
 
     /**
      * Tests retrieving a user by id, if user has been found then return the user.
@@ -143,6 +147,19 @@ class UserServiceTest {
         assertThrows(RecordNotFoundException.class,
         () -> userService.loginUser("user", "pass"));
 	}
+
+    @Test
+    void testLoginWrongSaltingAlgorithm() throws NoSuchAlgorithmException {
+        User mockUser = new User();
+        mockUser.setUsername("username");
+        mockUser.setPassword("mockPass");
+        mockUser.setSalt("salt".getBytes());
+
+        Mockito.when(userRepo.findByUsername("username")).thenReturn(Optional.of(mockUser));
+        Mockito.when(mockUtils.encodePassword("password", "salt".getBytes())).thenThrow(NoSuchAlgorithmException.class);
+        assertThrows (NoSuchAlgorithmException.class,
+        () -> userService.loginUser("username", "password"));
+    }
     
     /**
      * Tests registering a user with username, email, password.
@@ -220,4 +237,95 @@ class UserServiceTest {
         // Input should be invalid
         assertThrows(InvalidInputException.class, () -> userService.registerUser(mockUser));
     }
+
+    /**
+     * If the security utils object is configured incorrectly
+     * it should throw a NoSuchAlgorithm exception.
+     * @throws NoSuchAlgorithmException
+     */
+    @Test
+    void testRegisterWrongSaltingAlgorithm() throws NoSuchAlgorithmException {
+        User mockUser = new User();
+        mockUser.setUsername("username");
+        mockUser.setPassword("password");
+        mockUser.setSalt("salt".getBytes());
+
+        Mockito.when(userRepo.findByUsername(mockUser.getUsername())).thenReturn(Optional.of(mockUser));
+        Mockito.when(mockUtils.generateSalt()).thenReturn("salt".getBytes());
+        Mockito.when(mockUtils.encodePassword(mockUser.getPassword(), "salt".getBytes())).thenThrow(NoSuchAlgorithmException.class);
+        assertThrows (NoSuchAlgorithmException.class,
+        () -> userService.registerUser(mockUser));
+    }
+
+    /**
+     * Update the user and return it.
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testUpdateUser() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
+        assertNotNull(userService.updateUser(mockUser));
+    }
+
+    /**
+     * Try updating the user and they don't exist in the database.
+     * Should throw a RecordNotFoundException
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testUpdateUserNotFound() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(false);
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.updateUser(mockUser));
+    }
+
+    /**
+     * Delete the user and return the user deleted.
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testDeleteUser() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
+        assertNotNull(userService.deleteUser(mockUser));
+    }
+
+    /**
+     * Try deleting the user but they cannot be found in the database.
+     * Should throw a RecordNotFoundException
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testDeleteUserNotFound() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(false);
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.deleteUser(mockUser));
+    }
+
+    /**
+     * Inserts the user into the ban table to indicate
+	 * a user has been banned.
+     */
+    @Test
+    void banUser() {
+        User mockUser = new User();
+        assertNotNull (userService.banUser(mockUser));
+    }
+    
+    // TODO Make a ban test case for when the user doesn't exist
+
+    /**
+     * Removes a user from the ban table to indicate
+	 * a user has been unbanned.
+     */
+    @Test
+    void unBanUser() {
+        User mockUser = new User();
+        assertNotNull (userService.unBanUser(mockUser));
+    }
+
+    // TODO Make an unban test case for when the user doesn't exist
 }

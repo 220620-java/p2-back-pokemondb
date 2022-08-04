@@ -167,7 +167,8 @@ public class UserServiceImpl implements UserService {
 	 * a user has been banned.
 	 */
 	public User banUser(User user) {
-		return null;
+		// TODO Add user to the ban table.
+		return user;
 	}
 	
 	/**
@@ -175,7 +176,8 @@ public class UserServiceImpl implements UserService {
 	 * a user has been unbanned.
 	 */
 	public User unBanUser(User user) {
-		return null;
+		// TODO Remove user from the ban table.
+		return user;
 	}
 
 

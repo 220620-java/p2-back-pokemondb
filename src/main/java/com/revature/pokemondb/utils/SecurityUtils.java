@@ -21,12 +21,28 @@ public class SecurityUtils {
         this.algorithm = algorithm;
     }
 
+    public String getSaltAlgorithm() {
+        return saltAlgorithm;
+    }
+
+    public void setSaltAlgorithm(String saltAlgorithm) {
+        this.saltAlgorithm = saltAlgorithm;
+    }
+
     public Charset getCharset() {
         return charset;
     }
 
     public void setCharset(Charset charset) {
         this.charset = charset;
+    }
+
+    public int getSaltSize() {
+        return saltSize;
+    }
+
+    public void setSaltSize(int saltSize) {
+        this.saltSize = saltSize;
     }
 
     public SecurityUtils () {
