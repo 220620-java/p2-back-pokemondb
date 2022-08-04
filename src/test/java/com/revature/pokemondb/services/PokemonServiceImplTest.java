@@ -1,55 +1,11 @@
 package com.revature.pokemondb.services;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import com.revature.pokemondb.PokemondbApplication;
+
+@SpringBootTest(classes=PokemondbApplication.class)
 public class PokemonServiceImplTest {
-    @Test
-    void testConvertJsonIntoMap() {
 
-    }
-
-    @Test
-    void testCreatePokemon() {
-
-    }
-
-    @Test
-    void testCreatePokemon2() {
-
-    }
-
-    @Test
-    void testCreatePokemonObject() {
-
-    }
-
-    @Test
-    void testGetEvolutionChainJSON() {
-
-    }
-
-    @Test
-    void testGetJSON() {
-
-    }
-
-    @Test
-    void testGetPokemon() {
-
-    }
-
-    @Test
-    void testGetPokemonJSON() {
-
-    }
-
-    @Test
-    void testGetPokemonJSON2() {
-
-    }
-
-    @Test
-    void testGetPokemonSpeciesJSON() {
-
-    }
 }

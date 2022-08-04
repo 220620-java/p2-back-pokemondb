@@ -1,5 +1,6 @@
 package com.revature.pokemondb.controller;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
+import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
+import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
@@ -97,8 +100,12 @@ public class UserController {
 		User newUser = new User(map);
 		try {
 			newUser = userService.registerUser (newUser);
-		} catch (UsernameAlreadyExistsException e) {
+		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
 	}

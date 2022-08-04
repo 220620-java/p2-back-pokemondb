@@ -1,18 +1,19 @@
 package com.revature.pokemondb.services;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@SpringBootTest
+import com.revature.pokemondb.PokemondbApplication;
+
+@SpringBootTest(classes=PokemondbApplication.class)
 public class CommentTests {
-    PokemonCommentService pokeServ;
 
+    @Autowired
+    private PokemonCommentService pokeServ;
 
-    public PokemonCommentService getPokeServ() {
-        return pokeServ;
-    }
-
-    @Test
-    public void testStore() {
-    }
+    // @Test
+    // void testStore() {
+    // }
 }
