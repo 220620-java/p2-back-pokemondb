@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
 import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
+import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
@@ -102,6 +103,9 @@ public class UserController {
 		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
 	}

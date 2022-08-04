@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
+import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.TokenService;
@@ -41,7 +42,7 @@ public class AuthController {
                 userDto.setToken(jws);
                 return ResponseEntity.status(200).header("Auth", jws).body(userDto);
             }
-        } catch (FailedAuthenticationException | NoSuchAlgorithmException e) {
+        } catch (FailedAuthenticationException | NoSuchAlgorithmException | RecordNotFoundException e) {
             e.printStackTrace();
         }
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
