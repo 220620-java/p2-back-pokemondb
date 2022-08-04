@@ -25,7 +25,7 @@ import com.revature.pokemondb.repositories.UserRepository;
 import com.revature.pokemondb.utils.SecurityUtils;
 
 @SpringBootTest(classes=PokemondbApplication.class)
-public class UserServiceTest {
+class UserServiceTest {
     
     @MockBean
     private UserRepository userRepo;
