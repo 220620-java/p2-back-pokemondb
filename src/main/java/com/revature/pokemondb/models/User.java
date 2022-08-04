@@ -89,7 +89,7 @@ public class User {
 	}
 
 	@Autowired
-    public User(Long userId, String username, String email, String phone, String password) {
+    public User(Long userId, String username, String email, String password) {
 		this.userId = userId;
 		this.username = username;
 		this.email = email;

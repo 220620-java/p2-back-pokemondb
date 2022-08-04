@@ -1,31 +1,57 @@
 package com.revature.pokemondb.utils;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-public class WebUtils {
+public class SecurityUtils {
 
-    // Private default constructor to prevent it from being instantiated
-    private WebUtils () {}
+    private String algorithm;
+    private String saltAlgorithm;
+    private int saltSize;
+    private Charset charset;
+
+    public String getAlgorithm() {
+        return algorithm;
+    }
+
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+    }
+
+    public SecurityUtils () {
+        this.algorithm = "SHA-512";
+        this.charset = StandardCharsets.UTF_8;
+        this.saltAlgorithm = "SHA1PRNG";
+        this.saltSize = 16;
+    }
 
     /** Generate an encrypted password with a SHA-512 salt.
      * @param password The password to be converted into SHA-512.
      * @param salt The salt for encrypting.
      * @return String
      */
-    public static String encodePassword (String password, byte[] salt) {
+    public String encodePassword (String password, byte[] salt) throws NoSuchAlgorithmException {
         String encryptedPassword = "";
         try {
             // Choose SHA-512 for the algorithm
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-512");
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
 
             // Add salt to the input
             messageDigest.update(salt);
 
             // Generate the hashed password
-            byte[] bytes = messageDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+            byte[] bytes = messageDigest.digest(password.getBytes(charset));
 
             // Build the string from the bytes
             StringBuilder sb = new StringBuilder();
@@ -36,6 +62,7 @@ public class WebUtils {
         }
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            throw new NoSuchAlgorithmException();
         }
         return encryptedPassword;
     }
@@ -45,17 +72,18 @@ public class WebUtils {
      * @return byte[]
      * @throws NoSuchAlgorithmException
      */
-    public static byte[] generateSalt() {
-        byte[] salt = new byte[16];
+    public byte[] generateSalt() throws NoSuchAlgorithmException {
+        byte[] salt = new byte[saltSize];
         try {
             // Create Random Number Generator with SHA1PRNG algorithm
-            SecureRandom randomNumber = SecureRandom.getInstance("SHA1PRNG");
+            SecureRandom randomNumber = SecureRandom.getInstance(saltAlgorithm);
 
             // Create the byte array to store the number
             randomNumber.nextBytes(salt);
         }
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            throw new NoSuchAlgorithmException();
         }
         return salt;
     }

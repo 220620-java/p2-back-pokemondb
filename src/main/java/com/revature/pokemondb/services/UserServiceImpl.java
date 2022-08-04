@@ -1,16 +1,18 @@
 package com.revature.pokemondb.services;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.UserRepository;
-import com.revature.pokemondb.utils.WebUtils;
+import com.revature.pokemondb.utils.SecurityUtils;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
 	 * returned. If either of these fails, null is returned.
 	 * A token should be generated for authentication.
 	 */
-	public User login(String username, String password) throws FailedAuthenticationException {
+	public User loginUser(String username, String password) throws FailedAuthenticationException, NoSuchAlgorithmException {
 		Optional<User> oUser = userRepo.findByUsername(username);
 		if (oUser.isPresent()) {
 			User user = oUser.get();
@@ -64,8 +66,13 @@ public class UserServiceImpl implements UserService {
 			byte[] dbSalt = user.getSalt();
 
 			String encodedPassword = password;
+			SecurityUtils utils = new SecurityUtils();
 			if (dbSalt != null) {
-				encodedPassword = WebUtils.encodePassword(encodedPassword, dbSalt);
+				try {
+					encodedPassword = utils.encodePassword(encodedPassword, dbSalt);
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				}
 			}
 
 			// Password is correct
@@ -82,21 +89,31 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	/**
-	 * Inserts the user into the database. Throws an exception if username already exists.
+	 * Inserts the user into the database. Throws an exception if username/email already exists.
 	 */
-	public User registerUser(User user) throws UsernameAlreadyExistsException {
+	public User registerUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, NoSuchAlgorithmException {
 		if (userRepo.existsUserByUsername(user.getUsername())) {
 			throw new UsernameAlreadyExistsException();
 		}
 
 		// Make a email checker
+		if (userRepo.existsUserByEmail(user.getEmail())) {
+			throw new EmailAlreadyExistsException();
+		}
 
 		// Encode the password with the salt
-		byte[] salt = WebUtils.generateSalt();
-		String encodedPassword = WebUtils.encodePassword(user.getPassword(), salt);
-		user.setPassword(encodedPassword);
-		user.setSalt(salt);
-		return userRepo.save(user);
+		SecurityUtils utils = new SecurityUtils();
+		byte[] salt;
+		try {
+			salt = utils.generateSalt();
+			String encodedPassword = utils.encodePassword(user.getPassword(), salt);
+			user.setPassword(encodedPassword);
+			user.setSalt(salt);
+			return userRepo.save(user);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			throw new NoSuchAlgorithmException();
+		}
 	}
 
 	/**

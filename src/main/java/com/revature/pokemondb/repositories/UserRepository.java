@@ -12,4 +12,5 @@ import com.revature.pokemondb.models.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     public Optional<User> findByUsername(String username);
     public boolean existsUserByUsername(String username);
+    public boolean existsUserByEmail(String email);
 }
