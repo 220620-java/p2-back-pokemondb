@@ -1,7 +1,5 @@
 package com.revature.pokemondb.models;
 
-import com.revature.pokemondb.models.dtos.PokemonDTO;
-
 import java.sql.Timestamp;
 import java.util.Objects;
 import javax.persistence.*;
@@ -14,9 +12,9 @@ public class PokemonComments {
 	@Column(name = "id", updatable = false, insertable = false)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	@ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = Pokemon.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "pokemon_id", referencedColumnName = "id")
-	private PokemonDTO pokemon;
+	private Pokemon pokemon;
 	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
@@ -27,8 +25,8 @@ public class PokemonComments {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Timestamp posted_at = new Timestamp(System.currentTimeMillis());
 
-	public PokemonComments(Long id, PokemonDTO pokemon, User user_id, String comment_content, Boolean is_flagged,
-			Integer likes) {
+	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged,
+						   Integer likes) {
 		this.id = id;
 		this.pokemon = pokemon;
 		this.user = user_id;
@@ -49,11 +47,11 @@ public class PokemonComments {
 		this.id = id;
 	}
 
-	public PokemonDTO getPokemon_id() {
+	public Pokemon getPokemon_id() {
 		return pokemon;
 	}
 
-	public void setPokemon_id(PokemonDTO pokemon) {
+	public void setPokemon_id(Pokemon pokemon) {
 		this.pokemon = pokemon;
 	}
 
