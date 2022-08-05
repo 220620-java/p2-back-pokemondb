@@ -25,6 +25,7 @@ import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.UserService;
 
 @RestController
@@ -51,7 +52,7 @@ public class UserController {
 	 * @return
 	 */
     @GetMapping("/{id}")
-	public ResponseEntity<User> getUser (@PathVariable String id) {
+	public ResponseEntity<UserDTO> getUser (@PathVariable String id) {
 		User user;
 		try {
 			// Is this an id?
@@ -70,7 +71,8 @@ public class UserController {
 		}
 
 		if (user != null) {
-			return ResponseEntity.ok(user);
+			UserDTO userDTO = new UserDTO(user);
+			return ResponseEntity.ok(userDTO);
 		}
 		return ResponseEntity.notFound().build();
 	}
