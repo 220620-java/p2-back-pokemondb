@@ -14,6 +14,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.models.Ability;
+import com.revature.pokemondb.models.Move;
 import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.repositories.PokemonRepository;
 import com.revature.pokemondb.utils.StringUtils;
@@ -150,6 +152,7 @@ public class PokemonServiceImpl implements PokemonService{
         Pokemon pokemon;
         try {
 
+            // ---------------------------Pokemon JSON--------------------------------------
             JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
             
             // Id
@@ -184,14 +187,44 @@ public class PokemonServiceImpl implements PokemonService{
             // Image URL
             String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
 
-            // Species JSON
+            // Base Experience
+            int baseExperience = pokemonRoot.get("base_experience").asInt();
+
+            // Abilities
+            List<Ability> abilities = new ArrayList<>();
+            for (JsonNode jsonNode : pokemonRoot.get("abilities")) {
+                Ability newAbility = new Ability(
+                    jsonNode.get("ability").get("name").asText(),
+                    jsonNode.get("ability").get("url").asText(),
+                    jsonNode.get("slot").asInt(),
+                    jsonNode.get("is_hidden").asBoolean()
+                );
+                abilities.add(newAbility);
+            }
+
+            // Moves
+            List<Move> moves = new ArrayList<>();
+            for (JsonNode jsonNode : pokemonRoot.get("moves")) {
+                Move move = new Move();
+                move.setName(jsonNode.get("move").get("name").asText());
+                move.setURL(jsonNode.get("move").get("url").asText());
+                for (JsonNode node : jsonNode.get("version_group_details")) {
+                    int levelLearnedAt = node.get("level_learned_at").asInt();
+                    String learnMethod = node.get("move_learn_method").get("name").asText();
+                    String version = node.get("version_group").get("name").asText();
+                    move.addVersionGroupDetail(levelLearnedAt, learnMethod, version);
+                }
+                moves.add(move);
+            }
+
+            // ----------------------------Species JSON-----------------------------------------
             String speciesJSON = getPokemonSpeciesJSON(name);
             JsonNode speciesRoot = objMapper.readTree(speciesJSON);
 
             // Generation
             String generation = speciesRoot.get("generation").get("name").asText();
             String number = generation.split("-")[1];
-            int genNum = Integer.valueOf(StringUtils.getNumberFromRomanNumeral(number));
+            int genNum = StringUtils.getNumberFromRomanNumeral(number);
 
             // Category
             String category = speciesRoot.get("genera").get(7).get("genus").asText();
@@ -213,7 +246,7 @@ public class PokemonServiceImpl implements PokemonService{
                 }
             }
 
-            // Evolution JSON
+            // ---------------------------------Evolution JSON-------------------------------
             String evolutionURL = objMapper.readTree(speciesJSON).get("evolution_chain").get("url").asText();
             String evolutionJSON = getJSON(evolutionURL);
             JsonNode evolutionRoot = objMapper.readTree(evolutionJSON);
@@ -229,7 +262,7 @@ public class PokemonServiceImpl implements PokemonService{
                 evolutionChainNode = evolutionChainNode.get("evolves_to").get(0);
             } while (evolutionChainNode != null);
 
-            // Location JSON
+            // ----------------------------Location JSON-----------------------------
             String locationsURL = objMapper.readTree(pokemonJSON).get("location_area_encounters").asText();
             String locationJSON = getJSON(locationsURL);
             JsonNode locationRoot = objMapper.readTree(locationJSON);
@@ -277,6 +310,8 @@ public class PokemonServiceImpl implements PokemonService{
                 }
             }
 
+
+
             pokemon = new Pokemon (id, name,
                 height,
                 weight,
@@ -287,7 +322,10 @@ public class PokemonServiceImpl implements PokemonService{
                 category,
                 description,
                 evolutionChain,
-                locationVersions
+                locationVersions,
+                baseExperience,
+                abilities,
+                moves
             );
             return pokemon;
         } catch (JsonProcessingException e) {

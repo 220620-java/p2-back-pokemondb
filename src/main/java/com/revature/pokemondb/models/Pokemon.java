@@ -1,7 +1,11 @@
 package com.revature.pokemondb.models;
 
 import javax.persistence.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.*;
+import java.util.Map.Entry;
 
 @Entity
 @Table(name= "pokemon", schema="pokemon_db")
@@ -10,43 +14,68 @@ public class Pokemon {
 	@Id
 	@Column
     private int id;
+
 	@Column(name="name")
     private String name;
+
 	@Transient 
     private int height;
+
 	@Transient
     private int weight;
+
 	@Transient
 	private String[] types;
+
 	@Transient
 	private Map<String, Integer> baseStats;
+
 	@Column(name="sprite")
 	private String imageUrl;
+
 	@Column(name="gen")
     private int generation;
+
 	@Transient
     private String category;
+
 	@Transient
     private String description;
+
 	@Transient
     private List<String[]> evolutionChain;
+
     @Transient
-    private List<Map<String, String>> location_versions;
+    private List<Map<String, String>> locationVersions;
+
+    @Transient
+    private int baseExperience;
+
+    // Pokemon have 1 or 2 abilities and then a 3rd hidden ability sometimes.
+    @Transient
+    private List<Ability> abilities;
+
+    @Transient
+    private List<Move> moves;
 
     public Pokemon () {
         this.id = 0;
         this.name = "";
         this.height = 0;
         this.weight = 0;
-        this.types = null;
+        this.types = new String[0];
         this.baseStats = new HashMap<>();
         this.imageUrl = "";
         this.generation = 1;
         this.category = "";
         this.description = "";
         this.evolutionChain = new ArrayList<>();
-        this.location_versions = new ArrayList<>();
+        this.locationVersions = new ArrayList<>();
+        this.baseExperience = 0;
+        this.abilities = new ArrayList<>();
+        this.moves = new ArrayList<>();
     }
+
     public Pokemon (int id) {
         this.id = id;
         this.name = "";
@@ -59,9 +88,13 @@ public class Pokemon {
         this.category = "";
         this.description = "";
         this.evolutionChain = new ArrayList<>();
-        this.location_versions = new ArrayList<>();
+        this.locationVersions = new ArrayList<>();
+        this.baseExperience = 0;
+        this.abilities = new ArrayList<>();
+        this.moves = new ArrayList<>();
     }
-   // @Autowired
+
+   @Autowired
     public Pokemon (
         int id,
         String name,
@@ -74,7 +107,10 @@ public class Pokemon {
         String category,
         String description,
         List<String[]> evolutionChain,
-        List<Map<String, String>> location_versions
+        List<Map<String, String>> locationVersions,
+        int baseExperience,
+        List<Ability> abilities,
+        List<Move> moves
     ) {
         this.id = id;
         this.name = name;
@@ -87,7 +123,10 @@ public class Pokemon {
         this.category = category;
         this.description = description;
         this.evolutionChain = evolutionChain;
-        this.location_versions = location_versions;
+        this.locationVersions = locationVersions;
+        this.baseExperience = baseExperience;
+        this.abilities = abilities;
+        this.moves = moves;
     }
 
     public int getId() {
@@ -119,13 +158,11 @@ public class Pokemon {
     }
 
     public float getHeightInInches() {
-        float heightInInches = getHeight() * 3.937f;
-        return heightInInches;
+        return getHeight() * 3.937f;
     }
 
     public float getHeightInFeet() {
-        float heightInFeet = getHeight() * 0.328084f;
-        return heightInFeet;
+        return getHeight() * 0.328084f;
     }
 
     public String getHeightInFeetInches() {
@@ -140,8 +177,7 @@ public class Pokemon {
     }
 
     public float getWeightInPounds() {
-        float pounds = weight / 4.536f;
-        return pounds;
+        return weight / 4.536f;
     }
 
     public String getWeightInPoundsString() {
@@ -210,28 +246,53 @@ public class Pokemon {
     }
 
     public List<Map<String, String>> getLocationVersions() {
-        return location_versions;
+        return locationVersions;
     }
 
     public void setLocationVersions(List<Map<String, String>> locations) {
-        this.location_versions = locations;
+        this.locationVersions = locations;
+    }
+
+    public int getBaseExperience() {
+        return baseExperience;
+    }
+
+    public void setBaseExperience(int baseExperience) {
+        this.baseExperience = baseExperience;
+    }
+    public List<Ability> getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(List<Ability> abilities) {
+        this.abilities = abilities;
+    }
+    
+    public List<Move> getMoves() {
+        return moves;
+    }
+
+    public void setMoves(List<Move> moves) {
+        this.moves = moves;
     }
 
     @Override
     public String toString() {
         String retString = name + " (" + id + ") \n" +
         "[weight=" + getWeightInPoundsString() + ", height=" + getHeightInFeetInches() + "] \n"+ 
-        "[category=" + category + ", types=" + Arrays.toString(types) + "] \n" +
-        "[generation=" + generation + "] \n";
+        "[category=" + category + ", types=" + Arrays.toString(types) + ", base experience: " + baseExperience + "] \n" +
+        "[generation=" + generation + "]\n";
         
         // Base Stats
-        retString += "[baseStats: \n";
+        retString += "[baseStats:";
         if (baseStats != null) {
-            for (String stat : baseStats.keySet()) {
-                String baseStatName = stat;
-                Integer baseStatNumber = baseStats.get(stat);
-                retString += "\t" + baseStatName + ": " + baseStatNumber + "\n";
+            StringBuilder builder = new StringBuilder();
+            for (Entry<String, Integer> stat : baseStats.entrySet()) {
+                String baseStatName = stat.getKey();
+                Integer baseStatNumber = stat.getValue();
+                builder.append("\t" + baseStatName + ": " + baseStatNumber);
             }
+            retString += builder.toString();
         }
         retString += "] \n";
 
@@ -241,32 +302,66 @@ public class Pokemon {
         // Description
         retString += "[description=" + description + "]\n";
 
+        // Abilities
+        retString += "[abilities: ";
+        if (moves != null) {
+            StringBuilder builder = new StringBuilder();
+            for (Ability ability : abilities) {
+                builder.append("\t" + ability);
+            }
+            retString += builder.toString();
+        }
+        retString += "] \n";
+
         // Evolution Chain
-        retString += "[evolutionChain: \n";
+        retString += "[evolutionChain: ";
         if (evolutionChain != null) {
+            StringBuilder builder = new StringBuilder();
             for (String[] evolution : evolutionChain) {
                 String evolutionName = evolution[0];
                 String evolutionURL = evolution[1];
-                retString += "\t" + evolutionName + ": " + evolutionURL + "\n";
+                builder.append("\t" + evolutionName + ": " + evolutionURL);
             }
+            retString += builder.toString();
+        }
+        retString += "] \n";
+
+        // Moves
+        retString += "[moves: ";
+        if (moves != null) {
+            StringJoiner joiner = new StringJoiner(",");
+            for (Move move : moves) {
+                String moveName = move.getName();
+                joiner.add(moveName);
+                // String moveURL = move.getURL();
+                // builder.append("\t" + moveName + ": " + moveURL);
+                // for (Map<String, String> versionGroup : move.getVersionGroupDetails()) {
+                //     String levelLearnedAt = versionGroup.get("levelLearnedAt");
+                //     String learnMethod = versionGroup.get("learnMethod");
+                //     String version = versionGroup.get("versionName");
+                //     builder.append("\t\t" + version + ": " + levelLearnedAt + " " + learnMethod);
+                // }
+            }
+            retString += joiner.toString();
         }
         retString += "] \n";
         
         // Locations/Versions
-        retString += "[locations: \n";
-        if (location_versions != null) {
-            for (Map<String, String> location : location_versions) {
+        retString += "[locations: ";
+        if (locationVersions != null) {
+            StringBuilder builder = new StringBuilder();
+            for (Map<String, String> location : locationVersions) {
                 String locationName = location.get("locationName");
                 String locationURL = location.get("locationURL");
                 String versionName = location.get("versionName");
                 String maxChance = location.get("maxChance");
                 String methods = location.get("methods");
-                retString += "\t" + locationName + ": " + locationURL + "\n";
-                retString += "\t\t" + versionName + ": " + maxChance + " " + methods;
-                retString += "\n";
+                builder.append("\t\t" + locationName + ": " + locationURL + versionName + ": " + maxChance + " " + methods);
             }
+            retString += builder.toString();
         }
-        retString += "]";
+        retString += "] \n";
+        
         return retString;
     }
 }
