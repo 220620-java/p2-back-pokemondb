@@ -1,10 +1,10 @@
 package com.revature.pokemondb.models.dtos;
 
-import java.util.Objects;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * @author Barry Norton
@@ -13,9 +13,8 @@ import javax.persistence.Table;
 @Table(name = "pokemon", schema = "pokemon_db")
 public class PokemonDTO {
 	@Id
+	@Column
 	private int id;
-
-	/* Constructor */
 
 	public PokemonDTO(int id) {
 		this.id = id;
@@ -24,8 +23,6 @@ public class PokemonDTO {
 	public PokemonDTO() {
 		this.id = 0;
 	}
-
-	/* Overrides */
 
 	@Override
 	public String toString() {
@@ -45,14 +42,13 @@ public class PokemonDTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-			PokemonDTO other = (PokemonDTO) obj;
+
+		PokemonDTO other = (PokemonDTO) obj;
 		return id == other.id;
 	}
 
-	/* Getters and Setters */
-
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(int id) {

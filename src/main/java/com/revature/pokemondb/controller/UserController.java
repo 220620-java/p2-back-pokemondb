@@ -1,5 +1,7 @@
 package com.revature.pokemondb.controller;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpMethod;
@@ -17,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.pokemondb.auth.Auth;
+import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
+import com.revature.pokemondb.exceptions.InvalidInputException;
+import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
-import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.UserService;
 
 @RestController
@@ -53,7 +58,15 @@ public class UserController {
 			user = userService.getUserById(Long.valueOf(id));
 		} catch (NumberFormatException e) {
 			// No, it's a name
-			user = userService.getUserByUsername(String.valueOf(id));
+			try {
+				user = userService.getUserByUsername(String.valueOf(id));
+			} catch (RecordNotFoundException e1) {
+				e1.printStackTrace();
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			}
+		} catch (RecordNotFoundException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
 		if (user != null) {
@@ -62,29 +75,83 @@ public class UserController {
 		return ResponseEntity.notFound().build();
 	}
 
-    @PostMapping("/")
+	/**
+	 * Gets a user by id and returns 404 if not found
+	 * @param json
+	 * @return
+	 */
+    @GetMapping("/")
+	@Auth(requiredRole = "admin")
+	public ResponseEntity<List<User>> getAllUsers () {
+		List<User> allUsers = userService.getAllUsers();
+
+		if (allUsers != null) {
+			return ResponseEntity.ok(allUsers);
+		}
+		return ResponseEntity.notFound().build();
+	}
+    
+	/** 
+	 * @param map
+	 * @return ResponseEntity<User>
+	 */
+	@PostMapping("/")
 	public ResponseEntity<User> createUser (@RequestBody Map<String, String> map) {
 		User newUser = new User(map);
 		try {
 			newUser = userService.registerUser (newUser);
-		} catch (UsernameAlreadyExistsException e) {
+		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | NoSuchAlgorithmException e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
 	}
-
-    @PutMapping("/")
-	public ResponseEntity<String> updateUserDetails () {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
+	@PutMapping("/")
+	@Auth(requiredRole = "admin")
+	public ResponseEntity<User> updateUserDetails (@RequestBody User user) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+		} catch (RecordNotFoundException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
 	@PatchMapping("/")
-	public ResponseEntity<String> patchUserDetails () {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+	@Auth(requiredRole = "admin")
+	public ResponseEntity<User> patchUserDetails (@RequestBody User user) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+		} catch (RecordNotFoundException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
-
-    @DeleteMapping("/")
-	public ResponseEntity<String> deleteUser () {
-		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
+    
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
+	@DeleteMapping("/")
+	@Auth(requiredRole = "admin")
+	public ResponseEntity<User> deleteUser (@RequestBody User user) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+		} catch (RecordNotFoundException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
 	}
 }

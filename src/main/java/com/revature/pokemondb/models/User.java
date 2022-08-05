@@ -24,9 +24,11 @@ public class User {
 	@Id
 	@Column(name="id", updatable=false, insertable=false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long userId; 
+	private Long userId = 0l; 
 	private String username;
-	private String email; 
+	private String email;
+	@Column(name = "role")
+	private String role;
 	@Column(name = "passwd")
 	private String password;
 	private byte[] salt;
@@ -36,6 +38,7 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
+		this.role = "user";
 	}
 
 	public User (long id) {
@@ -43,36 +46,22 @@ public class User {
 		this.username = "";
 		this.email = "";
 		this.password = "";
+		this.role = "user";
 	}
 
-	public User (User user) {
-		this.userId = user.getUserId();
-		this.username = user.getUsername();
-		this.email = user.getEmail();
-		this.salt = user.getSalt();
-		this.password = user.getPassword();
+	public User(String username, String email) {
+		this.username = username;
+		this.email = email;
 	}
 
-	public User (UserDTO user) {
-		this.userId = user.getUserId();
-		this.username = user.getUsername();
-		this.email = user.getEmail();
-	}
-
-	public User (Map<String, String> map) {
-		if ((map.get("userId") != null)) {
-			this.userId = Long.valueOf(map.get("userId"));
-		}
-		this.username = map.get("username");
-		this.email = map.get("email");
-		if (map.get("salt") != null) {
-			this.salt = map.get("salt").getBytes();
-		}
-		this.password = map.get("password");
+	public User(String username, String email, String password) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
 	}
 
 	@Autowired
-    public User(Long userId, String username, String email, String phone, String password) {
+    public User(Long userId, String username, String email, String password) {
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
@@ -85,6 +74,45 @@ public class User {
 		this.email = email;
 		this.salt = salt;
 		this.password = password;
+	}
+
+	public User (User user) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.salt = user.getSalt();
+		this.password = user.getPassword();
+		this.role = user.getRole();
+	}
+
+	public User (UserDTO user) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.role = user.getRole();
+	}
+
+	public User (Map<String, String> map) {
+		if ((map.get("userId") != null)) {
+			this.userId = Long.valueOf(map.get("userId"));
+		}
+
+		this.username = map.get("username");
+
+		this.email = map.get("email");
+
+		if (map.get("salt") != null) {
+			this.salt = map.get("salt").getBytes();
+		}
+
+		this.password = map.get("password");
+
+		if (map.get("role") != null) {
+			this.role = map.get("role");
+		}
+		else {
+			this.role = "user";
+		}
 	}
 	
 	@Override
@@ -127,10 +155,10 @@ public class User {
 	}
 	
 	/** 
-	 * @param customer_id
+	 * @param userId
 	 */
-	public void setUserId(Long customer_id) {
-		this.userId = customer_id;
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 	
 	/** 
@@ -189,18 +217,11 @@ public class User {
         this.salt = salt;
     }
 
-	// public void setEncryptedPassword () {
-	// 	this.salt = WebUtils.generateSalt();
-	// 	this.password = WebUtils.generateEncryptedPassword(this.password, this.salt);
-	// }
+	public String getRole() {
+		return role;
+	}
 
-	// public void setEncryptedPassword (String password) {
-	// 	this.salt = WebUtils.generateSalt();
-	// 	this.password = WebUtils.generateEncryptedPassword(password, this.salt);
-	// }
-
-	// public void setEncryptedPassword (String password, byte[] salt) {
-	// 	this.salt = salt;
-	// 	this.password = WebUtils.generateEncryptedPassword(password, this.salt);
-	// }
+	public void setRole (String role) {
+		this.role = role;
+	}
 }

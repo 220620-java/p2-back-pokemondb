@@ -1,9 +1,7 @@
 package com.revature.pokemondb.models;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.Objects;
-
 import javax.persistence.*;
 
 @Entity
@@ -27,12 +25,8 @@ public class PokemonComments {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Timestamp posted_at = new Timestamp(System.currentTimeMillis());
 
-	public PokemonComments() {
-
-	}
-
 	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged,
-			Integer likes) {
+						   Integer likes) {
 		this.id = id;
 		this.pokemon = pokemon;
 		this.user = user_id;
@@ -41,8 +35,8 @@ public class PokemonComments {
 		this.likes = likes;
 	}
 
-	public PokemonComments(Long id) {
-		this.id = id;
+	public PokemonComments() {
+
 	}
 
 	public Long getId() {
@@ -53,8 +47,8 @@ public class PokemonComments {
 		this.id = id;
 	}
 
-	public int getPokemon_id() {
-		return pokemon.getId();
+	public Pokemon getPokemon_id() {
+		return pokemon;
 	}
 
 	public void setPokemon_id(Pokemon pokemon) {
@@ -123,7 +117,7 @@ public class PokemonComments {
 
 	@Override
 	public String toString() {
-		return "PokemonComments [id=" + id + ", pokemon=" + pokemon.getName() + ", user=" + user.getUsername()
+		return "PokemonComments [id=" + id + ", pokemon=" + pokemon + ", user=" + user.getUsername()
 				+ ", comment_content=" + comment_content + ", is_flagged=" + isflagged + ", likes=" + likes
 				+ ", posted_at=" + posted_at + "]";
 	}
