@@ -1,6 +1,5 @@
 package com.revature.pokemondb.services;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.revature.pokemondb.PokemondbApplication;
-import com.revature.pokemondb.models.ArtComment;
 import com.revature.pokemondb.models.Fanart;
-import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.User;
-import com.revature.pokemondb.models.dtos.UserIdDTO;
 import com.revature.pokemondb.repositories.FanartRepository;
 
 @SpringBootTest(classes=PokemondbApplication.class)
