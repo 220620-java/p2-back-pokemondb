@@ -27,6 +27,12 @@ public interface FanartRepository extends JpaRepository<Fanart, Integer>{
 	 * @param isFlagged a Boolean to represent whether a fanart is flagged
 	 * @return a list of fanart objects
 	 */
+	public List<Fanart> findByIsFlaggedOrderById(Boolean isFlagged);
+	/**
+	 * Returns all fanart objects with the value of isFlagged matching the parameter
+	 * @param isFlagged a Boolean to represent whether a fanart is flagged
+	 * @return a list of fanart objects
+	 */
 	public List<Fanart> findByIsFlaggedOrderByIdDesc(Boolean isFlagged);
 
 	/**

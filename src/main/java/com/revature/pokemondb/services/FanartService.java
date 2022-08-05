@@ -34,8 +34,8 @@ public class FanartService {
 	 * This will be used to determine the lower limit for accessing fanart
 	 * @return an id
 	 */
-	public long getLowestID() {
-		List<Fanart> fanart = artRepo.findByIsFlagged(false);
+	public int getLowestID() {
+		List<Fanart> fanart = artRepo.findByIsFlaggedOrderById(false);
 		if (fanart != null) {
 			return fanart.get(0).getId();
 		} else {
@@ -48,7 +48,7 @@ public class FanartService {
 	 * This will be used to determine the upper limit for accessing fanart
 	 * @return an id
 	 */
-	public long getHighestID() {
+	public int getHighestID() {
 		List<Fanart> fanart = artRepo.findByIsFlaggedOrderByIdDesc(false);
 		if (fanart != null) {
 			return fanart.get(0).getId();
@@ -151,6 +151,11 @@ public class FanartService {
 		return fanart;
 	}
 	
+	/**
+	 * Tests for the existence of a fanart with a given id
+	 * @param id the id of the fanart to be found
+	 * @return a boolean to represent the fanart's existence
+	 */
 	public Boolean getExistsById(int id) {
 		return artRepo.existsById(id);
 	}
