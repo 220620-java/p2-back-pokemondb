@@ -1,8 +1,9 @@
 package com.revature.pokemondb.controller;
 
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,14 +23,15 @@ import com.revature.pokemondb.services.UserServiceImpl;
 import com.revature.pokemondb.services.WishlistService;
 
 @RestController
-@RequestMapping(path="/wishlist")
+@RequestMapping(path = "/wishlist")
 public class WishlistController {
     private UserService userService;
     private PokemonService pokemonService;
     private ObjectMapper objectMapper;
     private WishlistService wishlistService;
 
-    public WishlistController(PokemonService pokemonService, ObjectMapper objectMapper, WishlistService wishlistService, UserService userService) {
+    public WishlistController(PokemonService pokemonService, ObjectMapper objectMapper, WishlistService wishlistService,
+            UserService userService) {
         this.pokemonService = pokemonService;
         this.objectMapper = objectMapper;
         this.wishlistService = wishlistService;
@@ -52,9 +54,9 @@ public class WishlistController {
         }
         return ResponseEntity.notFound().build();
     }
-    
+
     @GetMapping(path = "/{id}")
-    public ResponseEntity<String> getWishlistById(@PathVariable int id) {
+    public ResponseEntity<String> getWishlistById(@PathVariable Long id) {
         Wishlist wishlist = wishlistService.findById(id);
         String wishlistJSON;
         try {
@@ -70,23 +72,11 @@ public class WishlistController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping(path = "/create")
-    public ResponseEntity<String> createWishlist(@RequestBody Wishlist wishlist) {
-        Boolean success = true;
-        success = wishlistService.addWishlist(wishlist);
-        if (success) {
-            return ResponseEntity.ok(null);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
+    public ResponseEntity<String> addPokemon(@RequestBody Map<String, Long > wish) {
+        if (wish != null) {
+            wishlistService.addPokemonToWishlist(Integer.valueOf(wish.get("pokemonid").toString()), wish.get("userid"));
+            return ResponseEntity.ok("add a wishlist");
         }
+        return ResponseEntity.notFound().build();
     }
-
-    // public ResponseEntity<User> addPokemon(@RequestBody Wishlist wishlist, @PathVariable Integer pokemonId, @PathVariable Integer userId) {
-    //     if ( wishlist != null) {
-    //         try {
-    //                 return wishlistService.
-    //             }
-    //         }
-    //     }
-    // }
 }
