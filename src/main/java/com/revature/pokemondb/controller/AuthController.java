@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import com.revature.pokemondb.services.TokenService;
 import com.revature.pokemondb.services.UserService;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping(path="/auth")
 public class AuthController {
     private UserService userService;
