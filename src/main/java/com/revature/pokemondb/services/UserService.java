@@ -4,7 +4,7 @@ import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
 
 public interface UserService {
-	public User getUserById (Long id);
+	public User getUserById (Integer userId);
 	
 	public User getUserByUsername (String username);
 

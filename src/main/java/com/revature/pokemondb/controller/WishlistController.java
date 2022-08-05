@@ -13,21 +13,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.models.Pokemon;
+import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.Wishlist;
 import com.revature.pokemondb.services.PokemonService;
+import com.revature.pokemondb.services.UserService;
+import com.revature.pokemondb.services.UserServiceImpl;
 import com.revature.pokemondb.services.WishlistService;
 
 @RestController
 @RequestMapping(path="/wishlist")
 public class WishlistController {
+    private UserService userService;
     private PokemonService pokemonService;
     private ObjectMapper objectMapper;
     private WishlistService wishlistService;
 
-    public WishlistController(PokemonService pokemonService, ObjectMapper objectMapper, WishlistService wishlistService) {
+    public WishlistController(PokemonService pokemonService, ObjectMapper objectMapper, WishlistService wishlistService, UserService userService) {
         this.pokemonService = pokemonService;
         this.objectMapper = objectMapper;
         this.wishlistService = wishlistService;
+        this.userService = userService;
     }
 
     @GetMapping("/")
@@ -74,4 +80,13 @@ public class WishlistController {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
     }
+
+    // public ResponseEntity<User> addPokemon(@RequestBody Wishlist wishlist, @PathVariable Integer pokemonId, @PathVariable Integer userId) {
+    //     if ( wishlist != null) {
+    //         try {
+    //                 return wishlistService.
+    //             }
+    //         }
+    //     }
+    // }
 }
