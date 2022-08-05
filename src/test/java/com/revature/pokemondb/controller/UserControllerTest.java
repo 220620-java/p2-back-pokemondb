@@ -31,15 +31,11 @@ public class UserControllerTest {
         mockMvc.perform(options("/user/"))
             .andExpect(status().isOk());
     }
-    
-    @Disabled
+
     @Test
     void testGetUserById() throws Exception {
         User mockUser = new User();
-        
-
         Mockito.when(userService.getUserById(1l)).thenReturn(mockUser);
-
         mockMvc.perform(get("/user/1"))
         .andExpect(status().isOk())
         .andExpect(content().json(objectMapper.writeValueAsString(new UserDTO(mockUser))));
