@@ -1,8 +1,10 @@
 package com.revature.pokemondb.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.*;
-
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
 @Table(name= "pokemon", schema="pokemon_db")
 public class Pokemon {
@@ -33,20 +35,7 @@ public class Pokemon {
     @Transient
     private List<Map<String, String>> location_versions;
 
-    public Pokemon () {
-        this.id = 0;
-        this.name = "";
-        this.height = 0;
-        this.weight = 0;
-        this.types = null;
-        this.baseStats = new HashMap<>();
-        this.imageUrl = "";
-        this.generation = 1;
-        this.category = "";
-        this.description = "";
-        this.evolutionChain = new ArrayList<>();
-        this.location_versions = new ArrayList<>();
-    }
+    public Pokemon() {}
     public Pokemon (int id) {
         this.id = id;
         this.name = "";

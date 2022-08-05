@@ -1,23 +1,28 @@
 package com.revature.pokemondb.services;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
+import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.UserRepository;
-import com.revature.pokemondb.utils.WebUtils;
+import com.revature.pokemondb.utils.SecurityUtils;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
+	private SecurityUtils securityUtils;
 
-	public UserServiceImpl (UserRepository repo) {
+	public UserServiceImpl (UserRepository repo, SecurityUtils utils) {
 		this.userRepo = repo;
+		this.securityUtils = utils;
 	}
 
 	/**
@@ -56,7 +61,7 @@ public class UserServiceImpl implements UserService {
 	 * returned. If either of these fails, null is returned.
 	 * A token should be generated for authentication.
 	 */
-	public User login(String username, String password) throws FailedAuthenticationException {
+	public User loginUser(String username, String password) throws RecordNotFoundException, FailedAuthenticationException, NoSuchAlgorithmException {
 		Optional<User> oUser = userRepo.findByUsername(username);
 		if (oUser.isPresent()) {
 			User user = oUser.get();
@@ -65,7 +70,12 @@ public class UserServiceImpl implements UserService {
 
 			String encodedPassword = password;
 			if (dbSalt != null) {
-				encodedPassword = WebUtils.encodePassword(encodedPassword, dbSalt);
+				try {
+					encodedPassword = securityUtils.encodePassword(encodedPassword, dbSalt);
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+					throw new NoSuchAlgorithmException();
+				}
 			}
 
 			// Password is correct
@@ -78,25 +88,43 @@ public class UserServiceImpl implements UserService {
 				throw new FailedAuthenticationException();
 			}
 		}
-		return null;
+		throw new RecordNotFoundException();
 	}
 	
 	/**
-	 * Inserts the user into the database. Throws an exception if username already exists.
+	 * Inserts the user into the database. Throws an exception if username/email already exists.
+	 * @throws InvalidInputException
 	 */
-	public User registerUser(User user) throws UsernameAlreadyExistsException {
+	public User registerUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, NoSuchAlgorithmException, InvalidInputException {
+		// Does the username already exist in the database
 		if (userRepo.existsUserByUsername(user.getUsername())) {
 			throw new UsernameAlreadyExistsException();
 		}
 
-		// Make a email checker
+		// Does user's email already exist in the database
+		if (userRepo.existsUserByEmail(user.getEmail())) {
+			throw new EmailAlreadyExistsException();
+		}
+
+		// Is the password null or empty?
+		if (user.getPassword() == null || user.getPassword().equals("")) {
+			throw new InvalidInputException();
+		}
 
 		// Encode the password with the salt
-		byte[] salt = WebUtils.generateSalt();
-		String encodedPassword = WebUtils.encodePassword(user.getPassword(), salt);
-		user.setPassword(encodedPassword);
-		user.setSalt(salt);
-		return userRepo.save(user);
+		byte[] salt;
+		try {
+			salt = securityUtils.generateSalt();
+			String encodedPassword = securityUtils.encodePassword(user.getPassword(), salt);
+			user.setPassword(encodedPassword);
+			user.setSalt(salt);
+
+			// Save the user to the database
+			return userRepo.save(user);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			throw new NoSuchAlgorithmException();
+		}
 	}
 
 	/**
@@ -139,7 +167,8 @@ public class UserServiceImpl implements UserService {
 	 * a user has been banned.
 	 */
 	public User banUser(User user) {
-		return null;
+		// TODO Add user to the ban table.
+		return user;
 	}
 	
 	/**
@@ -147,7 +176,8 @@ public class UserServiceImpl implements UserService {
 	 * a user has been unbanned.
 	 */
 	public User unBanUser(User user) {
-		return null;
+		// TODO Remove user from the ban table.
+		return user;
 	}
 
 

@@ -1,5 +1,6 @@
 package com.revature.pokemondb.controller;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
+import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.TokenService;
@@ -33,14 +35,14 @@ public class AuthController {
         String username = credentials.get("username");
 		String password = credentials.get("password");
 		try {
-            User user = userService.login(username, password);
+            User user = userService.loginUser(username, password);
             if (user != null) {
                 UserDTO userDto = new UserDTO(user);
                 String jws = tokenService.createToken(user);
                 userDto.setToken(jws);
                 return ResponseEntity.status(200).header("Auth", jws).body(userDto);
             }
-        } catch (FailedAuthenticationException e) {
+        } catch (FailedAuthenticationException | NoSuchAlgorithmException | RecordNotFoundException e) {
             e.printStackTrace();
         }
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
