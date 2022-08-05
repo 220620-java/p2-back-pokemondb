@@ -2,6 +2,8 @@ package com.revature.pokemondb.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 // import org.springframework.security.authentication.AuthenticationManager;
 // import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 // import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -52,5 +54,16 @@ public class WebSecurityConfig {
 						.maxAge(3600);
 			}
 		};
+	}
+
+	@Bean
+	public WebClient webClient() {
+		final int size = 16 * 1024 * 1024;
+		final ExchangeStrategies strategies = ExchangeStrategies.builder()
+			.codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+			.build();
+		return WebClient.builder()
+			.exchangeStrategies(strategies)
+			.build();
 	}
 }
