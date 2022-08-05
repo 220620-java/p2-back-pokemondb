@@ -4,8 +4,6 @@ import org.springframework.stereotype.Repository;
 
 import com.revature.pokemondb.models.RatePokeComm;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -14,6 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  */
 @Repository
-public interface RatePokeCommRepository extends JpaRepository<RatePokeComm, Integer>{
-	
+public interface RatePokeCommRepository extends JpaRepository<RatePokeComm, Integer> {
+
 }

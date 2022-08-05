@@ -18,35 +18,38 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 // @EnableWebSecurity
 public class WebSecurityConfig {
 
-    /**
-     * Disables Cross-Site Request Forgery (CSRF)
-     * https://owasp.org/www-community/attacks/csrf
-     * Might implement a CSRF token instead: https://www.baeldung.com/spring-security-csrf
-     * Customizing filter chain: https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-requests.html
-     * @param http
-     * @return
-     * @throws Exception
-     */
+	/**
+	 * Disables Cross-Site Request Forgery (CSRF)
+	 * https://owasp.org/www-community/attacks/csrf
+	 * Might implement a CSRF token instead:
+	 * https://www.baeldung.com/spring-security-csrf
+	 * Customizing filter chain:
+	 * https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-requests.html
+	 * 
+	 * @param http
+	 * @return
+	 * @throws Exception
+	 */
 	// @Bean
-    // public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    //     http.csrf().disable()
-    //     .httpBasic();
-    //     return http.build();
-    // }
+	// public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	// http.csrf().disable()
+	// .httpBasic();
+	// return http.build();
+	// }
 
-    // This does some cors stuff maybe I think lol
+	// This does some cors stuff maybe I think lol
 	@Bean
 	public WebMvcConfigurer corsConfig() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-					.allowedOrigins("*")
-					.allowedHeaders("*")
-					.exposedHeaders("*")
-					.allowCredentials(false)
-					.maxAge(3600);
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+						.allowedOrigins("*")
+						.allowedHeaders("*")
+						.exposedHeaders("*")
+						.allowCredentials(false)
+						.maxAge(3600);
 			}
 		};
 	}

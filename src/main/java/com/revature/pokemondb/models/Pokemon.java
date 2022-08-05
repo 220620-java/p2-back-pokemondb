@@ -1,5 +1,7 @@
 package com.revature.pokemondb.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 import java.util.Map.Entry;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
 @Table(name= "pokemon", schema="pokemon_db")
 public class Pokemon {
@@ -91,7 +94,7 @@ public class Pokemon {
         this.machineMoves = new HashSet<>();
         this.otherMoves = new HashSet<>();
     }
-
+    
     public Pokemon (int id) {
         this.id = id;
         this.name = "";
