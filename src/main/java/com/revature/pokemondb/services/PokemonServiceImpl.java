@@ -203,18 +203,39 @@ public class PokemonServiceImpl implements PokemonService{
             }
 
             // Moves
-            List<Move> moves = new ArrayList<>();
+            Set<Move> levelMoves = new HashSet<>();
+            Set<Move> eggMoves = new HashSet<>();
+            Set<Move> tutorMoves = new HashSet<>();
+            Set<Move> machineMoves = new HashSet<>();
+            Set<Move> otherMoves = new HashSet<>();
             for (JsonNode jsonNode : pokemonRoot.get("moves")) {
                 Move move = new Move();
+
                 move.setName(jsonNode.get("move").get("name").asText());
                 move.setURL(jsonNode.get("move").get("url").asText());
-                for (JsonNode node : jsonNode.get("version_group_details")) {
-                    int levelLearnedAt = node.get("level_learned_at").asInt();
-                    String learnMethod = node.get("move_learn_method").get("name").asText();
-                    String version = node.get("version_group").get("name").asText();
-                    move.addVersionGroupDetail(levelLearnedAt, learnMethod, version);
+
+                for (JsonNode versionGroupDetailsNode : jsonNode.get("version_group_details")) {
+                    move.setTypeOfMove(versionGroupDetailsNode.get("move_learn_method").get("name").asText());
+                    move.setLevelLearnedAt(versionGroupDetailsNode.get("level_learned_at").asInt());
+
+                    switch (move.getTypeOfMove()) {
+                        case ("level-up"):
+                            levelMoves.add(move);
+                            break;
+                        case ("egg"):
+                            eggMoves.add(move);
+                            break;
+                        case ("tutor"):
+                            tutorMoves.add(move);
+                            break;
+                        case ("machine"):
+                            machineMoves.add(move);
+                            break;
+                        default:
+                            otherMoves.add(move);
+                            break;
+                    }
                 }
-                moves.add(move);
             }
 
             // ----------------------------Species JSON-----------------------------------------
@@ -231,15 +252,16 @@ public class PokemonServiceImpl implements PokemonService{
             
             // Description
             String description = "No Description";
-            int flavorTextSize = speciesRoot.get("flavor_text_entries").size();
+            JsonNode flavorTextEntriesNode = speciesRoot.get("flavor_text_entries");
+            int flavorTextSize = flavorTextEntriesNode.size();
             for (int i = 0; i < flavorTextSize; i++) {
-                JsonNode currentNode = speciesRoot.get("flavor_text_entries").get(i);
+                JsonNode currentNode = flavorTextEntriesNode.get(i);
                 String languageName = currentNode.get("language").get("name").asText();
 
                 // String uses equals instead of == so it won't be false
                 // Grab the first English flavor text description
                 if (languageName.equals("en")) {
-                    description = speciesRoot.get("flavor_text_entries").get(i).get("flavor_text").asText();
+                    description = flavorTextEntriesNode.get(i).get("flavor_text").asText();
                     description = description.replace("\f", " ");
                     description = description.replace("\n", " ");
                     break;
@@ -292,7 +314,6 @@ public class PokemonServiceImpl implements PokemonService{
                     JsonNode encounterNode = versionNode.get("encounter_details");
                     Set<String> encounterSet = new HashSet<>();
                     
-                    // StringJoiner joiner = new StringJoiner(",");
                     for (JsonNode encounter : encounterNode) {
                         encounterSet.add(encounter.get("method").get("name").asText());
                     }
@@ -325,7 +346,11 @@ public class PokemonServiceImpl implements PokemonService{
                 locationVersions,
                 baseExperience,
                 abilities,
-                moves
+                levelMoves,
+                eggMoves,
+                tutorMoves,
+                machineMoves,
+                otherMoves
             );
             return pokemon;
         } catch (JsonProcessingException e) {

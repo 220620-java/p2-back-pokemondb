@@ -1,29 +1,28 @@
 package com.revature.pokemondb.models;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class Move {
     private String name;
     private String url;
-    private List<Map<String, String>> versionGroupDetails;
-    
+    private String typeOfMove;
+    private int levelLearnedAt;
+
     public Move () {
         this.name = "";
         this.url = "";
-        this.versionGroupDetails = new ArrayList<>();
+        this.typeOfMove = "";
+        this.levelLearnedAt = 0;
     }
 
     public Move (
         String name,
         String url,
-        List<Map<String, String>> versionGroupDetails
+        String typeOfMove,
+        int levelLearnedAt
         ) {
         this.name = name;
         this.url = url;
-        this.versionGroupDetails = versionGroupDetails;
+        this.typeOfMove = typeOfMove;
+        this.levelLearnedAt = levelLearnedAt;
     }
     
     public String getName() {
@@ -42,19 +41,19 @@ public class Move {
         this.url = url;
     }
 
-    public List<Map<String, String>> getVersionGroupDetails() {
-        return versionGroupDetails;
+    public String getTypeOfMove() {
+        return typeOfMove;
     }
 
-    public void setVersionGroupDetails(List<Map<String, String>> versionGroupDetails) {
-        this.versionGroupDetails = versionGroupDetails;
+    public void setTypeOfMove(String typeOfMove) {
+        this.typeOfMove = typeOfMove;
+    }
+    
+    public int getLevelLearnedAt() {
+        return levelLearnedAt;
     }
 
-    public void addVersionGroupDetail(int levelLearnedAt, String moveLearnMethod, String versionName) {
-        Map<String, String> versionGroup = new HashMap<>();
-        versionGroup.put("levelLearnedAt", String.valueOf(levelLearnedAt));
-        versionGroup.put("learnMethod", moveLearnMethod);
-        versionGroup.put("versionName", versionName);
-        versionGroupDetails.add(versionGroup);
+    public void setLevelLearnedAt(int levelLearnedAt) {
+        this.levelLearnedAt = levelLearnedAt;
     }
 }

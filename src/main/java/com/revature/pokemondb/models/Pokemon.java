@@ -56,7 +56,19 @@ public class Pokemon {
     private List<Ability> abilities;
 
     @Transient
-    private List<Move> moves;
+    private Set<Move> levelMoves;
+
+    @Transient
+    private Set<Move> eggMoves;
+    
+    @Transient
+    private Set<Move> tutorMoves;
+    
+    @Transient
+    private Set<Move> machineMoves;
+    
+    @Transient
+    private Set<Move> otherMoves;
 
     public Pokemon () {
         this.id = 0;
@@ -73,7 +85,11 @@ public class Pokemon {
         this.locationVersions = new ArrayList<>();
         this.baseExperience = 0;
         this.abilities = new ArrayList<>();
-        this.moves = new ArrayList<>();
+        this.levelMoves = new HashSet<>();
+        this.eggMoves = new HashSet<>();
+        this.tutorMoves = new HashSet<>();
+        this.machineMoves = new HashSet<>();
+        this.otherMoves = new HashSet<>();
     }
 
     public Pokemon (int id) {
@@ -91,7 +107,11 @@ public class Pokemon {
         this.locationVersions = new ArrayList<>();
         this.baseExperience = 0;
         this.abilities = new ArrayList<>();
-        this.moves = new ArrayList<>();
+        this.levelMoves = new HashSet<>();
+        this.eggMoves = new HashSet<>();
+        this.tutorMoves = new HashSet<>();
+        this.machineMoves = new HashSet<>();
+        this.otherMoves = new HashSet<>();
     }
 
    @Autowired
@@ -110,7 +130,11 @@ public class Pokemon {
         List<Map<String, String>> locationVersions,
         int baseExperience,
         List<Ability> abilities,
-        List<Move> moves
+        Set<Move> levelMoves,
+        Set<Move> eggMoves,
+        Set<Move> tutorMoves,
+        Set<Move> machineMoves,
+        Set<Move> otherMoves
     ) {
         this.id = id;
         this.name = name;
@@ -126,7 +150,11 @@ public class Pokemon {
         this.locationVersions = locationVersions;
         this.baseExperience = baseExperience;
         this.abilities = abilities;
-        this.moves = moves;
+        this.levelMoves = levelMoves;
+        this.eggMoves = eggMoves;
+        this.tutorMoves = tutorMoves;
+        this.machineMoves = machineMoves;
+        this.otherMoves = otherMoves;
     }
 
     public int getId() {
@@ -267,13 +295,45 @@ public class Pokemon {
     public void setAbilities(List<Ability> abilities) {
         this.abilities = abilities;
     }
-    
-    public List<Move> getMoves() {
-        return moves;
+
+    public Set<Move> getLevelMoves() {
+        return levelMoves;
     }
 
-    public void setMoves(List<Move> moves) {
-        this.moves = moves;
+    public void setLevelMoves(Set<Move> levelMoves) {
+        this.levelMoves = levelMoves;
+    }
+
+    public Set<Move> getEggMoves() {
+        return eggMoves;
+    }
+
+    public void setEggMoves(Set<Move> eggMoves) {
+        this.eggMoves = eggMoves;
+    }
+
+    public Set<Move> getTutorMoves() {
+        return tutorMoves;
+    }
+
+    public void setTutorMoves(Set<Move> tutorMoves) {
+        this.tutorMoves = tutorMoves;
+    }
+    
+    public Set<Move> getMachineMoves() {
+        return machineMoves;
+    }
+
+    public void setMachineMoves(Set<Move> machineMoves) {
+        this.machineMoves = machineMoves;
+    }
+
+    public Set<Move> getOtherMoves() {
+        return otherMoves;
+    }
+
+    public void setOtherMoves(Set<Move> otherMoves) {
+        this.otherMoves = otherMoves;
     }
 
     @Override
@@ -304,7 +364,7 @@ public class Pokemon {
 
         // Abilities
         retString += "[abilities: ";
-        if (moves != null) {
+        if (abilities != null) {
             StringBuilder builder = new StringBuilder();
             for (Ability ability : abilities) {
                 builder.append("\t" + ability);
@@ -327,21 +387,43 @@ public class Pokemon {
         retString += "] \n";
 
         // Moves
-        retString += "[moves: ";
-        if (moves != null) {
-            StringJoiner joiner = new StringJoiner(",");
-            for (Move move : moves) {
-                String moveName = move.getName();
-                joiner.add(moveName);
-                // String moveURL = move.getURL();
-                // builder.append("\t" + moveName + ": " + moveURL);
-                // for (Map<String, String> versionGroup : move.getVersionGroupDetails()) {
-                //     String levelLearnedAt = versionGroup.get("levelLearnedAt");
-                //     String learnMethod = versionGroup.get("learnMethod");
-                //     String version = versionGroup.get("versionName");
-                //     builder.append("\t\t" + version + ": " + levelLearnedAt + " " + learnMethod);
-                // }
-            }
+        StringJoiner joiner = new StringJoiner(",");
+
+        retString += "[levelMoves: ";
+        if (levelMoves != null && !levelMoves.isEmpty()) {
+            for (Move move : levelMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[eggMoves: ";
+        if (eggMoves != null && !eggMoves.isEmpty()) {
+            for (Move move : eggMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[tutorMoves: ";
+        if (tutorMoves != null && !tutorMoves.isEmpty()) {
+            for (Move move : tutorMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[machineMoves: ";
+        if (machineMoves != null && !machineMoves.isEmpty()) {
+            for (Move move : machineMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[otherMoves: ";
+        if (otherMoves != null && !otherMoves.isEmpty()) {
+            for (Move move : otherMoves) { joiner.add(move.getName()); }
             retString += joiner.toString();
         }
         retString += "] \n";
