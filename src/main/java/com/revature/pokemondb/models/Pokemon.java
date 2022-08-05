@@ -3,7 +3,12 @@ package com.revature.pokemondb.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.*;
+import java.util.Map.Entry;
+
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
 @Table(name= "pokemon", schema="pokemon_db")
@@ -12,30 +17,84 @@ public class Pokemon {
 	@Id
 	@Column
     private int id;
+
 	@Column(name="name")
     private String name;
+
 	@Transient 
     private int height;
+
 	@Transient
     private int weight;
+
 	@Transient
 	private String[] types;
+
 	@Transient
 	private Map<String, Integer> baseStats;
+
 	@Column(name="sprite")
 	private String imageUrl;
+
 	@Column(name="gen")
     private int generation;
+
 	@Transient
     private String category;
+
 	@Transient
     private String description;
+
 	@Transient
     private List<String[]> evolutionChain;
-    @Transient
-    private List<Map<String, String>> location_versions;
 
-    public Pokemon() {}
+    @Transient
+    private List<Map<String, String>> locationVersions;
+
+    @Transient
+    private int baseExperience;
+
+    // Pokemon have 1 or 2 abilities and then a 3rd hidden ability sometimes.
+    @Transient
+    private List<Ability> abilities;
+
+    @Transient
+    private Set<Move> levelMoves;
+
+    @Transient
+    private Set<Move> eggMoves;
+    
+    @Transient
+    private Set<Move> tutorMoves;
+    
+    @Transient
+    private Set<Move> machineMoves;
+    
+    @Transient
+    private Set<Move> otherMoves;
+
+    public Pokemon () {
+        this.id = 0;
+        this.name = "";
+        this.height = 0;
+        this.weight = 0;
+        this.types = new String[0];
+        this.baseStats = new HashMap<>();
+        this.imageUrl = "";
+        this.generation = 1;
+        this.category = "";
+        this.description = "";
+        this.evolutionChain = new ArrayList<>();
+        this.locationVersions = new ArrayList<>();
+        this.baseExperience = 0;
+        this.abilities = new ArrayList<>();
+        this.levelMoves = new HashSet<>();
+        this.eggMoves = new HashSet<>();
+        this.tutorMoves = new HashSet<>();
+        this.machineMoves = new HashSet<>();
+        this.otherMoves = new HashSet<>();
+    }
+    
     public Pokemon (int id) {
         this.id = id;
         this.name = "";
@@ -48,9 +107,17 @@ public class Pokemon {
         this.category = "";
         this.description = "";
         this.evolutionChain = new ArrayList<>();
-        this.location_versions = new ArrayList<>();
+        this.locationVersions = new ArrayList<>();
+        this.baseExperience = 0;
+        this.abilities = new ArrayList<>();
+        this.levelMoves = new HashSet<>();
+        this.eggMoves = new HashSet<>();
+        this.tutorMoves = new HashSet<>();
+        this.machineMoves = new HashSet<>();
+        this.otherMoves = new HashSet<>();
     }
-   // @Autowired
+
+   @Autowired
     public Pokemon (
         int id,
         String name,
@@ -63,7 +130,14 @@ public class Pokemon {
         String category,
         String description,
         List<String[]> evolutionChain,
-        List<Map<String, String>> location_versions
+        List<Map<String, String>> locationVersions,
+        int baseExperience,
+        List<Ability> abilities,
+        Set<Move> levelMoves,
+        Set<Move> eggMoves,
+        Set<Move> tutorMoves,
+        Set<Move> machineMoves,
+        Set<Move> otherMoves
     ) {
         this.id = id;
         this.name = name;
@@ -76,7 +150,14 @@ public class Pokemon {
         this.category = category;
         this.description = description;
         this.evolutionChain = evolutionChain;
-        this.location_versions = location_versions;
+        this.locationVersions = locationVersions;
+        this.baseExperience = baseExperience;
+        this.abilities = abilities;
+        this.levelMoves = levelMoves;
+        this.eggMoves = eggMoves;
+        this.tutorMoves = tutorMoves;
+        this.machineMoves = machineMoves;
+        this.otherMoves = otherMoves;
     }
 
     public int getId() {
@@ -108,13 +189,11 @@ public class Pokemon {
     }
 
     public float getHeightInInches() {
-        float heightInInches = getHeight() * 3.937f;
-        return heightInInches;
+        return getHeight() * 3.937f;
     }
 
     public float getHeightInFeet() {
-        float heightInFeet = getHeight() * 0.328084f;
-        return heightInFeet;
+        return getHeight() * 0.328084f;
     }
 
     public String getHeightInFeetInches() {
@@ -129,8 +208,7 @@ public class Pokemon {
     }
 
     public float getWeightInPounds() {
-        float pounds = weight / 4.536f;
-        return pounds;
+        return weight / 4.536f;
     }
 
     public String getWeightInPoundsString() {
@@ -199,28 +277,85 @@ public class Pokemon {
     }
 
     public List<Map<String, String>> getLocationVersions() {
-        return location_versions;
+        return locationVersions;
     }
 
     public void setLocationVersions(List<Map<String, String>> locations) {
-        this.location_versions = locations;
+        this.locationVersions = locations;
+    }
+
+    public int getBaseExperience() {
+        return baseExperience;
+    }
+
+    public void setBaseExperience(int baseExperience) {
+        this.baseExperience = baseExperience;
+    }
+    public List<Ability> getAbilities() {
+        return abilities;
+    }
+
+    public void setAbilities(List<Ability> abilities) {
+        this.abilities = abilities;
+    }
+
+    public Set<Move> getLevelMoves() {
+        return levelMoves;
+    }
+
+    public void setLevelMoves(Set<Move> levelMoves) {
+        this.levelMoves = levelMoves;
+    }
+
+    public Set<Move> getEggMoves() {
+        return eggMoves;
+    }
+
+    public void setEggMoves(Set<Move> eggMoves) {
+        this.eggMoves = eggMoves;
+    }
+
+    public Set<Move> getTutorMoves() {
+        return tutorMoves;
+    }
+
+    public void setTutorMoves(Set<Move> tutorMoves) {
+        this.tutorMoves = tutorMoves;
+    }
+    
+    public Set<Move> getMachineMoves() {
+        return machineMoves;
+    }
+
+    public void setMachineMoves(Set<Move> machineMoves) {
+        this.machineMoves = machineMoves;
+    }
+
+    public Set<Move> getOtherMoves() {
+        return otherMoves;
+    }
+
+    public void setOtherMoves(Set<Move> otherMoves) {
+        this.otherMoves = otherMoves;
     }
 
     @Override
     public String toString() {
         String retString = name + " (" + id + ") \n" +
         "[weight=" + getWeightInPoundsString() + ", height=" + getHeightInFeetInches() + "] \n"+ 
-        "[category=" + category + ", types=" + Arrays.toString(types) + "] \n" +
-        "[generation=" + generation + "] \n";
+        "[category=" + category + ", types=" + Arrays.toString(types) + ", base experience: " + baseExperience + "] \n" +
+        "[generation=" + generation + "]\n";
         
         // Base Stats
-        retString += "[baseStats: \n";
+        retString += "[baseStats:";
         if (baseStats != null) {
-            for (String stat : baseStats.keySet()) {
-                String baseStatName = stat;
-                Integer baseStatNumber = baseStats.get(stat);
-                retString += "\t" + baseStatName + ": " + baseStatNumber + "\n";
+            StringBuilder builder = new StringBuilder();
+            for (Entry<String, Integer> stat : baseStats.entrySet()) {
+                String baseStatName = stat.getKey();
+                Integer baseStatNumber = stat.getValue();
+                builder.append("\t" + baseStatName + ": " + baseStatNumber);
             }
+            retString += builder.toString();
         }
         retString += "] \n";
 
@@ -230,32 +365,88 @@ public class Pokemon {
         // Description
         retString += "[description=" + description + "]\n";
 
+        // Abilities
+        retString += "[abilities: ";
+        if (abilities != null) {
+            StringBuilder builder = new StringBuilder();
+            for (Ability ability : abilities) {
+                builder.append("\t" + ability);
+            }
+            retString += builder.toString();
+        }
+        retString += "] \n";
+
         // Evolution Chain
-        retString += "[evolutionChain: \n";
+        retString += "[evolutionChain: ";
         if (evolutionChain != null) {
+            StringBuilder builder = new StringBuilder();
             for (String[] evolution : evolutionChain) {
                 String evolutionName = evolution[0];
                 String evolutionURL = evolution[1];
-                retString += "\t" + evolutionName + ": " + evolutionURL + "\n";
+                builder.append("\t" + evolutionName + ": " + evolutionURL);
             }
+            retString += builder.toString();
+        }
+        retString += "] \n";
+
+        // Moves
+        StringJoiner joiner = new StringJoiner(",");
+
+        retString += "[levelMoves: ";
+        if (levelMoves != null && !levelMoves.isEmpty()) {
+            for (Move move : levelMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[eggMoves: ";
+        if (eggMoves != null && !eggMoves.isEmpty()) {
+            for (Move move : eggMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[tutorMoves: ";
+        if (tutorMoves != null && !tutorMoves.isEmpty()) {
+            for (Move move : tutorMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[machineMoves: ";
+        if (machineMoves != null && !machineMoves.isEmpty()) {
+            for (Move move : machineMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+
+        joiner = new StringJoiner(",");
+        retString += "[otherMoves: ";
+        if (otherMoves != null && !otherMoves.isEmpty()) {
+            for (Move move : otherMoves) { joiner.add(move.getName()); }
+            retString += joiner.toString();
         }
         retString += "] \n";
         
         // Locations/Versions
-        retString += "[locations: \n";
-        if (location_versions != null) {
-            for (Map<String, String> location : location_versions) {
+        retString += "[locations: ";
+        if (locationVersions != null) {
+            StringBuilder builder = new StringBuilder();
+            for (Map<String, String> location : locationVersions) {
                 String locationName = location.get("locationName");
                 String locationURL = location.get("locationURL");
                 String versionName = location.get("versionName");
                 String maxChance = location.get("maxChance");
                 String methods = location.get("methods");
-                retString += "\t" + locationName + ": " + locationURL + "\n";
-                retString += "\t\t" + versionName + ": " + maxChance + " " + methods;
-                retString += "\n";
+                builder.append("\t\t" + locationName + ": " + locationURL + versionName + ": " + maxChance + " " + methods);
             }
+            retString += builder.toString();
         }
-        retString += "]";
+        retString += "] \n";
+        
         return retString;
     }
 }
