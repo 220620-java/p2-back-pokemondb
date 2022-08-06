@@ -326,17 +326,62 @@ class UserServiceTest {
      * Update the user and return it.
      * @throws RecordNotFoundException
      * @throws NoSuchAlgorithmException
+     * @throws EmailAlreadyExistsException
+     * @throws UsernameAlreadyExistsException
      */
     @Test
-    void testUpdateUser() throws RecordNotFoundException, NoSuchAlgorithmException {
+    void testUpdateUser() throws RecordNotFoundException, NoSuchAlgorithmException, EmailAlreadyExistsException, UsernameAlreadyExistsException {
         User mockUser = new User();
         User mockDbUser = new User();
         mockUser.setUsername("user");
         mockUser.setPassword("pass");
-        mockDbUser.setUsername("user");
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
-        Mockito.when(userRepo.findByUsername("user")).thenReturn(Optional.of(mockDbUser));
+        mockUser.setEmail("email");
+        mockUser.setRole("admin");
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockDbUser));
         assertNotNull(userService.updateUser(mockUser));
+    }
+
+    /**
+     * Update the user with an existing email.
+     * @throws RecordNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws EmailAlreadyExistsException
+     */
+    @Test
+    void testUpdateUserEmailExists() throws RecordNotFoundException, NoSuchAlgorithmException, EmailAlreadyExistsException {
+        User mockUser = new User();
+        User mockDbUser = new User();
+        mockUser.setUsername("user");
+        mockUser.setPassword("pass");
+        mockUser.setEmail("email");
+        mockDbUser.setUsername("user");
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockDbUser));
+        Mockito.when(userRepo.existsUserByEmail(mockUser.getEmail())).thenReturn(true);
+        assertThrows(EmailAlreadyExistsException.class, 
+        () -> userService.updateUser(mockUser));
+    }
+
+    /**
+     * Update the user with an existing username.
+     * @throws RecordNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws UsernameAlreadyExistsException
+     */
+    @Test
+    void testUpdateUserUsernameExists() throws RecordNotFoundException, NoSuchAlgorithmException, UsernameAlreadyExistsException {
+        User mockUser = new User();
+        User mockDbUser = new User();
+        mockUser.setUsername("user");
+        mockUser.setPassword("pass");
+        mockUser.setEmail("email");
+        mockDbUser.setUsername("user");
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockDbUser));
+        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
+        assertThrows(UsernameAlreadyExistsException.class, 
+        () -> userService.updateUser(mockUser));
     }
 
     /**
@@ -347,7 +392,21 @@ class UserServiceTest {
     @Test
     void testUpdateUserNotFound() throws RecordNotFoundException {
         User mockUser = new User();
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(false);
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(false);
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.updateUser(mockUser));
+    }
+
+    /**
+     * Try updating the user and they don't exist in the user database.
+     * Should throw a RecordNotFoundException
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testUpdateUserOptionalEmpty() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.empty());
         assertThrows(RecordNotFoundException.class, 
         () -> userService.updateUser(mockUser));
     }
@@ -359,8 +418,8 @@ class UserServiceTest {
     @Test
     void testDeleteUser() throws RecordNotFoundException {
         User mockUser = new User();
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
-        Mockito.when(userRepo.findByUsername(mockUser.getUsername())).thenReturn(Optional.of(mockUser));
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
         assertNotNull(userService.deleteUser(mockUser));
     }
 
@@ -372,7 +431,21 @@ class UserServiceTest {
     @Test
     void testDeleteUserNotFound() throws RecordNotFoundException {
         User mockUser = new User();
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(false);
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(false);
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.deleteUser(mockUser));
+    }
+
+    /**
+     * Try updating the user and they don't exist in the database.
+     * Should throw a RecordNotFoundException
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testDeleteUserOptionalEmpty() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.empty());
         assertThrows(RecordNotFoundException.class, 
         () -> userService.deleteUser(mockUser));
     }

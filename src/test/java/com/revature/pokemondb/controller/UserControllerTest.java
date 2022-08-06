@@ -3,6 +3,7 @@ package com.revature.pokemondb.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
 import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
@@ -216,9 +218,42 @@ class UserControllerTest {
 		mockMvc.perform(put("/user/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(mockUser)))
+			.andExpect(status().isNotFound());
+	}
+
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void updateUserWrongAlgorithm() throws JsonProcessingException, Exception {
+		User mockUser = new User();
+		mockUser.setUserId(1l);
+		
+		Mockito.when(userService.updateUser(mockUser)).thenThrow(NoSuchAlgorithmException.class);
+		
+		mockMvc.perform(put("/user/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(mockUser)))
 			.andExpect(status().isBadRequest());
 	}
 
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void updateUserEmailAlreadyExistsException() throws JsonProcessingException, Exception {
+		User mockUser = new User();
+		mockUser.setUserId(1l);
+		
+		Mockito.when(userService.updateUser(mockUser)).thenThrow(EmailAlreadyExistsException.class);
+		
+		mockMvc.perform(put("/user/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(mockUser)))
+			.andExpect(status().isConflict());
+	}
     
     /** 
      * @throws JsonProcessingException
@@ -270,9 +305,42 @@ class UserControllerTest {
 		mockMvc.perform(patch("/user/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(mockUser)))
+			.andExpect(status().isNotFound());
+	}
+
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void patchUserWrongAlgorithm() throws JsonProcessingException, Exception {
+		User mockUser = new User();
+		mockUser.setUserId(1l);
+		
+		Mockito.when(userService.updateUser(mockUser)).thenThrow(NoSuchAlgorithmException.class);
+		
+		mockMvc.perform(patch("/user/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(mockUser)))
 			.andExpect(status().isBadRequest());
 	}
 
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void patchUserEmailAlreadyExistsException() throws JsonProcessingException, Exception {
+		User mockUser = new User();
+		mockUser.setUserId(1l);
+		
+		Mockito.when(userService.updateUser(mockUser)).thenThrow(EmailAlreadyExistsException.class);
+		
+		mockMvc.perform(patch("/user/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(mockUser)))
+			.andExpect(status().isConflict());
+	}
     
     /** 
      * @throws JsonProcessingException

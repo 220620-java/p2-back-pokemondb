@@ -161,24 +161,40 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 * @throws RecordNotFoundException
 	 * @throws NoSuchAlgorithmException
+	 * @throws EmailAlreadyExistsException
+	 * @throws UsernameAlreadyExistsException
 	 */
-	public User updateUser (User user) throws RecordNotFoundException, NoSuchAlgorithmException {
-		if (userRepo.existsUserByUsername(user.getUsername())) {
-			Optional<User> oUser = userRepo.findByUsername(user.getUsername());
-			if (oUser.isEmpty()) return null;
+	public User updateUser (User user) throws RecordNotFoundException, NoSuchAlgorithmException, EmailAlreadyExistsException, UsernameAlreadyExistsException {
+		if (userRepo.existsById(user.getUserId())) {
+			Optional<User> oUser = userRepo.findById(user.getUserId());
+			if (oUser.isEmpty()) throw new RecordNotFoundException();
 			User dbUser = oUser.get();
-			
-			// User ID
-			if (user.getUserId() != 0) dbUser.setUserId(user.getUserId());
 
 			// Username
-			if (!user.getUsername().equals("") && user.getUsername() != null) dbUser.setUsername(user.getUsername());
+			// Make sure username is not the same, empty, or null.
+			if (!user.getUsername().equals(dbUser.getUsername()) && !user.getUsername().equals("") && user.getUsername() != null) {
+				if (!userRepo.existsUserByUsername(user.getUsername())) {
+					dbUser.setUsername(user.getUsername());
+				}
+				else {
+					throw new UsernameAlreadyExistsException();
+				}
+			}
 
 			// Email
-			if (!user.getEmail().equals("") && user.getEmail() != null) dbUser.setEmail(user.getEmail());
+			// Make sure email is not the same, empty, or null.
+			if (!user.getEmail().equals(dbUser.getEmail()) && !user.getEmail().equals("") && user.getEmail() != null) {
+				if (!userRepo.existsUserByEmail(user.getEmail())) {
+					dbUser.setEmail(user.getEmail());
+				}
+				else {
+					throw new EmailAlreadyExistsException();
+				}
+			}
 
 			// Password
-			if (!user.getPassword().equals("") && user.getPassword() != null) {
+			// Make sure password is not the same, empty, or null.
+			if (!user.getPassword().equals(dbUser.getPassword()) && !user.getPassword().equals("") && user.getPassword() != null) {
 				byte[] salt = securityUtils.generateSalt();
 				dbUser.setSalt(salt);
 				String encodedPassword = securityUtils.encodePassword(user.getPassword(), dbUser.getSalt());
@@ -186,7 +202,8 @@ public class UserServiceImpl implements UserService {
 			}
 
 			// Role
-			if (!user.getRole().equals("") && user.getRole() != null) dbUser.setRole(user.getRole());
+			// Make sure role is not the same, empty, or null.
+			if (!user.getRole().equals(dbUser.getRole()) && !user.getRole().equals("") && user.getRole() != null) dbUser.setRole(user.getRole());
 
 			// Update user in DB
 			userRepo.save (dbUser);
@@ -206,9 +223,9 @@ public class UserServiceImpl implements UserService {
 	 * @throws RecordNotFoundException
 	 */
 	public User deleteUser (User user) throws RecordNotFoundException {
-		if (userRepo.existsUserByUsername(user.getUsername())) {
-			Optional<User> oUser = userRepo.findByUsername(user.getUsername());
-			if (oUser.isEmpty()) return null;
+		if (userRepo.existsById(user.getUserId())) {
+			Optional<User> oUser = userRepo.findById(user.getUserId());
+			if (oUser.isEmpty()) throw new RecordNotFoundException();
 			User dbUser = oUser.get();
 
 			userRepo.delete(dbUser);

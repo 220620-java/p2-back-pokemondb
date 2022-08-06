@@ -1,10 +1,8 @@
 package com.revature.pokemondb.controller;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -123,7 +121,7 @@ public class UserController {
 	 * @return ResponseEntity<User>
 	 */
 	@PutMapping("/")
-	@Auth(requiredRole = "admin")
+	@Auth(requireSelfAction = true)
 	public ResponseEntity<UserDTO> updateUserDetails (@RequestBody User user) {
 		try {
 			User updatedUser = userService.updateUser(user);
@@ -132,9 +130,15 @@ public class UserController {
 				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} catch (RecordNotFoundException | NoSuchAlgorithmException e) {
+		} catch (RecordNotFoundException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 
@@ -143,7 +147,7 @@ public class UserController {
 	 * @return ResponseEntity<User>
 	 */
 	@PatchMapping
-	@Auth(requiredRole = "admin")
+	@Auth(requireSelfAction = true)
 	public ResponseEntity<UserDTO> patchUserDetails (@RequestBody User user) {
 		try {
 			User updatedUser = userService.updateUser(user);
@@ -152,9 +156,15 @@ public class UserController {
 				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} catch (RecordNotFoundException | NoSuchAlgorithmException e) {
+		} catch (RecordNotFoundException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
     

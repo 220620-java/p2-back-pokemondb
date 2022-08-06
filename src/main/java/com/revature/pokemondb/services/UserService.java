@@ -23,7 +23,7 @@ public interface UserService {
 	
 	public User registerUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, NoSuchAlgorithmException, InvalidInputException;
 
-	public User updateUser(User user) throws RecordNotFoundException, NoSuchAlgorithmException;
+	public User updateUser(User user) throws RecordNotFoundException, NoSuchAlgorithmException, EmailAlreadyExistsException, UsernameAlreadyExistsException;
 	
 	public User deleteUser(User user) throws RecordNotFoundException;
 
