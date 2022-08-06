@@ -1,3 +1,5 @@
+![](https://github.com/220620-java/p2-front-pokemondb/blob/main/images/PokePost.png?raw=true)
+
 # Team Synergy Project 2 - PokéPost Web Application
 The web application (back end) of Team Synergy's Pokémon database, PokéPost. This will interact with the [PokéAPI](https://pokeapi.co/) to pull Pokémon data and construct a page containing data about a particular Pokémon along with fan comments and fanart. Developed for Revature's training program.
 
