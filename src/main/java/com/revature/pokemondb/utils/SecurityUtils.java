@@ -1,11 +1,14 @@
 package com.revature.pokemondb.utils;
 
+import org.springframework.stereotype.Component;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+@Component
 public class SecurityUtils {
 
     private String algorithm;
