@@ -21,7 +21,7 @@ public interface UserService {
 	
 	public User registerUser(User user) throws UsernameAlreadyExistsException, EmailAlreadyExistsException, NoSuchAlgorithmException, InvalidInputException;
 
-	public User updateUser(User user) throws RecordNotFoundException;
+	public User updateUser(User user) throws RecordNotFoundException, NoSuchAlgorithmException;
 	
 	public User deleteUser(User user) throws RecordNotFoundException;
 

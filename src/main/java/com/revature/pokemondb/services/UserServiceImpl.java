@@ -133,11 +133,37 @@ public class UserServiceImpl implements UserService {
 	 * @param user
 	 * @return
 	 * @throws RecordNotFoundException
+	 * @throws NoSuchAlgorithmException
 	 */
-	public User updateUser (User user) throws RecordNotFoundException {
+	public User updateUser (User user) throws RecordNotFoundException, NoSuchAlgorithmException {
 		if (userRepo.existsUserByUsername(user.getUsername())) {
-			userRepo.save (user);
-			return user;
+			Optional<User> oUser = userRepo.findByUsername(user.getUsername());
+			if (oUser.isEmpty()) return null;
+			User dbUser = oUser.get();
+			
+			// User ID
+			if (user.getUserId() != 0) dbUser.setUserId(user.getUserId());
+
+			// Username
+			if (!user.getUsername().equals("") && user.getUsername() != null) dbUser.setUsername(user.getUsername());
+
+			// Email
+			if (!user.getEmail().equals("") && user.getEmail() != null) dbUser.setEmail(user.getEmail());
+
+			// Password
+			if (!user.getPassword().equals("") && user.getPassword() != null) {
+				byte[] salt = securityUtils.generateSalt();
+				dbUser.setSalt(salt);
+				String encodedPassword = securityUtils.encodePassword(user.getPassword(), dbUser.getSalt());
+				dbUser.setPassword(encodedPassword);
+			}
+
+			// Role
+			if (!user.getRole().equals("") && user.getRole() != null) dbUser.setRole(user.getRole());
+
+			// Update user in DB
+			userRepo.save (dbUser);
+			return dbUser;
 		}
 		else {
 			throw new RecordNotFoundException();

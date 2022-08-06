@@ -263,11 +263,14 @@ class UserServiceTest {
     /**
      * Update the user and return it.
      * @throws RecordNotFoundException
+     * @throws NoSuchAlgorithmException
      */
     @Test
-    void testUpdateUser() throws RecordNotFoundException {
+    void testUpdateUser() throws RecordNotFoundException, NoSuchAlgorithmException {
         User mockUser = new User();
+        mockUser.setUsername("user");
         Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
+        Mockito.when(userRepo.findByUsername("user")).thenReturn(Optional.of(mockUser));
         assertNotNull(userService.updateUser(mockUser));
     }
 

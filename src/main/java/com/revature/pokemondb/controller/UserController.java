@@ -130,7 +130,7 @@ public class UserController {
 				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} catch (RecordNotFoundException e) {
+		} catch (RecordNotFoundException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
@@ -150,7 +150,7 @@ public class UserController {
 				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
 			}
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		} catch (RecordNotFoundException e) {
+		} catch (RecordNotFoundException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
