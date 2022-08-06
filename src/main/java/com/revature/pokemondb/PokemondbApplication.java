@@ -8,9 +8,6 @@ import java.util.Scanner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class PokemondbApplication {
@@ -26,25 +23,6 @@ public class PokemondbApplication {
 		keyboard.close();
 		System.out.println("Exiting the PokePost Spring Application");
 		System.exit(0);
-	}
-
-	// This does some cors stuff maybe I think lol
-	@Bean
-	public WebMvcConfigurer corsConfig() {
-		return new WebMvcConfigurer() {
-			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-					.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-					.allowedOrigins("null")
-					.allowedHeaders("*")
-					.exposedHeaders("Auth")
-					.allowCredentials(false);
-			}
-		};
-	}
-
-	public static void testCall () {
-		System.out.println("Hello World");
 	}
 
 	public static void printLogo () {

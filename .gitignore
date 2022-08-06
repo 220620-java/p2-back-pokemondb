@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=maven,java,eclipse,windows
 
 database.properties
-application.properties
+cov.xml
 
 ### Eclipse ###
 .metadata
@@ -181,3 +181,4 @@ build/
 
 # Spring Boot Static HTML Content
 public/
+

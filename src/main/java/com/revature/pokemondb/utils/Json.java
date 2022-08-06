@@ -2,12 +2,13 @@ package com.revature.pokemondb.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class Json {
-    // TODO: Document methods
+
+    private Json () {}
 
     private static ObjectMapper objectMapper = createObjectMapper();
     @Autowired
@@ -24,7 +25,7 @@ public class Json {
      * @throws JsonMappingException
      * @throws JsonProcessingException
      */
-    public static JsonNode parse(String js) throws JsonMappingException, JsonProcessingException {
+    public static JsonNode parse(String js) throws JsonProcessingException {
         return objectMapper.readTree(js);
     }
 
