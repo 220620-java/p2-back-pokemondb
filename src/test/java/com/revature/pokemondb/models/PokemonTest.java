@@ -12,10 +12,9 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.models.dtos.PokemonDTO;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class PokemonTest {
     
     @Test

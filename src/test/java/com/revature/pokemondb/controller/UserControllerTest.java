@@ -4,12 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -465,14 +461,41 @@ class UserControllerTest {
     }
 
     /** 
+     * This would probably never happen
      * @throws JsonProcessingException
      * @throws Exception
      */
     @Test
-    void unBanUserNotFound() throws JsonProcessingException, Exception {
+    void unBanUserNull() throws RecordNotFoundException, JsonProcessingException, Exception {
+		User mockUserWithId = new User();
+        mockUserWithId.setUserId(1l);
+        Mockito.when(userService.unBanUser(1l)).thenReturn(null);
+        mockMvc.perform(post("/user/unban/1"))
+            .andExpect(status().isNotFound());
+    }
+
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void unBanUserNotFound() throws RecordNotFoundException, JsonProcessingException, Exception {
 		User mockUserWithId = new User();
         mockUserWithId.setUserId(1l);
         Mockito.when(userService.unBanUser(1l)).thenThrow(RecordNotFoundException.class);
+        mockMvc.perform(post("/user/unban/1"))
+            .andExpect(status().isNotFound());
+    }
+
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void unBanUserWrongFormat() throws NumberFormatException, JsonProcessingException, Exception {
+		User mockUserWithId = new User();
+        mockUserWithId.setUserId(1l);
+        Mockito.when(userService.unBanUser(1l)).thenThrow(NumberFormatException.class);
         mockMvc.perform(post("/user/unban/1"))
             .andExpect(status().isNotFound());
     }
