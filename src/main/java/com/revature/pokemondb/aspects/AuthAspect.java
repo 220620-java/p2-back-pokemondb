@@ -36,8 +36,12 @@ public class AuthAspect {
 				.getMethod()
 				.getAnnotation(Auth.class);
 		String requiredRole = authAnnotation.requiredRole();
+		boolean stopBannedUsers = authAnnotation.stopBannedUsers();
+		boolean requireSelfAction = authAnnotation.requireSelfAction();
 		
 		String jws = currentReq.getHeader("Auth");
+		String currentUser = currentReq.getHeader("User");
+
 
 		// If user has an empty token header
 		if (jws == null || jws.equals("")) {
@@ -57,18 +61,32 @@ public class AuthAspect {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No user info present.");
 		}
 		
-		switch (requiredRole) {
-		case "admin":
+		if (requiredRole.equals("admin")) {
 			String roleName = userDtoOpt.get().getRole();
 			if (!roleName.toLowerCase().equals("admin")) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Insufficient privileges.");
 			}
-			break;
+		}
+
+		if (stopBannedUsers) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized. User has been banned.");
+		}
+
+		if (requireSelfAction) {
+			if (currentUser == null) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No username in header. Insufficient privileges.");
+			}
+			String username = userDtoOpt.get().getUsername();
+			if (!currentUser.equals(username)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username does not match token! Insufficient privileges.");
+			}
 		}
 		
 		return joinpoint.proceed();
 	}
 	
 	@Pointcut("@annotation(com.revature.pokemondb.auth.Auth)")
-	public void methodsWithAuthAnnotation() {}
+	public void methodsWithAuthAnnotation() 
+	{ // I don't know why this has to be empty but it do
+	}
 }

@@ -1,27 +1,34 @@
 package com.revature.pokemondb.services;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.revature.pokemondb.exceptions.BannedException;
 import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
+import com.revature.pokemondb.models.BannedUser;
 import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.repositories.BanRepository;
 import com.revature.pokemondb.repositories.UserRepository;
 import com.revature.pokemondb.utils.SecurityUtils;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
 	private UserRepository userRepo;
+	private BanRepository banRepo;
 	private SecurityUtils securityUtils;
 
-	public UserServiceImpl (UserRepository repo, SecurityUtils utils) {
+	public UserServiceImpl (UserRepository repo, BanRepository banRepo, SecurityUtils utils) {
 		this.userRepo = repo;
+		this.banRepo = banRepo;
 		this.securityUtils = utils;
 	}
 
@@ -60,8 +67,9 @@ public class UserServiceImpl implements UserService {
 	 * username parameter. If password matches then the user is
 	 * returned. If either of these fails, null is returned.
 	 * A token should be generated for authentication.
+	 * @throws BannedException
 	 */
-	public User loginUser(String username, String password) throws RecordNotFoundException, FailedAuthenticationException, NoSuchAlgorithmException {
+	public User loginUser(String username, String password) throws RecordNotFoundException, FailedAuthenticationException, NoSuchAlgorithmException, BannedException {
 		Optional<User> oUser = userRepo.findByUsername(username);
 		if (oUser.isPresent()) {
 			User user = oUser.get();
@@ -80,6 +88,25 @@ public class UserServiceImpl implements UserService {
 
 			// Password is correct
 			if (dbPass.equals(encodedPassword)) {
+
+				Optional<BannedUser> oBannedUser = banRepo.findById(user.getUserId());
+				// Is user in the ban table?
+				if (oBannedUser.isPresent()) {
+					
+					BannedUser bannedUser = oBannedUser.get();
+					Timestamp banDuration = bannedUser.getBanDuration();
+
+					// Has user's ban duration expired?
+					if (banDuration.getTime() < Timestamp.from(Instant.now()).getTime()) {
+						unBanUser (user.getUserId());
+						return user;
+					}
+
+					// Nope lol stay banned
+					else {
+						throw new BannedException();
+					}
+				}
 				return user;
 			}
 
@@ -195,20 +222,51 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * Inserts the user into the ban table to indicate
 	 * a user has been banned.
+	 * @throws UsernameAlreadyExistsException
+	 * @throws RecordNotFoundException
 	 */
-	public User banUser(User user) {
-		// TODO Add user to the ban table.
-		return user;
+	public User banUser(BannedUser bannedUser) throws UsernameAlreadyExistsException, RecordNotFoundException {
+		Optional<User> oUser = userRepo.findById(bannedUser.getUserId());
+		if (oUser.isPresent()) {
+			User dbUser = oUser.get();
+
+			// If user is not already banned
+			if (!banRepo.existsById(dbUser.getUserId())) {
+				banRepo.save(bannedUser);
+				return dbUser;
+			}
+			else {
+				throw new UsernameAlreadyExistsException();
+			}
+
+		}
+
+		// Cannot find username in users table
+		throw new RecordNotFoundException();
 	}
 	
 	/**
 	 * Removes a user from the ban table to indicate
 	 * a user has been unbanned.
+	 * @throws RecordNotFoundException
 	 */
-	public User unBanUser(User user) {
-		// TODO Remove user from the ban table.
-		return user;
+	public User unBanUser(Long id) throws RecordNotFoundException {
+		Optional<BannedUser> oBannedUser = banRepo.findById(id);
+
+		// If user is in the ban table
+		if (oBannedUser.isPresent()) {
+			Optional<User> oUser = userRepo.findById(id);
+
+			// If user is in the users table
+			if (oUser.isPresent()) {
+				banRepo.delete(oBannedUser.get());
+				return oUser.get();
+			}
+			banRepo.delete(oBannedUser.get());
+			return null;
+		}
+		else {
+			throw new RecordNotFoundException();
+		}
 	}
-
-
 }

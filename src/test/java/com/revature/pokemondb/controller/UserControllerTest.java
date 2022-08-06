@@ -3,8 +3,12 @@ package com.revature.pokemondb.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
+import com.revature.pokemondb.models.BannedUser;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.UserService;
@@ -340,4 +345,67 @@ class UserControllerTest {
             .content(objectMapper.writeValueAsString(mockUser)))
 			.andExpect(status().isBadRequest());
 	}
+
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void banUser() throws JsonProcessingException, Exception {
+        BannedUser banBody = new BannedUser(1l);
+		User mockUserWithId = new User();
+        mockUserWithId.setUserId(1l);
+        Mockito.when(userService.banUser(banBody)).thenReturn(mockUserWithId);
+        UserDTO userDTO = new UserDTO(mockUserWithId);
+        mockMvc.perform(post("/user/ban")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(banBody)))
+            .andExpect(status().isOk())
+            .andExpect(content().json(objectMapper.writeValueAsString(userDTO)));
+    }
+
+    /** 
+     * @throws UsernameAlreadyExistsException
+     * @throws Exception
+     */
+    @Test
+    void banUserAlreadyBanned() throws UsernameAlreadyExistsException, Exception {
+        BannedUser banBody = new BannedUser(1l);
+		User mockUserWithId = new User();
+        mockUserWithId.setUserId(1l);
+        Mockito.when(userService.banUser(banBody)).thenThrow(UsernameAlreadyExistsException.class);
+        mockMvc.perform(post("/user/ban")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(banBody)))
+            .andExpect(status().isBadRequest());
+    }
+
+
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void unBanUser() throws JsonProcessingException, Exception {
+		User mockUserWithId = new User();
+        mockUserWithId.setUserId(1l);
+        Mockito.when(userService.unBanUser(1l)).thenReturn(mockUserWithId);
+        UserDTO userDTO = new UserDTO(mockUserWithId);
+        mockMvc.perform(post("/user/unban/1"))
+            .andExpect(status().isOk())
+            .andExpect(content().json(objectMapper.writeValueAsString(userDTO)));
+    }
+
+    /** 
+     * @throws JsonProcessingException
+     * @throws Exception
+     */
+    @Test
+    void unBanUserNotFound() throws JsonProcessingException, Exception {
+		User mockUserWithId = new User();
+        mockUserWithId.setUserId(1l);
+        Mockito.when(userService.unBanUser(1l)).thenThrow(RecordNotFoundException.class);
+        mockMvc.perform(post("/user/unban/1"))
+            .andExpect(status().isNotFound());
+    }
 }
