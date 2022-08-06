@@ -1,10 +1,16 @@
 package com.revature.pokemondb.controller;
 
+import java.util.List;
+
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,10 +29,23 @@ public class PokemonController {
         this.pokemonService = pokemonService;
         this.objectMapper = objectMapper;
     }
+
+	@RequestMapping(path="/", method=RequestMethod.OPTIONS)
+	public ResponseEntity<String> optionsRequest () {
+		return ResponseEntity
+          .ok()
+          .allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.OPTIONS)
+              .build();
+	}
 	
 	@GetMapping("/")
 	public ResponseEntity<String> getHelloWorld () {
 		return ResponseEntity.ok("Hello World Pokemon");
+	}
+
+	@PostMapping("/")
+	public ResponseEntity<List<Pokemon>> getAllPokemonById (@RequestBody List<Integer> body) {
+		return ResponseEntity.ok(pokemonService.getAllPokemonById(body));
 	}
 
 	/**

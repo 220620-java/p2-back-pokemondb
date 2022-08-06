@@ -59,19 +59,7 @@ public class Pokemon {
     private List<Ability> abilities;
 
     @Transient
-    private Set<Move> levelMoves;
-
-    @Transient
-    private Set<Move> eggMoves;
-    
-    @Transient
-    private Set<Move> tutorMoves;
-    
-    @Transient
-    private Set<Move> machineMoves;
-    
-    @Transient
-    private Set<Move> otherMoves;
+    private PokemonMoves moves;
 
     public Pokemon () {
         this.id = 0;
@@ -88,11 +76,7 @@ public class Pokemon {
         this.locationVersions = new ArrayList<>();
         this.baseExperience = 0;
         this.abilities = new ArrayList<>();
-        this.levelMoves = new HashSet<>();
-        this.eggMoves = new HashSet<>();
-        this.tutorMoves = new HashSet<>();
-        this.machineMoves = new HashSet<>();
-        this.otherMoves = new HashSet<>();
+        this.moves = new PokemonMoves();
     }
     
     public Pokemon (int id) {
@@ -110,11 +94,7 @@ public class Pokemon {
         this.locationVersions = new ArrayList<>();
         this.baseExperience = 0;
         this.abilities = new ArrayList<>();
-        this.levelMoves = new HashSet<>();
-        this.eggMoves = new HashSet<>();
-        this.tutorMoves = new HashSet<>();
-        this.machineMoves = new HashSet<>();
-        this.otherMoves = new HashSet<>();
+        this.moves = new PokemonMoves();
     }
 
    @Autowired
@@ -133,11 +113,7 @@ public class Pokemon {
         List<Map<String, String>> locationVersions,
         int baseExperience,
         List<Ability> abilities,
-        Set<Move> levelMoves,
-        Set<Move> eggMoves,
-        Set<Move> tutorMoves,
-        Set<Move> machineMoves,
-        Set<Move> otherMoves
+        PokemonMoves moves
     ) {
         this.id = id;
         this.name = name;
@@ -153,11 +129,7 @@ public class Pokemon {
         this.locationVersions = locationVersions;
         this.baseExperience = baseExperience;
         this.abilities = abilities;
-        this.levelMoves = levelMoves;
-        this.eggMoves = eggMoves;
-        this.tutorMoves = tutorMoves;
-        this.machineMoves = machineMoves;
-        this.otherMoves = otherMoves;
+        this.moves = moves;
     }
 
     public int getId() {
@@ -236,6 +208,10 @@ public class Pokemon {
         return baseStats;
     }
 
+    public void setBaseStats(Map<String, Integer> stats) {
+        this.baseStats = stats;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }
@@ -299,45 +275,14 @@ public class Pokemon {
         this.abilities = abilities;
     }
 
-    public Set<Move> getLevelMoves() {
-        return levelMoves;
+    public PokemonMoves getMoves() {
+        return moves;
     }
 
-    public void setLevelMoves(Set<Move> levelMoves) {
-        this.levelMoves = levelMoves;
+    public void setMoves(PokemonMoves moves) {
+        this.moves = moves;
     }
 
-    public Set<Move> getEggMoves() {
-        return eggMoves;
-    }
-
-    public void setEggMoves(Set<Move> eggMoves) {
-        this.eggMoves = eggMoves;
-    }
-
-    public Set<Move> getTutorMoves() {
-        return tutorMoves;
-    }
-
-    public void setTutorMoves(Set<Move> tutorMoves) {
-        this.tutorMoves = tutorMoves;
-    }
-    
-    public Set<Move> getMachineMoves() {
-        return machineMoves;
-    }
-
-    public void setMachineMoves(Set<Move> machineMoves) {
-        this.machineMoves = machineMoves;
-    }
-
-    public Set<Move> getOtherMoves() {
-        return otherMoves;
-    }
-
-    public void setOtherMoves(Set<Move> otherMoves) {
-        this.otherMoves = otherMoves;
-    }
 
     @Override
     public String toString() {
@@ -393,6 +338,7 @@ public class Pokemon {
         StringJoiner joiner = new StringJoiner(",");
 
         retString += "[levelMoves: ";
+        Set<Move> levelMoves = moves.getLevelMoves();
         if (levelMoves != null && !levelMoves.isEmpty()) {
             for (Move move : levelMoves) { joiner.add(move.getName()); }
             retString += joiner.toString();
@@ -401,6 +347,7 @@ public class Pokemon {
 
         joiner = new StringJoiner(",");
         retString += "[eggMoves: ";
+        Set<Move> eggMoves = moves.getEggMoves();
         if (eggMoves != null && !eggMoves.isEmpty()) {
             for (Move move : eggMoves) { joiner.add(move.getName()); }
             retString += joiner.toString();
@@ -408,6 +355,7 @@ public class Pokemon {
         retString += "] \n";
 
         joiner = new StringJoiner(",");
+        Set<Move> tutorMoves = moves.getTutorMoves();
         retString += "[tutorMoves: ";
         if (tutorMoves != null && !tutorMoves.isEmpty()) {
             for (Move move : tutorMoves) { joiner.add(move.getName()); }
@@ -417,6 +365,7 @@ public class Pokemon {
 
         joiner = new StringJoiner(",");
         retString += "[machineMoves: ";
+        Set<Move> machineMoves = moves.getMachineMoves();
         if (machineMoves != null && !machineMoves.isEmpty()) {
             for (Move move : machineMoves) { joiner.add(move.getName()); }
             retString += joiner.toString();
@@ -425,6 +374,7 @@ public class Pokemon {
 
         joiner = new StringJoiner(",");
         retString += "[otherMoves: ";
+        Set<Move> otherMoves = moves.getOtherMoves();
         if (otherMoves != null && !otherMoves.isEmpty()) {
             for (Move move : otherMoves) { joiner.add(move.getName()); }
             retString += joiner.toString();
