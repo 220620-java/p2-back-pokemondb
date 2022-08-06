@@ -4,6 +4,7 @@ import com.revature.pokemondb.models.Fanart;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.FanartRepository;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,15 +112,18 @@ public class FanartService {
 	/**
 	 * Retrieves all available fanart. Availability is contingent on whether it has been flagged.
 	 * Returned fanarts are ordered by post date
-	 * @param orderAsc represents the order in which the fanarts will be ordered. 'true' for ascending order and 'false' for descending order
+	 * @param greaterThan represents the argument by which the fanarts will be filtered. 'true' for >= and 'false' for <=
 	 * @return all fanart with the value of 'false' for the isFlagged field ordered by post date
 	 */
-	public List<Fanart> getAvailableFanartOrderedByPostDate(Boolean orderAsc){
+	public List<Fanart> getAvailableFanartFilteredByPostDate(Boolean greaterThan, String date){
 		List<Fanart> fanart;
-		if (orderAsc) {
-			fanart = artRepo.findByIsFlaggedOrderByPostDate(false);
+		Date postDate = Date.valueOf(date);
+		
+		//Retrieving data
+		if (greaterThan) {
+			fanart = artRepo.findByIsFlaggedAndPostDateGreaterThanEqual(false, postDate);
 		} else {
-			fanart = artRepo.findByIsFlaggedOrderByPostDateDesc(false);
+			fanart = artRepo.findByIsFlaggedAndPostDateLessThanEqual(false, postDate);
 		}
 		return fanart;
 	}

@@ -1,5 +1,8 @@
 package com.revature.pokemondb.services;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -314,20 +317,22 @@ public class FanartServiceTest {
     	Assertions.assertEquals(expected, actual);
     }
 
-    /*Testing getAvailibleFanartOrderedByPostDate()*/
+    /*Testing getAvailibleFanartFilteredByPostDate()*/
 
     @Test
-    public void testGetAvailibleFanartOrderedByPostDateNull() {
+    public void testGetAvailibleFanartFilterByPostDateGreaterThan() {
     	/*Variables*/
+    	String mockDateStr = "2000-01-10";
+    	Date mockDate = Date.valueOf("2000-01-10");
     	List<Fanart> mockdata = new ArrayList<Fanart>(),
     		expected = new ArrayList<Fanart>(),
     		actual;
     	
     	/*Mocks*/
-    	Mockito.when(artRepo.findByIsFlaggedOrderByPostDate(false)).thenReturn(mockdata);
+    	Mockito.when(artRepo.findByIsFlaggedAndPostDateGreaterThanEqual(false, mockDate)).thenReturn(mockdata);
     	
     	/*Function*/
-    	actual = artService.getAvailableFanartOrderedByPostDate(true);
+    	actual = artService.getAvailableFanartFilteredByPostDate(true, mockDateStr);
     	
     	/*Test*/
     	Assertions.assertEquals(expected, actual);
@@ -335,68 +340,25 @@ public class FanartServiceTest {
     
 
     @Test
-    public void testGetAvailibleFanartOrderedByPostDateDescNull() {
+    public void testGetAvailibleFanartFilteredByPostDateLessThan() {
+
     	/*Variables*/
+    	String mockDateStr = "2000-01-30";
+    	Date mockDate = Date.valueOf("2000-01-30");
     	List<Fanart> mockdata = new ArrayList<Fanart>(),
     		expected = new ArrayList<Fanart>(),
     		actual;
     	
     	/*Mocks*/
-    	Mockito.when(artRepo.findByIsFlaggedOrderByPostDateDesc(false)).thenReturn(mockdata);
+    	Mockito.when(artRepo.findByIsFlaggedAndPostDateLessThanEqual(false, mockDate)).thenReturn(mockdata);
     	
     	/*Function*/
-    	actual = artService.getAvailableFanartOrderedByPostDate(false);
+    	actual = artService.getAvailableFanartFilteredByPostDate(false, mockDateStr);
     	
     	/*Test*/
     	Assertions.assertEquals(expected, actual);
     }
-    
-    @Test
-    public void testGetAvailibleFanartOrderedByPostDate() {
-    	/*Variables*/
-    	Fanart mockentry = new Fanart();
-    	List<Fanart> mockdata = new ArrayList<Fanart>(),
-        		expected = new ArrayList<Fanart>(),
-        		actual;
-    	
-    	/*Setup Variables*/
-    	mockentry.setId(1);
-    	mockdata.add(mockentry);
-    	expected.add(mockentry);
-    	
-    	/*Mocks*/
-    	Mockito.when(artRepo.findByIsFlaggedOrderByPostDate(false)).thenReturn(mockdata);
-    	
-    	/*Function*/
-    	actual = artService.getAvailableFanartOrderedByPostDate(true);
-    	
-    	/*Test*/
-    	Assertions.assertEquals(expected, actual);
-    }
-    
-    @Test
-    public void testGetAvailibleFanartOrderedByPostDateDesc() {
-    	/*Variables*/
-    	Fanart mockentry = new Fanart();
-    	List<Fanart> mockdata = new ArrayList<Fanart>(),
-        		expected = new ArrayList<Fanart>(),
-        		actual;
-    	
-    	/*Setup Variables*/
-    	mockentry.setId(1);
-    	mockdata.add(mockentry);
-    	expected.add(mockentry);
-    	
-    	/*Mocks*/
-    	Mockito.when(artRepo.findByIsFlaggedOrderByPostDateDesc(false)).thenReturn(mockdata);
-    	
-    	/*Function*/
-    	actual = artService.getAvailableFanartOrderedByPostDate(false);
-    	
-    	/*Test*/
-    	Assertions.assertEquals(expected, actual);
-    }
-    
+        
     /*Testing getAvailibleFanartWithTags()*/
 
     @Test
