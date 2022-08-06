@@ -180,8 +180,12 @@ public class UserServiceImpl implements UserService {
 	 */
 	public User deleteUser (User user) throws RecordNotFoundException {
 		if (userRepo.existsUserByUsername(user.getUsername())) {
-			userRepo.delete(user);
-			return user;
+			Optional<User> oUser = userRepo.findByUsername(user.getUsername());
+			if (oUser.isEmpty()) return null;
+			User dbUser = oUser.get();
+
+			userRepo.delete(dbUser);
+			return dbUser;
 		}
 		else {
 			throw new RecordNotFoundException();
