@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.auth.Auth;
 import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.services.PokemonService;
 import com.revature.pokemondb.services.PokemonServiceImpl;
@@ -40,6 +41,7 @@ public class PokemonController {
 	}
 	
 	@GetMapping("/")
+	@Auth
 	public ResponseEntity<String> getHelloWorld () {
 		return ResponseEntity.ok("Hello World Pokemon");
 	}

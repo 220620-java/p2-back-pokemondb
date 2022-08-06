@@ -14,6 +14,7 @@ import com.revature.pokemondb.auth.JwtConfig;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.utils.SecurityUtils;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
+import com.revature.pokemondb.exceptions.TokenExpirationException;
 
 import io.jsonwebtoken.Jwts;
 
@@ -102,7 +103,7 @@ class TokenServiceTest {
                 .setIssuer("pokepost")
                 .setIssuedAt(new Date(now))
                 // Set expiration to before now.
-                .setExpiration(new Date(now - jwtConfig.getExpiration()))
+                .setExpiration(new Date(now - 10l))
                 .signWith(jwtConfig.getSigningKey())
                 .compact();
 		
@@ -120,4 +121,9 @@ class TokenServiceTest {
 			tokenService.validateToken("aaaaa");
 		});
 	}
+
+    @Test
+    void getDefaultExpiration() {
+        assertEquals(24*60*60*1000,tokenService.getDefaultExpiration());
+    }
 }

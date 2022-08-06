@@ -11,4 +11,5 @@ public interface TokenService {
     public String createToken(User user);
 	public Optional<UserDTO> validateToken(String token) throws FailedAuthenticationException, TokenExpirationException;
 	public int getDefaultExpiration();
+	public boolean isUserBanned (Long id);
 }

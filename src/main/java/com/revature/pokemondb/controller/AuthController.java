@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
+import com.revature.pokemondb.exceptions.BannedException;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.models.User;
@@ -46,6 +47,9 @@ public class AuthController {
             }
         } catch (FailedAuthenticationException | NoSuchAlgorithmException | RecordNotFoundException e) {
             e.printStackTrace();
+        } catch (BannedException e1) {
+            e1.printStackTrace();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
