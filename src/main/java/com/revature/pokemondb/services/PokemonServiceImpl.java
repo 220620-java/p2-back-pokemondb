@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,39 +22,19 @@ import com.revature.pokemondb.models.PokemonMoves;
 import com.revature.pokemondb.repositories.PokemonRepository;
 import com.revature.pokemondb.utils.StringUtils;
 
-// GRAB FROM pokemon-species for description, generation, and evolution chain
-// https://pokeapi.co/docs/v2#pokemon-species
-/**
- * This class retrieves pokemon from the PokeAPI
- * We want to grab the following pokemon fields:
- * Id
- * - [id]
- * Name
- * - [name]
- * Height
- * - [height]
- * Weight
- * - [weight]
- * Generation (from pokemon-species/)
- * Location (from /encounters)
- * Type
- * - [types][0][type][name]
- * Weaknesses (from type, damage_relations)
- * Category (from pokemon-species/, genera[7])
- * Gender (from gender)
- * Stats
- * - Base Stat: [stats][#][base_stat]
- * - Name: [stats][#][base_stat]
- */
-@Service
+@Service("PokemonService")
 public class PokemonServiceImpl implements PokemonService{
+    @Autowired
     private PokemonRepository pokeRepo;
+
+    @Autowired
     private ObjectMapper objMapper;
+
+    @Autowired
     private WebClient client;
 
-    public PokemonServiceImpl(ObjectMapper objMapper, PokemonRepository pRepo, WebClient client) {
-        this.client = client;
-        this.objMapper = objMapper;
+    public PokemonServiceImpl(PokemonRepository pRepo) {
+        this.client = WebClient.create();
         this.pokeRepo = pRepo;
     }
 
