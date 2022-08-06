@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import com.revature.pokemondb.models.Fanart;
 import com.revature.pokemondb.models.User;
 
+import java.sql.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -51,17 +52,21 @@ public interface FanartRepository extends JpaRepository<Fanart, Integer>{
 
 	/**
 	 * Returns all fanart objects with the value of isFlagged matching the parameter
+	 * and postDate being less than or equal to the parameter
 	 * @param isFlagged a Boolean to represent whether a fanart is flagged
+	 * @param postDate a date to filter results
 	 * @return a list of fanart objects ordered by post date, newest to oldest
 	 */
-	public List<Fanart> findByIsFlaggedOrderByPostDateDesc(Boolean isFlagged);
+	public List<Fanart> findByIsFlaggedAndPostDateLessThanEqual(Boolean isFlagged, Date postDate);
 
 	/**
 	 * Returns all fanart objects with the value of isFlagged matching the parameter
+	 * and postDate being greater than or equal to the parameter
 	 * @param isFlagged a Boolean to represent whether a fanart is flagged
+	 * @param postDate a date to filter results
 	 * @return a list of fanart objects ordered by post date, oldest to newest
 	 */
-	public List<Fanart> findByIsFlaggedOrderByPostDate(Boolean isFlagged);
+	public List<Fanart> findByIsFlaggedAndPostDateGreaterThanEqual(Boolean isFlagged, Date postDate);
 	
 	/**
 	 * Returns all fanart objects with the value of isFlagged matching the isFlagged parameter
