@@ -89,7 +89,7 @@ public class Fanart {
 		Fanart other = (Fanart) obj;
 		return author == other.author && id == other.id	&& Objects.equals(isFlagged, other.isFlagged)
 				&& Objects.equals(likes, other.likes) && pokemon == other.pokemon
-				&& Objects.equals(postDate, other.postDate)&& Objects.equals(reports, other.reports) 
+				&& Objects.equals(reports, other.reports) 
 				&& Objects.equals(tags, other.tags)	&& Objects.equals(title, other.title) 
 				&& Objects.equals(url, other.url);
 	}
