@@ -33,7 +33,7 @@ public class RateArtServiceTest {
     	int mockArtId = 1,
     		mockUserId = 1;
     	FanartDTO mockArt = new FanartDTO(mockArtId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<RateArt> mockdata = new ArrayList<RateArt>();
     	RateArt mockentry = new RateArt(),
     		expected = new RateArt(),
@@ -60,7 +60,7 @@ public class RateArtServiceTest {
     	int mockArtId = 1,
     		mockUserId = 1;
     	FanartDTO mockArt = new FanartDTO(mockArtId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<RateArt> mockdata = new ArrayList<RateArt>();
     	RateArt expected = null,
     		actual;

@@ -14,10 +14,11 @@ import javax.persistence.Table;
 public class UserIdDTO {
 	@Id
 	private int id;
+	private String username;
 
 	/*Constructor*/
 	
-    public UserIdDTO(int id) {
+    public UserIdDTO(int id, String username) {
 		this.id = id;
 	}
 	 
@@ -57,5 +58,13 @@ public class UserIdDTO {
 	
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }
