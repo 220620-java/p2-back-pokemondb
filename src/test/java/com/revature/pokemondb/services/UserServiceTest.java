@@ -34,6 +34,9 @@ class UserServiceTest {
     @Autowired
     private UserService userService;
 
+    /**
+     * Grabs all the users from the database and returns it.
+     */
     @Test
     void testGetAllUsers() {
         Mockito.when(userRepo.findAll()).thenReturn(new ArrayList<User>());

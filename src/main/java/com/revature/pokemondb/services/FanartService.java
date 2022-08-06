@@ -4,6 +4,7 @@ import com.revature.pokemondb.models.Fanart;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.repositories.FanartRepository;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,8 +35,8 @@ public class FanartService {
 	 * This will be used to determine the lower limit for accessing fanart
 	 * @return an id
 	 */
-	public long getLowestID() {
-		List<Fanart> fanart = artRepo.findByIsFlagged(false);
+	public int getLowestID() {
+		List<Fanart> fanart = artRepo.findByIsFlaggedOrderById(false);
 		if (fanart != null) {
 			return fanart.get(0).getId();
 		} else {
@@ -48,7 +49,7 @@ public class FanartService {
 	 * This will be used to determine the upper limit for accessing fanart
 	 * @return an id
 	 */
-	public long getHighestID() {
+	public int getHighestID() {
 		List<Fanart> fanart = artRepo.findByIsFlaggedOrderByIdDesc(false);
 		if (fanart != null) {
 			return fanart.get(0).getId();
@@ -111,15 +112,18 @@ public class FanartService {
 	/**
 	 * Retrieves all available fanart. Availability is contingent on whether it has been flagged.
 	 * Returned fanarts are ordered by post date
-	 * @param orderAsc represents the order in which the fanarts will be ordered. 'true' for ascending order and 'false' for descending order
+	 * @param greaterThan represents the argument by which the fanarts will be filtered. 'true' for >= and 'false' for <=
 	 * @return all fanart with the value of 'false' for the isFlagged field ordered by post date
 	 */
-	public List<Fanart> getAvailableFanartOrderedByPostDate(Boolean orderAsc){
+	public List<Fanart> getAvailableFanartFilteredByPostDate(Boolean greaterThan, String date){
 		List<Fanart> fanart;
-		if (orderAsc) {
-			fanart = artRepo.findByIsFlaggedOrderByPostDate(false);
+		Date postDate = Date.valueOf(date);
+		
+		//Retrieving data
+		if (greaterThan) {
+			fanart = artRepo.findByIsFlaggedAndPostDateGreaterThanEqual(false, postDate);
 		} else {
-			fanart = artRepo.findByIsFlaggedOrderByPostDateDesc(false);
+			fanart = artRepo.findByIsFlaggedAndPostDateLessThanEqual(false, postDate);
 		}
 		return fanart;
 	}
@@ -151,6 +155,11 @@ public class FanartService {
 		return fanart;
 	}
 	
+	/**
+	 * Tests for the existence of a fanart with a given id
+	 * @param id the id of the fanart to be found
+	 * @return a boolean to represent the fanart's existence
+	 */
 	public Boolean getExistsById(int id) {
 		return artRepo.existsById(id);
 	}
