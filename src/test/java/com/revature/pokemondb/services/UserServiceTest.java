@@ -376,7 +376,7 @@ class UserServiceTest {
         mockUser.setUsername("user");
         mockUser.setPassword("pass");
         mockUser.setEmail("email");
-        mockDbUser.setUsername("user");
+        mockDbUser.setUsername("user2");
         Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
         Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockDbUser));
         Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
