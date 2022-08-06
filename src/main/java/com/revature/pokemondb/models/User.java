@@ -1,6 +1,5 @@
 package com.revature.pokemondb.models;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -115,38 +114,6 @@ public class User {
 			this.role = "user";
 		}
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(salt);
-		result = prime * result + Objects.hash(email, password, userId, username);
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return Objects.equals(email, other.email) && Objects.equals(password, other.password)
-				&& Arrays.equals(salt, other.salt) && Objects.equals(userId, other.userId)
-				&& Objects.equals(username, other.username);
-	}
-
-	/** 
-	 * @return String
-	 */
-	@Override
-	public String toString() {
-		String retString = "UserId=%d, Username=%s, Email=%s, Password=%s, Salt=%s";
-		return String.format(retString, getUserId(), getUsername(), getEmail(), getPassword(), getSalt());
-	}
 
 	/** 
 	 * @return int
@@ -224,5 +191,37 @@ public class User {
 
 	public void setRole (String role) {
 		this.role = role;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(salt);
+		result = prime * result + Objects.hash(email, password, userId, username);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(email, other.email) && Objects.equals(password, other.password)
+				&& Arrays.equals(salt, other.salt) && Objects.equals(userId, other.userId)
+				&& Objects.equals(username, other.username);
+	}
+
+	/** 
+	 * @return String
+	 */
+	@Override
+	public String toString() {
+		String retString = "UserId=%d, Username=%s, Email=%s, Password=%s, Salt=%s";
+		return String.format(retString, getUserId(), getUsername(), getEmail(), getPassword(), getSalt());
 	}
 }
