@@ -7,7 +7,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
 import org.springframework.stereotype.Component;
-
 @Component
 public class SecurityUtils {
 
