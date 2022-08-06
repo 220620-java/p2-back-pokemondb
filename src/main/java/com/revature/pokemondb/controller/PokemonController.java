@@ -2,7 +2,6 @@ package com.revature.pokemondb.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.auth.Auth;
 import com.revature.pokemondb.models.Pokemon;
+import com.revature.pokemondb.models.dtos.PokemonDTO;
 import com.revature.pokemondb.services.PokemonService;
-import com.revature.pokemondb.services.PokemonServiceImpl;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
@@ -47,8 +44,8 @@ public class PokemonController {
 	}
 
 	@PostMapping("/")
-	public ResponseEntity<List<Pokemon>> getAllPokemonById (@RequestBody List<Integer> body) {
-		List<Pokemon> pokemonList = pokemonService.getAllPokemonById(body);
+	public ResponseEntity<List<PokemonDTO>> getAllPokemonById (@RequestBody List<Integer> body) {
+		List<PokemonDTO> pokemonList = pokemonService.getAllPokemonById(body);
 		if (pokemonList != null) {
 			return ResponseEntity.status(HttpStatus.OK).body(pokemonList);
 		}
@@ -82,9 +79,9 @@ public class PokemonController {
 	}
 
 	@GetMapping("/poke/{pokemonName}")
-	public ResponseEntity<Pokemon> getPokemonByNameOrIDShort(@PathVariable String pokemonName) {
+	public ResponseEntity<PokemonDTO> getPokemonByNameOrIDShort(@PathVariable String pokemonName) {
 		// Create pokemon object
-		Pokemon pokemon;
+		PokemonDTO pokemon;
 		try {
 			// Is this an id?
 			pokemon = pokemonService.getReferencePokemon(Integer.valueOf(pokemonName));

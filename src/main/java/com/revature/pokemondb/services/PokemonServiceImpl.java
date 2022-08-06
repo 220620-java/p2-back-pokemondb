@@ -19,8 +19,10 @@ import com.revature.pokemondb.models.Ability;
 import com.revature.pokemondb.models.Move;
 import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.PokemonMoves;
+import com.revature.pokemondb.models.dtos.PokemonDTO;
 import com.revature.pokemondb.repositories.PokemonRepository;
 import com.revature.pokemondb.utils.StringUtils;
+
 
 @Service("PokemonService")
 public class PokemonServiceImpl implements PokemonService{
@@ -81,35 +83,37 @@ public class PokemonServiceImpl implements PokemonService{
         return getRequestJSON(url);
     }
 
-    public Pokemon getReferencePokemon(int id) {
-        Optional<Pokemon> pokemon = pokeRepo.findById(id);
+    public PokemonDTO getReferencePokemon(int id) {
+        Optional<PokemonDTO> pokemon = pokeRepo.findById(id);
         if (pokemon.isPresent()) {return pokemon.get();}
         return null;
     }
 
-    public Pokemon getReferencePokemon(String pokemonName) {
-        Optional<Pokemon> pokemon = pokeRepo.findByName(pokemonName);
+    public PokemonDTO getReferencePokemon(String pokemonName) {
+        Optional<PokemonDTO> pokemon = pokeRepo.findByName(pokemonName);
         if (pokemon.isPresent()) {return pokemon.get();}
         return null;
     }
 
     public Pokemon createPokemon (int pokemonId) {
         Pokemon pokemon = createPokemonObject(getPokemonJSON(pokemonId));
-        pokeRepo.save(pokemon);
+        PokemonDTO dto = new PokemonDTO(pokemon);
+        pokeRepo.save(dto);
         return pokemon;
     }
 
     public Pokemon createPokemon (String pokemonName) {
         Pokemon pokemon = createPokemonObject(getPokemonJSON(pokemonName));
-        pokeRepo.save(pokemon);
+        PokemonDTO dto = new PokemonDTO(pokemon);
+        pokeRepo.save(dto);
         return pokemon;
     }
 
-    public List<Pokemon> getAllPokemonById (List<Integer> ids) {
-        List<Pokemon> pokemonList = new ArrayList<>();
+    public List<PokemonDTO> getAllPokemonById (List<Integer> ids) {
+        List<PokemonDTO> pokemonList = new ArrayList<>();
         // Retrieve pokemon one by one
         for (Integer id : ids) {
-            Optional<Pokemon> pokemon = pokeRepo.findById(id);
+            Optional<PokemonDTO> pokemon = pokeRepo.findById(id);
             if (pokemon.isPresent())
                 pokemonList.add(pokemon.get());
         }
