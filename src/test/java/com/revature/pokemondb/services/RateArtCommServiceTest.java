@@ -33,7 +33,7 @@ public class RateArtCommServiceTest {
     	int mockCommId = 1,
     		mockUserId = 1;
     	ArtCommDTO mockComm = new ArtCommDTO(mockCommId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<RateArtComm> mockdata = new ArrayList<RateArtComm>();
     	RateArtComm mockentry = new RateArtComm(),
     		expected = new RateArtComm(),
@@ -60,7 +60,7 @@ public class RateArtCommServiceTest {
     	int mockCommId = 1,
     		mockUserId = 1;
     	ArtCommDTO mockComm = new ArtCommDTO(mockCommId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<RateArtComm> mockdata = new ArrayList<RateArtComm>();
     	RateArtComm expected = null,
     		actual;

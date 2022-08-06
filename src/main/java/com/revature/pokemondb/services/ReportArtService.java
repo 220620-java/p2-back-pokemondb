@@ -38,7 +38,7 @@ public class ReportArtService {
 	 */
 	public ReportArt getRatingByUserAndFanartId(int artId, int userId) {
 		FanartDTO artDtoObj = new FanartDTO(artId);
-		UserIdDTO userDtoObj = new UserIdDTO(userId);
+		UserIdDTO userDtoObj = new UserIdDTO(userId, "");
 		List<ReportArt> reportArtList = reportArtRepo.findByFanartIdAndAuthor(artDtoObj, userDtoObj);
 		ReportArt reportArt;
 		
