@@ -22,11 +22,11 @@ import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 @Aspect
 @Component
 public class AuthAspect {
-	private TokenService tokenServ;
+	private TokenService tokenService;
 	private HttpServletRequest currentReq;
 	
-	public AuthAspect(TokenService tokenServ, HttpServletRequest req) {
-		this.tokenServ = tokenServ;
+	public AuthAspect(TokenService tokenService, HttpServletRequest req) {
+		this.tokenService = tokenService;
 		this.currentReq = req;
 	}
 	
@@ -40,7 +40,7 @@ public class AuthAspect {
 		boolean requireSelfAction = authAnnotation.requireSelfAction();
 		
 		String jws = currentReq.getHeader("Auth");
-		String currentUser = currentReq.getHeader("User");
+		String currentUser = currentReq.getHeader("Username");
 
 
 		// If user has an empty token header
@@ -50,7 +50,7 @@ public class AuthAspect {
 
 		Optional<UserDTO> userDtoOpt = Optional.empty();
 		try {
-			userDtoOpt = tokenServ.validateToken(jws);
+			userDtoOpt = tokenService.validateToken(jws);
 		} catch (FailedAuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token.");
 		} catch (TokenExpirationException e) {
@@ -68,7 +68,10 @@ public class AuthAspect {
 			}
 		}
 
-		if (stopBannedUsers) {
+		String username = userDtoOpt.get().getUsername();
+		Long userId = userDtoOpt.get().getUserId();
+
+		if (stopBannedUsers && tokenService.isUserBanned(userId)) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized. User has been banned.");
 		}
 
@@ -76,7 +79,7 @@ public class AuthAspect {
 			if (currentUser == null) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No username in header. Insufficient privileges.");
 			}
-			String username = userDtoOpt.get().getUsername();
+			
 			if (!currentUser.equals(username)) {
 				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username does not match token! Insufficient privileges.");
 			}
