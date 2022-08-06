@@ -26,6 +26,25 @@ public class UserTest {
     }
 
     @Test
+    void createUserDTOToken() {
+        User user = new User();
+        UserDTO userDTO = new UserDTO(user, "token");
+        userDTO.setToken("setToken");
+        assertEquals("setToken", userDTO.getToken());
+    }
+
+    @Test
+    void setUserDTO () {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(1l);
+        userDTO.setUsername("user");
+        userDTO.setEmail("email");
+        assertEquals(1l, userDTO.getUserId());
+        assertEquals("user", userDTO.getUsername());
+        assertEquals("email", userDTO.getEmail());
+    }
+
+    @Test
     void createIdUser () {
         Long expectedId = 1l;
         User user = new User(expectedId);

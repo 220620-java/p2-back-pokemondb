@@ -10,14 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.revature.pokemondb.PokemondbApplication;
-import com.revature.pokemondb.models.User;
-import com.revature.pokemondb.models.dtos.UserDTO;
+import com.revature.pokemondb.models.dtos.PokemonDTO;
 
 @SpringBootTest(classes=PokemondbApplication.class)
 public class PokemonTest {
@@ -26,6 +22,13 @@ public class PokemonTest {
     void createPokemon() {
         Pokemon pokemon = new Pokemon();
         assertNotNull(pokemon);
+        PokemonDTO pokemonDTO = new PokemonDTO();
+        assertNotNull (pokemonDTO);
+        PokemonDTO pokemonDTOId = new PokemonDTO(1);
+        assertNotNull (pokemonDTOId);
+        assertNotEquals(pokemonDTO,pokemonDTOId);
+        assertEquals(1, pokemonDTOId.getId());
+        assertEquals("PokemonDTO [id=" + 1 + "]", pokemonDTOId.toString());
     }
 
     @Test
@@ -59,10 +62,55 @@ public class PokemonTest {
     }
 
     @Test
+    void pokemonSetHeightFromInches() {
+        Pokemon pokemon = new Pokemon();
+        float inches = 60f;
+        float expectedHeight = 15.0f;
+        pokemon.setHeightFromInches(inches);
+        assertEquals(pokemon.getHeight(), expectedHeight);
+    }
+
+    @Test
+    void pokemonGetHeightInInches() {
+        Pokemon pokemon = new Pokemon();
+        int height = 5;
+        pokemon.setHeight(height);
+        float expectedHeight = height * 3.937f;
+        assertEquals(pokemon.getHeightInInches(), expectedHeight);
+    }
+
+    @Test
+    void pokemonGetHeightInFeet() {
+        Pokemon pokemon = new Pokemon();
+        int height = 5;
+        pokemon.setHeight(height);
+        float expectedHeight = height * 0.328084f;
+        assertEquals(pokemon.getHeightInFeet(), expectedHeight);
+    }
+
+    @Test
     void pokemonWeight() {
         Pokemon pokemon = new Pokemon();
         int expectedWeight = 3;
         pokemon.setWeight(expectedWeight);
+        assertEquals(pokemon.getWeight(), expectedWeight);
+    }
+
+    @Test
+    void pokemonWeightInPounds() {
+        Pokemon pokemon = new Pokemon();
+        int weight = 3;
+        pokemon.setWeight(weight);
+        float expectedWeight = weight / 4.536f;
+        assertEquals(pokemon.getWeightInPounds(), expectedWeight);
+    }
+
+    @Test
+    void pokemonSetWeightFromPounds() {
+        Pokemon pokemon = new Pokemon();
+        int pounds = 3;
+        float expectedWeight = 13.0f;
+        pokemon.setWeightFromPounds(pounds);
         assertEquals(pokemon.getWeight(), expectedWeight);
     }
 
@@ -153,6 +201,16 @@ public class PokemonTest {
         expectedAbilities.add(ability);
         pokemon.setAbilities(expectedAbilities);
         assertEquals(pokemon.getAbilities(), expectedAbilities);
+        
+        Ability emptyAbility = new Ability();
+        emptyAbility.setName("abilityName");
+        emptyAbility.setURL("url");
+        emptyAbility.setSlot(1);
+        emptyAbility.setHidden(true);
+        assertEquals("abilityName", emptyAbility.getName());
+        assertEquals("url", emptyAbility.getURL());
+        assertEquals(1, emptyAbility.getSlot());
+        assertEquals(true, emptyAbility.isHidden());
     }
 
     @Test
@@ -165,5 +223,7 @@ public class PokemonTest {
         expectedMoves.setLevelMoves(levelMoves);
         pokemon.setMoves(expectedMoves);
         assertEquals (pokemon.getMoves(), expectedMoves);
+        assertEquals ("url", move.getURL());
+        assertEquals (2, move.getLevelLearnedAt());
     }
 }
