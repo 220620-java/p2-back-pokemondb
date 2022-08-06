@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.jayway.jsonpath.Option;
 import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.exceptions.BannedException;
 import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
@@ -28,7 +27,7 @@ import com.revature.pokemondb.repositories.BanRepository;
 import com.revature.pokemondb.repositories.UserRepository;
 import com.revature.pokemondb.utils.SecurityUtils;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 class UserServiceTest {
     
     @MockBean

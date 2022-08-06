@@ -32,7 +32,13 @@ public class AuthController {
         this.userService = userService;
         this.tokenService = tokenService;
     }
-
+    
+    @Auth(requiredRole = "admin")
+    @GetMapping
+    public ResponseEntity<String> validateToken() {
+        return ResponseEntity.ok("Hello World Auth PokemonDB!");
+    }
+    
     @PostMapping
     public ResponseEntity<UserDTO> login(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
@@ -54,9 +60,4 @@ public class AuthController {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @Auth(requiredRole = "admin")
-    @GetMapping
-    public ResponseEntity<String> validateToken() {
-        return ResponseEntity.ok("Hello World Auth PokemonDB!");
-    }
 }

@@ -10,13 +10,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.models.RateArtComm;
 import com.revature.pokemondb.models.dtos.ArtCommDTO;
 import com.revature.pokemondb.models.dtos.UserIdDTO;
 import com.revature.pokemondb.repositories.RateArtCommRepository;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class RateArtCommServiceTest {
 	/*Class Variables*/
     @MockBean
