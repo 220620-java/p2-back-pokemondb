@@ -71,11 +71,8 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		if (user != null) {
-			UserDTO userDTO = new UserDTO(user);
-			return ResponseEntity.ok(userDTO);
-		}
-		return ResponseEntity.notFound().build();
+		UserDTO userDTO = new UserDTO(user);
+		return ResponseEntity.ok(userDTO);
 	}
 
 	/**
