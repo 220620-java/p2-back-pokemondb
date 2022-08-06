@@ -10,6 +10,7 @@ import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 import com.revature.pokemondb.exceptions.TokenExpirationException;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.dtos.UserDTO;
+import com.revature.pokemondb.repositories.BanRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -18,9 +19,19 @@ import io.jsonwebtoken.Jwts;
 @Service
 public class TokenServiceImpl implements TokenService {
     private JwtConfig jwtConfig;
+    private BanRepository banRepo;
 
-    public TokenServiceImpl (JwtConfig jwtConfig) {
+    public TokenServiceImpl (JwtConfig jwtConfig, BanRepository banRepo) {
         this.jwtConfig = jwtConfig;
+        this.banRepo = banRepo;
+    }
+
+    /**
+     * Checks if user is banned
+     */
+    @Override
+    public boolean isUserBanned (Long id) {
+        return banRepo.existsById(id);
     }
 
     /**

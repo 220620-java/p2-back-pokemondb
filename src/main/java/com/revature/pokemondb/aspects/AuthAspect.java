@@ -22,11 +22,13 @@ import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 @Aspect
 @Component
 public class AuthAspect {
-	private TokenService tokenServ;
+	private TokenService tokenService;
 	private HttpServletRequest currentReq;
+
+	private static final String ADMIN = "admin";
 	
-	public AuthAspect(TokenService tokenServ, HttpServletRequest req) {
-		this.tokenServ = tokenServ;
+	public AuthAspect(TokenService tokenService, HttpServletRequest req) {
+		this.tokenService = tokenService;
 		this.currentReq = req;
 	}
 	
@@ -35,9 +37,12 @@ public class AuthAspect {
 		Auth authAnnotation = ((MethodSignature) joinpoint.getSignature())
 				.getMethod()
 				.getAnnotation(Auth.class);
-		String requiredRole = authAnnotation.requiredRole();
+		final String requiredRole = authAnnotation.requiredRole();
+		final boolean stopBannedUsers = authAnnotation.stopBannedUsers();
+		final boolean requireSelfAction = authAnnotation.requireSelfAction();
 		
-		String jws = currentReq.getHeader("Auth");
+		final String jws = currentReq.getHeader("Auth");
+		final String currentUser = currentReq.getHeader("Username");
 
 		// If user has an empty token header
 		if (jws == null || jws.equals("")) {
@@ -46,7 +51,7 @@ public class AuthAspect {
 
 		Optional<UserDTO> userDtoOpt = Optional.empty();
 		try {
-			userDtoOpt = tokenServ.validateToken(jws);
+			userDtoOpt = tokenService.validateToken(jws);
 		} catch (FailedAuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token.");
 		} catch (TokenExpirationException e) {
@@ -56,19 +61,38 @@ public class AuthAspect {
 		if (!userDtoOpt.isPresent()) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No user info present.");
 		}
+
+		final String roleName = userDtoOpt.get().getRole();
 		
-		switch (requiredRole) {
-		case "admin":
-			String roleName = userDtoOpt.get().getRole();
-			if (!roleName.toLowerCase().equals("admin")) {
-				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Insufficient privileges.");
+		// If requires an admin, and not an admin then 401 error
+		if (requiredRole.equals(ADMIN) && !roleName.equalsIgnoreCase(ADMIN)) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Insufficient privileges.");
+		}
+
+		final String username = userDtoOpt.get().getUsername();
+		final Long userId = userDtoOpt.get().getUserId();
+
+		if (stopBannedUsers && tokenService.isUserBanned(userId)) {
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not authorized. User has been banned.");
+		}
+
+		if (requireSelfAction) {
+			// If no username then 403 error
+			if (currentUser == null) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No username in header. Insufficient privileges.");
 			}
-			break;
+			
+			// If not an admin and not the user that is logging in, 403 error
+			if (!roleName.equals(ADMIN) && !currentUser.equals(username)) {
+				return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Username does not match token! Insufficient privileges.");
+			}
 		}
 		
 		return joinpoint.proceed();
 	}
 	
 	@Pointcut("@annotation(com.revature.pokemondb.auth.Auth)")
-	public void methodsWithAuthAnnotation() {}
+	public void methodsWithAuthAnnotation() 
+	{ // I don't know why this has to be empty but it do
+	}
 }

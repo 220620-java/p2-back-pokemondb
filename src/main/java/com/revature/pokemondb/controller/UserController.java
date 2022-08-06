@@ -1,8 +1,8 @@
 package com.revature.pokemondb.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,9 @@ import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
 import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
+import com.revature.pokemondb.models.BannedUser;
 import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.UserService;
 
 @RestController
@@ -51,7 +53,7 @@ public class UserController {
 	 * @return
 	 */
     @GetMapping("/{id}")
-	public ResponseEntity<User> getUser (@PathVariable String id) {
+	public ResponseEntity<UserDTO> getUser (@PathVariable String id) {
 		User user;
 		try {
 			// Is this an id?
@@ -69,10 +71,8 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
-		if (user != null) {
-			return ResponseEntity.ok(user);
-		}
-		return ResponseEntity.notFound().build();
+		UserDTO userDTO = new UserDTO(user);
+		return ResponseEntity.ok(userDTO);
 	}
 
 	/**
@@ -82,12 +82,18 @@ public class UserController {
 	 */
     @GetMapping("/")
 	@Auth(requiredRole = "admin")
-	public ResponseEntity<List<User>> getAllUsers () {
+	public ResponseEntity<List<UserDTO>> getAllUsers () {
 		List<User> allUsers = userService.getAllUsers();
-
+		
+		// Convert all users into UsersDTO
 		if (allUsers != null) {
-			return ResponseEntity.ok(allUsers);
+			List<UserDTO> allUsersDTO = new ArrayList<>();
+			for (User user : allUsers) {
+				allUsersDTO.add(new UserDTO(user));
+			}
+			return ResponseEntity.ok(allUsersDTO);
 		}
+
 		return ResponseEntity.notFound().build();
 	}
     
@@ -96,10 +102,11 @@ public class UserController {
 	 * @return ResponseEntity<User>
 	 */
 	@PostMapping("/")
-	public ResponseEntity<User> createUser (@RequestBody Map<String, String> map) {
-		User newUser = new User(map);
+	public ResponseEntity<UserDTO> createUser (@RequestBody User newUser) {
 		try {
 			newUser = userService.registerUser (newUser);
+			UserDTO userDTO = new UserDTO(newUser);
+			return ResponseEntity.status(HttpStatus.CREATED).body(userDTO);
 		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException | NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -107,7 +114,6 @@ public class UserController {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
 	}
     
 	/** 
@@ -115,13 +121,24 @@ public class UserController {
 	 * @return ResponseEntity<User>
 	 */
 	@PutMapping("/")
-	@Auth(requiredRole = "admin")
-	public ResponseEntity<User> updateUserDetails (@RequestBody User user) {
+	@Auth(requireSelfAction = true)
+	public ResponseEntity<UserDTO> updateUserDetails (@RequestBody User user) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+			User updatedUser = userService.updateUser(user);
+			if (updatedUser != null) {
+				UserDTO userDTO = new UserDTO(updatedUser);
+				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		} catch (RecordNotFoundException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
 
@@ -129,14 +146,25 @@ public class UserController {
 	 * @param user
 	 * @return ResponseEntity<User>
 	 */
-	@PatchMapping("/")
-	@Auth(requiredRole = "admin")
-	public ResponseEntity<User> patchUserDetails (@RequestBody User user) {
+	@PatchMapping
+	@Auth(requireSelfAction = true)
+	public ResponseEntity<UserDTO> patchUserDetails (@RequestBody User user) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+			User updatedUser = userService.updateUser(user);
+			if (updatedUser != null) {
+				UserDTO userDTO = new UserDTO(updatedUser);
+				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		} catch (RecordNotFoundException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		} catch (UsernameAlreadyExistsException | EmailAlreadyExistsException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
     
@@ -146,12 +174,54 @@ public class UserController {
 	 */
 	@DeleteMapping("/")
 	@Auth(requiredRole = "admin")
-	public ResponseEntity<User> deleteUser (@RequestBody User user) {
+	public ResponseEntity<UserDTO> deleteUser (@RequestBody User user) {
 		try {
-			return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(user));
+			User deletedUser = userService.deleteUser(user);
+			if (deletedUser != null) {
+				UserDTO userDTO = new UserDTO(deletedUser);
+				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+			}
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		} catch (RecordNotFoundException e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
+	}
+
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
+	@PostMapping("/ban")
+	@Auth(requiredRole = "admin")
+	public ResponseEntity<UserDTO> banUser (@RequestBody BannedUser banBody) {
+		try {
+			User bannedUser = userService.banUser(banBody);
+			UserDTO userDTO = new UserDTO(bannedUser);
+			return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+		} catch (RecordNotFoundException | UsernameAlreadyExistsException e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+
+	/** 
+	 * @param user
+	 * @return ResponseEntity<User>
+	 */
+	@PostMapping("/unban/{id}")
+	@Auth(requiredRole = "admin")
+	public ResponseEntity<UserDTO> unBanUser (@PathVariable String id) {
+		try {
+			// Is this an id?
+			User unbannedUser = userService.unBanUser(Long.valueOf(id));
+			if (unbannedUser != null) {
+				UserDTO userDTO = new UserDTO(unbannedUser);
+				return ResponseEntity.status(HttpStatus.OK).body(userDTO);
+			}
+		} catch (NumberFormatException | RecordNotFoundException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 }
