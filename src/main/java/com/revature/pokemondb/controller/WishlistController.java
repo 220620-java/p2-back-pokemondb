@@ -65,9 +65,9 @@ public class WishlistController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> addPokemon(@RequestBody Map<String, Long > wish) {
+    public ResponseEntity<String> addPokemon(@RequestBody Wishlist wish) {
         if (wish != null) {
-            wishlistService.addPokemonToWishlist(Integer.valueOf(wish.get("pokemonid").toString()), wish.get("userid"));
+            wishlistService.addPokemonToWishlist(wish);
             return ResponseEntity.ok("add a wishlist");
         }
         return ResponseEntity.notFound().build();

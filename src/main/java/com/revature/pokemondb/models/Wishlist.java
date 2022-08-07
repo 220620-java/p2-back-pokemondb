@@ -14,6 +14,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.revature.pokemondb.models.dtos.PokemonDTO;
+import com.revature.pokemondb.models.dtos.UserIdDTO;
 
 @Entity
 @Table(name = "pokemon_wishlists", schema = "pokemon_db")
@@ -23,9 +24,9 @@ public class Wishlist {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = UserIdDTO.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
-    private User user;
+    private UserIdDTO user;
 
     @ManyToOne()
     @JoinColumn(name = "pokemon_id")
@@ -36,7 +37,7 @@ public class Wishlist {
     public Wishlist() {
     }
 
-    public Wishlist(long id, User user, PokemonDTO pokemon, Timestamp createdAt) {
+    public Wishlist(long id, UserIdDTO user, PokemonDTO pokemon, Timestamp createdAt) {
         this.id = id;
         this.pokemon = pokemon;
         this.user = user;
@@ -59,11 +60,11 @@ public class Wishlist {
         this.pokemon = pokemon;
     }
 
-    public User getUser() {
+    public UserIdDTO getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserIdDTO user) {
         this.user = user;
     }
 
