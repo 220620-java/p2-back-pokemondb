@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.revature.pokemondb.models.dtos.FanartDTO;
+import com.revature.pokemondb.models.dtos.UserIdDTO;
 
 /**
  * 
@@ -31,7 +32,7 @@ public class ArtComment {
 	private FanartDTO fanartId;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	private User author;
+	private UserIdDTO author;
 	@Column(name = "comment_content")
 	private String content;
 	private Integer likes;
@@ -53,7 +54,7 @@ public class ArtComment {
 		this.postDate = Date.valueOf(LocalDate.now());
 	}
 	
-	public ArtComment(int id, FanartDTO fanartId, User author, String content, Integer likes, Integer reports,
+	public ArtComment(int id, FanartDTO fanartId, UserIdDTO author, String content, Integer likes, Integer reports,
 			Boolean isFlagged, Date postDate) {
 		super();
 		this.id = id;
@@ -112,11 +113,11 @@ public class ArtComment {
 		this.fanartId = fanartId;
 	}
 
-	public User getAuthor() {
+	public UserIdDTO getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(User author) {
+	public void setAuthor(UserIdDTO author) {
 		this.author = author;
 	}
 

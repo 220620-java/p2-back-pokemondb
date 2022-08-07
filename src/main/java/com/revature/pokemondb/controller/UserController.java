@@ -33,24 +33,26 @@ import com.revature.pokemondb.services.UserService;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-@RequestMapping(path="/user")
+@RequestMapping(path = "/user")
 public class UserController {
 	private UserService userService;
 
-	public UserController (UserService userServ) {
+	public UserController(UserService userServ) {
 		this.userService = userServ;
 	}
 
-	@RequestMapping(path="/", method=RequestMethod.OPTIONS)
-	public ResponseEntity<String> optionsRequest () {
+	@RequestMapping(path = "/", method = RequestMethod.OPTIONS)
+	public ResponseEntity<String> optionsRequest() {
 		return ResponseEntity
-          .ok()
-          .allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.PATCH, HttpMethod.OPTIONS)
-              .build();
+				.ok()
+				.allow(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE, HttpMethod.PATCH,
+						HttpMethod.OPTIONS)
+				.build();
 	}
 
 	/**
 	 * Gets a user by id and returns 404 if not found
+	 * 
 	 * @param json
 	 * @return
 	 */
@@ -79,10 +81,11 @@ public class UserController {
 
 	/**
 	 * Gets a user by id and returns 404 if not found
+	 * 
 	 * @param json
 	 * @return
 	 */
-    @GetMapping("/")
+	@GetMapping("/")
 	@Auth(requiredRole = "admin")
 	public ResponseEntity<List<UserDTO>> getAllUsers () {
 		List<User> allUsers = userService.getAllUsers();
@@ -98,8 +101,8 @@ public class UserController {
 
 		return ResponseEntity.notFound().build();
 	}
-    
-	/** 
+
+	/**
 	 * @param map
 	 * @return ResponseEntity<User>
 	 */
@@ -118,8 +121,8 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
-    
-	/** 
+
+	/**
 	 * @param user
 	 * @return ResponseEntity<User>
 	 */
@@ -146,7 +149,7 @@ public class UserController {
 		}
 	}
 
-	/** 
+	/**
 	 * @param user
 	 * @return ResponseEntity<User>
 	 */
@@ -172,8 +175,8 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).build();
 		}
 	}
-    
-	/** 
+
+	/**
 	 * @param user
 	 * @return ResponseEntity<User>
 	 */
