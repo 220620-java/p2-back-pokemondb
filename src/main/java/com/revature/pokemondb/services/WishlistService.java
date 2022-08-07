@@ -52,18 +52,11 @@ public class WishlistService {
         return wishlists;
     }
 
-    public Wishlist findById(Long id) {
-        try {
-            Optional<Wishlist> wishlist = listRepo.findById(id);
+    public List<Wishlist> findByUserId(int id) {
+        UserIdDTO userId = new UserIdDTO(id, "");
+            List<Wishlist> wishlist = listRepo.findByUser(userId);
 
-            if (wishlist.isPresent()) {
-                return wishlist.get();
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+            return wishlist;
+        
     }
 }

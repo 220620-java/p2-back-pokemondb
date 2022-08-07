@@ -48,8 +48,8 @@ public class WishlistController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<String> getWishlistById(@PathVariable Long id) {
-        Wishlist wishlist = wishlistService.findById(id);
+    public ResponseEntity<String> getWishlistById(@PathVariable int id) {
+        List<Wishlist> wishlist = wishlistService.findByUserId(id);
         String wishlistJSON;
         try {
             wishlistJSON = objectMapper.writeValueAsString(wishlist);
