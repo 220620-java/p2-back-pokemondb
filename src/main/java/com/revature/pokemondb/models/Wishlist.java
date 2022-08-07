@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.revature.pokemondb.models.dtos.PokemonDTO;
@@ -21,22 +22,24 @@ public class Wishlist {
     @Column(name = "id", updatable = false, insertable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne(targetEntity = Pokemon.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "pokemon_id", referencedColumnName = "id")
-    private Pokemon pokemon;
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User wisher;
+    
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
+    private User user;
+
+    @ManyToOne()
+    @JoinColumn(name = "pokemon_id")
+    private PokemonDTO pokemon;
+
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
     public Wishlist() {
-
     }
 
-    public Wishlist(long id, Pokemon pokemon, User wisher, Timestamp createdAt) {
+    public Wishlist(long id, User user, PokemonDTO pokemon, Timestamp createdAt) {
         this.id = id;
         this.pokemon = pokemon;
-        this.wisher = wisher;
+        this.user = user;
         this.createdAt = createdAt;
     }
 
@@ -48,20 +51,20 @@ public class Wishlist {
         this.id = id;
     }
 
-    public Pokemon getPokemon() {
+    public PokemonDTO getPokemon() {
         return pokemon;
     }
 
-    public void setPokemon(Pokemon pokemon) {
+    public void setPokemon(PokemonDTO pokemon) {
         this.pokemon = pokemon;
     }
 
-    public User getWisher() {
-        return wisher;
+    public User getUser() {
+        return user;
     }
 
-    public void setWisher(User wisher) {
-        this.wisher = wisher;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Timestamp getCreatedAt() {
@@ -72,11 +75,10 @@ public class Wishlist {
         this.createdAt = createdAt;
     }
 
-
     @Override
     public String toString() {
-        return "Wishlist [createdAt=" + createdAt + ", id=" + id + ", pokemon=" + pokemon
-                + ", wisher=" + wisher + "]";
+        return "Wishlist [createdAt=" + createdAt + ", id=" + id + ", Pokemon=" + pokemon
+                + ", User=" + user + "]";
     }
 
 }

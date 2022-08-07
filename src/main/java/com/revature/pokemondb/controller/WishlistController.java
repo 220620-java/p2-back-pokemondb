@@ -39,19 +39,11 @@ public class WishlistController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<String> getAllWishlists() {
+    public ResponseEntity<List<Wishlist>> getAllWishlists() {
         List<Wishlist> wishlist = wishlistService.getAllWishlists();
-        String wishlistJSON;
-        try {
-            wishlistJSON = objectMapper.writeValueAsString(wishlist);
-            if (wishlist != null) {
-                return ResponseEntity.ok(wishlistJSON);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        if (wishlist != null) {
+            return ResponseEntity.ok(wishlist);
+        } 
         return ResponseEntity.notFound().build();
     }
 
