@@ -1,58 +1,40 @@
-package com.revature.pokemondb.models;
+package com.revature.pokemondb.models.dtos;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.revature.pokemondb.models.BannedUser;
+import com.revature.pokemondb.models.User;
 
-import com.revature.pokemondb.models.dtos.BannedUserDTO;
-
-@Entity
-@Table(name = "banned_users", schema = "pokemon_db")
-public class BannedUser {
-    @Id
-	@Column(name="user_id", updatable=false, insertable=false)
+public class BannedUserDTO {
 	private Long userId = 0l; 
-
-    @Column(name="ban_duration")
 	private Timestamp banDuration;
-
-    @Column(name="ban_reason")
 	private String banReason;
 
-    @Column(name="banned_at")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	private Timestamp bannedAt = new Timestamp(System.currentTimeMillis());
-
-    public BannedUser() {
+    public BannedUserDTO() {
         userId = 0l;
         banDuration = Timestamp.from(Instant.now());
         banReason = "";
     }
 
-    public BannedUser(Long userId) {
+    public BannedUserDTO(Long userId) {
         this.userId = userId;
     }
 
-    public BannedUser(Long userId, Timestamp banDuration, String banReason) {
+    public BannedUserDTO(Long userId, Timestamp banDuration, String banReason) {
         this.userId = userId;
         this.banDuration = banDuration;
         this.banReason = banReason;
     }
 
-    public BannedUser(BannedUserDTO dto) {
-        this.userId = dto.getUserId();
-        this.banDuration = dto.getBanDuration();
-        this.banReason = dto.getBanReason();
+    public BannedUserDTO(User user) {
+        this.userId = user.getUserId();
     }
 
-    public BannedUser(User user) {
+    public BannedUserDTO(BannedUser user) {
         this.userId = user.getUserId();
+        this.banDuration = user.getBanDuration();
+        this.banReason = user.getBanReason();
     }
 
     public Long getUserId() {
@@ -79,10 +61,6 @@ public class BannedUser {
         this.banReason = banReason;
     }
 
-    public Timestamp getBannedAt () {
-        return bannedAt;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -101,7 +79,7 @@ public class BannedUser {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        BannedUser other = (BannedUser) obj;
+        BannedUserDTO other = (BannedUserDTO) obj;
         if (banDuration == null) {
             if (other.banDuration != null)
                 return false;
