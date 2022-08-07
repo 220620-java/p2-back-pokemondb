@@ -111,7 +111,7 @@ public class FanartController {
 		canShowArt = fanartService.getExistsById(id);
 		if(canShowArt) {//Id exists
 			test = fanartService.getFanart(id);
-			if(test.getIsFlagged() == true) {//Art has been flagged
+			if(test.getIsFlagged()) {//Art has been flagged
 				canShowArt = false;
 			}
 		}

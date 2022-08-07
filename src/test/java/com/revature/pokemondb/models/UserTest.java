@@ -3,20 +3,19 @@ package com.revature.pokemondb.models;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.revature.pokemondb.PokemondbApplication;
-import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.models.dtos.BannedUserDTO;
+import com.revature.pokemondb.models.dtos.UserBodyDTO;
 import com.revature.pokemondb.models.dtos.UserDTO;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class UserTest {
     
     @Test
@@ -42,6 +41,37 @@ public class UserTest {
         assertEquals(1l, userDTO.getUserId());
         assertEquals("user", userDTO.getUsername());
         assertEquals("email", userDTO.getEmail());
+    }
+
+    @Test
+    void setUserBodyDTO () {
+        Long expectedId = 1l;
+        String expectedUsername = "username";
+        String expectedEmail = "email";
+        String expectedPassword = "pass";
+        byte[] expectedSalt = "pass".getBytes();
+        String expectedRole = "user";
+        String expectedToken = "token";
+        UserBodyDTO user = new UserBodyDTO();
+        user.setUserId(expectedId);
+        user.setUsername(expectedUsername);
+        user.setEmail(expectedEmail);
+        user.setPassword(expectedPassword);
+        user.setToken(expectedToken);
+        user.setSalt(expectedSalt);
+        assertEquals(user.getUserId(), expectedId);
+        assertEquals(user.getUsername(), expectedUsername);
+        assertEquals(user.getEmail(), expectedEmail);
+        assertEquals(user.getPassword(), expectedPassword);
+        assertEquals(user.getSalt(), expectedSalt);
+        assertEquals(user.getRole(), expectedRole);
+        assertEquals(user.getToken(), expectedToken);
+        User newUser = new User("lol", "email");
+        UserDTO newUserDTO = new UserDTO(newUser);
+        UserBodyDTO newBodyDTO = new UserBodyDTO(newUser);
+        UserBodyDTO newBodyDTO2 = new UserBodyDTO(newUserDTO);
+        assertNotNull(newBodyDTO);
+        assertNotNull(newBodyDTO2);
     }
 
     @Test
@@ -191,5 +221,49 @@ public class UserTest {
         User user = new User(expectedId, expectedUsername, expectedEmail, expectedPassword);
         User user2 = new User(expectedId, expectedUsername, expectedEmail, expectedPassword);
         assertEquals(user, user2);
+    }
+
+    @Test
+    void bannedUserDTO () {
+        BannedUser bannedUser = new BannedUser();
+        BannedUserDTO dto = new BannedUserDTO(bannedUser);
+        dto.setUserId(3l);
+        assertEquals(3l, dto.getUserId());
+        
+        Timestamp now = Timestamp.from(Instant.now());
+        dto.setBanDuration(now);
+        assertEquals(now, dto.getBanDuration());
+
+        String banReason = "lol";
+        dto.setBanReason(banReason);
+        assertEquals(banReason, dto.getBanReason());
+
+        BannedUserDTO dto2 = new BannedUserDTO(bannedUser);
+        BannedUserDTO dtoNull = new BannedUserDTO();
+        dtoNull.setBanDuration(null);
+        dtoNull.setBanReason(null);
+        dtoNull.setUserId(null);
+        assertNotEquals(dto, dto2);
+        assertNotEquals(dto2, dto);
+        assertNotEquals(dtoNull, dto2);
+        assertNotEquals(dto2, dtoNull);
+
+        dto2.setBanDuration(now);
+        assertNotEquals(dto, dto2);
+        assertNotEquals(dto2, dto);
+        assertNotEquals(dtoNull, dto2);
+        assertNotEquals(dto2, dtoNull);
+
+        dto2.setBanReason(banReason);
+        assertNotEquals(dto, dto2);
+        assertNotEquals(dto2, dto);
+        assertNotEquals(dtoNull, dto2);
+        assertNotEquals(dto2, dtoNull);
+
+        dto2.setUserId(3l);
+        assertEquals(dto, dto2);
+        assertEquals(dto2, dto);
+        assertNotEquals(dtoNull, dto2);
+        assertNotEquals(dto2, dtoNull);
     }
 }

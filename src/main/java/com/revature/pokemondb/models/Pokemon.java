@@ -1,6 +1,7 @@
 package com.revature.pokemondb.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.revature.pokemondb.models.dtos.PokemonDTO;
 
 import javax.persistence.*;
 
@@ -130,6 +131,13 @@ public class Pokemon {
         this.baseExperience = baseExperience;
         this.abilities = abilities;
         this.moves = moves;
+    }
+
+    public Pokemon(PokemonDTO pokemon) {
+        this.id = pokemon.getId();
+        this.name = pokemon.getName();
+        this.generation = pokemon.getGeneration();
+        this.imageUrl = pokemon.getImageUrl();
     }
 
     public int getId() {
@@ -283,7 +291,6 @@ public class Pokemon {
         this.moves = moves;
     }
 
-
     @Override
     public String toString() {
         String retString = name + " (" + id + ") \n" +
@@ -292,17 +299,7 @@ public class Pokemon {
         "[generation=" + generation + "]\n";
         
         // Base Stats
-        retString += "[baseStats:";
-        if (baseStats != null) {
-            StringBuilder builder = new StringBuilder();
-            for (Entry<String, Integer> stat : baseStats.entrySet()) {
-                String baseStatName = stat.getKey();
-                Integer baseStatNumber = stat.getValue();
-                builder.append("\t" + baseStatName + ": " + baseStatNumber);
-            }
-            retString += builder.toString();
-        }
-        retString += "] \n";
+        if (baseStats != null) createBaseStatsString();
 
         // Image
         retString += "[image: " + imageUrl + "] \n";
@@ -311,90 +308,98 @@ public class Pokemon {
         retString += "[description=" + description + "]\n";
 
         // Abilities
-        retString += "[abilities: ";
-        if (abilities != null) {
-            StringBuilder builder = new StringBuilder();
-            for (Ability ability : abilities) {
-                builder.append("\t" + ability);
-            }
-            retString += builder.toString();
-        }
-        retString += "] \n";
+        if (abilities != null) retString += createAbilitiesString ();
 
         // Evolution Chain
-        retString += "[evolutionChain: ";
-        if (evolutionChain != null) {
-            StringBuilder builder = new StringBuilder();
-            for (String[] evolution : evolutionChain) {
-                String evolutionName = evolution[0];
-                String evolutionURL = evolution[1];
-                builder.append("\t" + evolutionName + ": " + evolutionURL);
-            }
-            retString += builder.toString();
-        }
-        retString += "] \n";
+        if (evolutionChain != null) retString += createEvolutionString();
 
         // Moves
         StringJoiner joiner = new StringJoiner(",");
-
-        retString += "[levelMoves: ";
-        Set<Move> levelMoves = moves.getLevelMoves();
-        if (levelMoves != null && !levelMoves.isEmpty()) {
-            for (Move move : levelMoves) { joiner.add(move.getName()); }
-            retString += joiner.toString();
-        }
-        retString += "] \n";
+        retString += createMoveString ("levelMoves", moves.getLevelMoves(), joiner);
 
         joiner = new StringJoiner(",");
-        retString += "[eggMoves: ";
-        Set<Move> eggMoves = moves.getEggMoves();
-        if (eggMoves != null && !eggMoves.isEmpty()) {
-            for (Move move : eggMoves) { joiner.add(move.getName()); }
-            retString += joiner.toString();
-        }
-        retString += "] \n";
+        retString += createMoveString ("eggMoves", moves.getEggMoves(), joiner);
 
         joiner = new StringJoiner(",");
-        Set<Move> tutorMoves = moves.getTutorMoves();
-        retString += "[tutorMoves: ";
-        if (tutorMoves != null && !tutorMoves.isEmpty()) {
-            for (Move move : tutorMoves) { joiner.add(move.getName()); }
-            retString += joiner.toString();
-        }
-        retString += "] \n";
+        retString += createMoveString ("tutorMoves", moves.getTutorMoves(), joiner);
 
         joiner = new StringJoiner(",");
-        retString += "[machineMoves: ";
-        Set<Move> machineMoves = moves.getMachineMoves();
-        if (machineMoves != null && !machineMoves.isEmpty()) {
-            for (Move move : machineMoves) { joiner.add(move.getName()); }
-            retString += joiner.toString();
-        }
-        retString += "] \n";
+        retString += createMoveString ("machineMoves", moves.getMachineMoves(), joiner);
 
         joiner = new StringJoiner(",");
-        retString += "[otherMoves: ";
-        Set<Move> otherMoves = moves.getOtherMoves();
-        if (otherMoves != null && !otherMoves.isEmpty()) {
-            for (Move move : otherMoves) { joiner.add(move.getName()); }
-            retString += joiner.toString();
-        }
-        retString += "] \n";
+        retString += createMoveString ("otherMoves", moves.getOtherMoves(), joiner);
         
         // Locations/Versions
-        retString += "[locations: ";
-        if (locationVersions != null) {
-            StringBuilder builder = new StringBuilder();
-            for (Map<String, String> location : locationVersions) {
-                String locationName = location.get("locationName");
-                String locationURL = location.get("locationURL");
-                String versionName = location.get("versionName");
-                String maxChance = location.get("maxChance");
-                String methods = location.get("methods");
-                builder.append("\t\t" + locationName + ": " + locationURL + versionName + ": " + maxChance + " " + methods);
-            }
-            retString += builder.toString();
+        if (locationVersions != null) retString += createLocationString ();
+
+        return retString;
+    }
+
+    private String createBaseStatsString () {
+        String retString = "";
+        retString += "[baseStats:";
+
+        StringBuilder builder = new StringBuilder();
+        for (Entry<String, Integer> stat : baseStats.entrySet()) {
+            String baseStatName = stat.getKey();
+            Integer baseStatNumber = stat.getValue();
+            builder.append("\t" + baseStatName + ": " + baseStatNumber);
         }
+        retString += builder.toString();
+        retString += "] \n";
+        return retString;
+    }
+
+    private String createAbilitiesString () {
+        String retString = "";
+        retString += "[abilities: ";
+        StringBuilder builder = new StringBuilder();
+        for (Ability ability : abilities) {
+            builder.append("\t" + ability);
+        }
+        retString += builder.toString();
+        retString += "] \n";
+        return retString;
+    }
+
+    private String createEvolutionString () {
+        String retString = "";
+        retString += "[evolutionChain: ";
+        StringBuilder builder = new StringBuilder();
+        for (String[] evolution : evolutionChain) {
+            String evolutionName = evolution[0];
+            String evolutionURL = evolution[1];
+            builder.append("\t" + evolutionName + ": " + evolutionURL);
+        }
+        retString += builder.toString();
+        retString += "] \n";
+        return retString;
+    }
+
+    private String createMoveString (String moveName, Set<Move> moves, StringJoiner joiner) {
+        String retString = "";
+        retString += "["+ moveName + ": ";
+        if (moves != null && !moves.isEmpty()) {
+            for (Move move : moves) {joiner.add(move.getName()); }
+            retString += joiner.toString();
+        }
+        retString += "] \n";
+        return retString;
+    }
+
+    private String createLocationString () {
+        String retString = "";
+        retString += "[locations: ";
+        StringBuilder builder = new StringBuilder();
+        for (Map<String, String> location : locationVersions) {
+            String locationName = location.get("locationName");
+            String locationURL = location.get("locationURL");
+            String versionName = location.get("versionName");
+            String maxChance = location.get("maxChance");
+            String methods = location.get("methods");
+            builder.append("\t\t" + locationName + ": " + locationURL + versionName + ": " + maxChance + " " + methods);
+        }
+        retString += builder.toString();
         retString += "] \n";
         
         return retString;

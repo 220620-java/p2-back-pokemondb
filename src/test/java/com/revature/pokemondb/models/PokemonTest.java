@@ -12,10 +12,9 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.models.dtos.PokemonDTO;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class PokemonTest {
     
     @Test
@@ -225,5 +224,24 @@ public class PokemonTest {
         assertEquals (pokemon.getMoves(), expectedMoves);
         assertEquals ("url", move.getURL());
         assertEquals (2, move.getLevelLearnedAt());
+    }
+
+    @Test
+    void pokemonDTO() {
+        PokemonDTO dto = new PokemonDTO(1);
+        PokemonDTO dto2 = new PokemonDTO(1);
+        assertEquals(dto, dto2);
+        PokemonDTO dto3 = new PokemonDTO(1, "pikachu");
+        PokemonDTO dto4 = new PokemonDTO(1, "pikachu", "imageURL");
+        PokemonDTO dto5 = new PokemonDTO(1, "pikachu", "imageURL", 2);
+        dto3.setGeneration(1);
+        dto3.setImageUrl("image");
+        assertEquals(1, dto3.getGeneration());
+        assertEquals("image", dto3.getImageUrl());
+        dto4.setId(2);
+        assertEquals(2, dto4.getId());
+        dto5.setName("name");
+        assertEquals("name", dto5.getName());
+        assertInstanceOf(Integer.class, dto.hashCode());
     }
 }
