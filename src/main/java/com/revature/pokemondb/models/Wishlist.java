@@ -21,7 +21,7 @@ public class Wishlist {
     @Column(name = "id", updatable = false, insertable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Pokemon.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "pokemon_id", referencedColumnName = "id")
     private Pokemon pokemon;
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
