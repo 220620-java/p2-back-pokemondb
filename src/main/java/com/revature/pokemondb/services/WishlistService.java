@@ -18,7 +18,6 @@ public class WishlistService {
     private PokemonRepository pokemonRepo;
     private UserRepository userRepo;
 
-
     public WishlistService(PokemonRepository pokemonRepo, WishlistRepository listRepo, UserRepository userRepo) {
         this.pokemonRepo = pokemonRepo;
         this.listRepo = listRepo;
