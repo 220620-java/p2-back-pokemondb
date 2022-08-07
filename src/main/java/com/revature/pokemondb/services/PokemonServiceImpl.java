@@ -10,7 +10,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,28 +25,16 @@ import com.revature.pokemondb.utils.StringUtils;
 
 @Service("PokemonService")
 public class PokemonServiceImpl implements PokemonService{
-    @Autowired
     private PokemonRepository pokeRepo;
+    private WebClientService webClient;
 
     @Autowired
     private ObjectMapper objMapper;
 
-    @Autowired
-    private WebClient client;
 
-    public PokemonServiceImpl(PokemonRepository pRepo) {
-        this.client = WebClient.create();
+    public PokemonServiceImpl(PokemonRepository pRepo, WebClientService webClient) {
         this.pokeRepo = pRepo;
-    }
-
-    /**
-     * Send Get Request to External API
-     * https://reflectoring.io/spring-webclient/
-     * @param url
-     * @return
-     */
-    public String getRequestJSON(String url) {
-        return client.get().uri(url).retrieve().bodyToMono(String.class).block();
+        this.webClient = webClient;
     }
 
     /**
@@ -58,7 +45,7 @@ public class PokemonServiceImpl implements PokemonService{
      */
     public String getPokemonJSON(int pokemonId) {
         String url = "https://pokeapi.co/api/v2/pokemon/" + pokemonId;
-        return getRequestJSON(url);
+        return webClient.getRequestJSON(url);
     }
 
     /**
@@ -69,7 +56,7 @@ public class PokemonServiceImpl implements PokemonService{
      */
     public String getPokemonJSON(String pokemonName) {
         String url = "https://pokeapi.co/api/v2/pokemon/" + StringUtils.convertToURIFormat(pokemonName);
-        return getRequestJSON(url);
+        return  webClient.getRequestJSON(url);
     }
 
     /**
@@ -80,21 +67,30 @@ public class PokemonServiceImpl implements PokemonService{
      */
     public String getPokemonSpeciesJSON(int id) {
         String url = "https://pokeapi.co/api/v2/pokemon-species/" + id;
-        return getRequestJSON(url);
+        return  webClient.getRequestJSON(url);
     }
 
+    /**
+     * 
+     */
     public PokemonDTO getReferencePokemon(int id) {
         Optional<PokemonDTO> pokemon = pokeRepo.findById(id);
         if (pokemon.isPresent()) {return pokemon.get();}
         return null;
     }
 
+    /**
+     * 
+     */
     public PokemonDTO getReferencePokemon(String pokemonName) {
         Optional<PokemonDTO> pokemon = pokeRepo.findByName(pokemonName);
         if (pokemon.isPresent()) {return pokemon.get();}
         return null;
     }
 
+    /**
+     * 
+     */
     public Pokemon createPokemon (int pokemonId) {
         Pokemon pokemon = createPokemonObject(getPokemonJSON(pokemonId));
         PokemonDTO dto = new PokemonDTO(pokemon);
@@ -102,6 +98,9 @@ public class PokemonServiceImpl implements PokemonService{
         return pokemon;
     }
 
+    /**
+     * 
+     */
     public Pokemon createPokemon (String pokemonName) {
         Pokemon pokemon = createPokemonObject(getPokemonJSON(pokemonName));
         PokemonDTO dto = new PokemonDTO(pokemon);
@@ -109,6 +108,9 @@ public class PokemonServiceImpl implements PokemonService{
         return pokemon;
     }
 
+    /**
+     * 
+     */
     public List<PokemonDTO> getAllPokemonById (List<Integer> ids) {
         List<PokemonDTO> pokemonList = new ArrayList<>();
         // Retrieve pokemon one by one
@@ -120,10 +122,12 @@ public class PokemonServiceImpl implements PokemonService{
         return pokemonList;
     }
 
+    /**
+     * Create a pokemon object using four different API calls from PokeAPI.
+     */
     public Pokemon createPokemonObject (String pokemonJSON) {
-        Pokemon pokemon;
+        Pokemon pokemon = null;
         try {
-
             // ---------------------------Pokemon JSON--------------------------------------
             JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
             
@@ -140,21 +144,10 @@ public class PokemonServiceImpl implements PokemonService{
             int weight = pokemonRoot.get("weight").asInt();
 
             // Types
-            String[] types;
-            JsonNode typesNode = pokemonRoot.get("types").get(0);
-            int typesSize = typesNode.size();
-            types = new String[typesSize];
-            for (int i = 0; i < typesSize; i++) {
-                types[i] = typesNode.get("type").get("name").asText();
-            }
+            String[] types = getTypes(pokemonRoot.get("types").get(0));
 
             // Base Stats
-            Map<String, Integer> baseStats = new HashMap<>();
-            for (JsonNode jsonNode : pokemonRoot.get("stats")) {
-                String baseStatName = jsonNode.get("stat").get("name").asText();
-                int baseStatNumber = jsonNode.get("base_stat").asInt();
-                baseStats.put(baseStatName, baseStatNumber);
-            }
+            Map<String, Integer> baseStats = getBaseStats(pokemonRoot.get("stats"));
 
             // Image URL
             String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
@@ -163,54 +156,10 @@ public class PokemonServiceImpl implements PokemonService{
             int baseExperience = pokemonRoot.get("base_experience").asInt();
 
             // Abilities
-            List<Ability> abilities = new ArrayList<>();
-            for (JsonNode jsonNode : pokemonRoot.get("abilities")) {
-                Ability newAbility = new Ability(
-                    jsonNode.get("ability").get("name").asText(),
-                    jsonNode.get("ability").get("url").asText(),
-                    jsonNode.get("slot").asInt(),
-                    jsonNode.get("is_hidden").asBoolean()
-                );
-                abilities.add(newAbility);
-            }
-
+            List<Ability> abilities = getAbilities(pokemonRoot.get("abilities"));
+            
             // Moves
-            Set<Move> levelMoves = new HashSet<>();
-            Set<Move> eggMoves = new HashSet<>();
-            Set<Move> tutorMoves = new HashSet<>();
-            Set<Move> machineMoves = new HashSet<>();
-            Set<Move> otherMoves = new HashSet<>();
-            for (JsonNode jsonNode : pokemonRoot.get("moves")) {
-                Move move = new Move();
-
-                move.setName(jsonNode.get("move").get("name").asText());
-                move.setURL(jsonNode.get("move").get("url").asText());
-
-                for (JsonNode versionGroupDetailsNode : jsonNode.get("version_group_details")) {
-                    move.setTypeOfMove(versionGroupDetailsNode.get("move_learn_method").get("name").asText());
-                    move.setLevelLearnedAt(versionGroupDetailsNode.get("level_learned_at").asInt());
-
-                    switch (move.getTypeOfMove()) {
-                        case ("level-up"):
-                            levelMoves.add(move);
-                            break;
-                        case ("egg"):
-                            eggMoves.add(move);
-                            break;
-                        case ("tutor"):
-                            tutorMoves.add(move);
-                            break;
-                        case ("machine"):
-                            machineMoves.add(move);
-                            break;
-                        default:
-                            otherMoves.add(move);
-                            break;
-                    }
-                }
-            }
-
-            PokemonMoves moves = new PokemonMoves(levelMoves, eggMoves, tutorMoves, machineMoves, otherMoves);
+            PokemonMoves moves = getPokemonMoves (pokemonRoot.get("moves"));
 
             // ----------------------------Species JSON-----------------------------------------
             String speciesJSON = getPokemonSpeciesJSON(id);
@@ -225,87 +174,23 @@ public class PokemonServiceImpl implements PokemonService{
             String category = speciesRoot.get("genera").get(7).get("genus").asText();
             
             // Description
-            String description = "No Description";
-            JsonNode flavorTextEntriesNode = speciesRoot.get("flavor_text_entries");
-            int flavorTextSize = flavorTextEntriesNode.size();
-            for (int i = 0; i < flavorTextSize; i++) {
-                JsonNode currentNode = flavorTextEntriesNode.get(i);
-                String languageName = currentNode.get("language").get("name").asText();
-
-                // String uses equals instead of == so it won't be false
-                // Grab the first English flavor text description
-                if (languageName.equals("en")) {
-                    description = flavorTextEntriesNode.get(i).get("flavor_text").asText();
-                    description = description.replace("\f", " ");
-                    description = description.replace("\n", " ");
-                    break;
-                }
-            }
+            String description = getDescription(speciesRoot.get("flavor_text_entries"));
 
             // ---------------------------------Evolution JSON-------------------------------
             String evolutionURL = objMapper.readTree(speciesJSON).get("evolution_chain").get("url").asText();
-            String evolutionJSON = getRequestJSON(evolutionURL);
+            String evolutionJSON =  webClient.getRequestJSON(evolutionURL);
             JsonNode evolutionRoot = objMapper.readTree(evolutionJSON);
 
             // Evolution Chain
-            List<String[]> evolutionChain = new ArrayList<>();
-            JsonNode evolutionChainNode = evolutionRoot.get("chain");
-            do {
-                String speciesName = evolutionChainNode.get("species").get("name").asText();
-                speciesName = StringUtils.convertFromURIFormat(speciesName);
-                String speciesURL = evolutionChainNode.get("species").get("url").asText();
-                evolutionChain.add(new String[]{speciesName, speciesURL});
-                evolutionChainNode = evolutionChainNode.get("evolves_to").get(0);
-            } while (evolutionChainNode != null);
+            List<String[]> evolutionChain = getEvolutionChain(evolutionRoot.get("chain"));
 
             // ----------------------------Location JSON-----------------------------
             String locationsURL = objMapper.readTree(pokemonJSON).get("location_area_encounters").asText();
-            String locationJSON = getRequestJSON(locationsURL);
+            String locationJSON =  webClient.getRequestJSON(locationsURL);
             JsonNode locationRoot = objMapper.readTree(locationJSON);
 
             // Locations/Versions
-            List<Map<String,String>> locationVersions = new ArrayList<>();
-
-            for (JsonNode locationNode : locationRoot) {
-                // Location
-                String locationName = locationNode.get("location_area").get("name").asText();
-                locationName = StringUtils.convertFromURIFormat(locationName);
-
-                String locationURL = locationNode.get("location_area").get("url").asText();
-                
-                // Versions
-                JsonNode versionNodes = locationNode.get("version_details");
-                for (JsonNode versionNode : versionNodes) {
-                    Map<String, String> versionMap = new HashMap<>();
-
-                    // Location Name
-                    versionMap.put ("locationName", locationName);
-                    
-                    // URL
-                    versionMap.put ("locationURL", locationURL);
-
-                    // Encounter Method
-                    JsonNode encounterNode = versionNode.get("encounter_details");
-                    Set<String> encounterSet = new HashSet<>();
-                    
-                    for (JsonNode encounter : encounterNode) {
-                        encounterSet.add(encounter.get("method").get("name").asText());
-                    }
-                    versionMap.put ("methods", encounterSet.toString());
-
-                    // Max Chance
-                    String maxChance = versionNode.get("max_chance").asText() + "%";
-                    versionMap.put("maxChance", maxChance);
-
-                    // Version
-                    String version = versionNode.get("version").get("name").asText();
-                    versionMap.put("versionName", version);
-
-                    locationVersions.add(versionMap);
-                }
-            }
-
-
+            List<Map<String,String>> locationVersions = getLocationVersions(locationRoot);
 
             pokemon = new Pokemon (id, name,
                 height,
@@ -322,10 +207,191 @@ public class PokemonServiceImpl implements PokemonService{
                 abilities,
                 moves
             );
-            return pokemon;
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return pokemon;
+    }
+
+    /**
+     * 
+     * @param node
+     * @return
+     */
+    private String[] getTypes (JsonNode node) {
+        int size = node.size();
+        String[] types = new String[size];
+        for (int i = 0; i < size; i++) {
+            types[i] = node.get("type").get("name").asText();
+        }
+        return types;
+    }
+
+    /**
+     * 
+     * @param node
+     * @return
+     */
+    private Map<String, Integer> getBaseStats (JsonNode node) {
+        Map<String, Integer> baseStats = new HashMap<>();
+        for (JsonNode jsonNode : node) {
+            String baseStatName = jsonNode.get("stat").get("name").asText();
+            int baseStatNumber = jsonNode.get("base_stat").asInt();
+            baseStats.put(baseStatName, baseStatNumber);
+        }
+        return baseStats;
+    }
+
+    /**
+     * 
+     * @param node
+     * @return
+     */
+    private List<Ability> getAbilities (JsonNode node) {
+        List<Ability> abilities = new ArrayList<>();
+        for (JsonNode jsonNode : node) {
+            Ability newAbility = new Ability(
+                jsonNode.get("ability").get("name").asText(),
+                jsonNode.get("ability").get("url").asText(),
+                jsonNode.get("slot").asInt(),
+                jsonNode.get("is_hidden").asBoolean()
+            );
+            abilities.add(newAbility);
+        }
+        return abilities;
+    }
+
+    /**
+     * 
+     * @param node
+     * @return
+     */
+    private PokemonMoves getPokemonMoves (JsonNode node) {
+        Set<Move> levelMoves = new HashSet<>();
+        Set<Move> eggMoves = new HashSet<>();
+        Set<Move> tutorMoves = new HashSet<>();
+        Set<Move> machineMoves = new HashSet<>();
+        Set<Move> otherMoves = new HashSet<>();
+        for (JsonNode jsonNode : node) {
+            Move move = new Move();
+
+            move.setName(jsonNode.get("move").get("name").asText());
+            move.setURL(jsonNode.get("move").get("url").asText());
+
+            for (JsonNode versionGroupDetailsNode : jsonNode.get("version_group_details")) {
+                move.setTypeOfMove(versionGroupDetailsNode.get("move_learn_method").get("name").asText());
+                move.setLevelLearnedAt(versionGroupDetailsNode.get("level_learned_at").asInt());
+
+                switch (move.getTypeOfMove()) {
+                    case ("level-up"):
+                        levelMoves.add(move);
+                        break;
+                    case ("egg"):
+                        eggMoves.add(move);
+                        break;
+                    case ("tutor"):
+                        tutorMoves.add(move);
+                        break;
+                    case ("machine"):
+                        machineMoves.add(move);
+                        break;
+                    default:
+                        otherMoves.add(move);
+                        break;
+                }
+            }
+        }
+        return new PokemonMoves(levelMoves, eggMoves, tutorMoves, machineMoves, otherMoves);
+    }
+
+    /**
+     * 
+     * @param flavorTextEntriesNode
+     * @return
+     */
+    private String getDescription (JsonNode flavorTextEntriesNode) {
+        String description = "No Description";
+        int flavorTextSize = flavorTextEntriesNode.size();
+        for (int i = 0; i < flavorTextSize; i++) {
+            JsonNode currentNode = flavorTextEntriesNode.get(i);
+            String languageName = currentNode.get("language").get("name").asText();
+
+            // String uses equals instead of == so it won't be false
+            // Grab the first English flavor text description
+            if (languageName.equals("en")) {
+                description = flavorTextEntriesNode.get(i).get("flavor_text").asText();
+                description = description.replace("\f", " ");
+                description = description.replace("\n", " ");
+                break;
+            }
+        }
+        return description;
+    }
+
+    /**
+     * 
+     * @param evolutionChainNode
+     * @return
+     */
+    private List<String[]> getEvolutionChain (JsonNode evolutionChainNode) {
+        List<String[]> evolutionChain = new ArrayList<>();
+        do {
+            String speciesName = evolutionChainNode.get("species").get("name").asText();
+            speciesName = StringUtils.convertFromURIFormat(speciesName);
+            String speciesURL = evolutionChainNode.get("species").get("url").asText();
+            evolutionChain.add(new String[]{speciesName, speciesURL});
+            evolutionChainNode = evolutionChainNode.get("evolves_to").get(0);
+        } while (evolutionChainNode != null);
+
+        return evolutionChain;
+    }
+
+    /**
+     * 
+     * @param locationRoot
+     * @return
+     */
+    private List<Map<String, String>> getLocationVersions (JsonNode locationRoot) {
+        List<Map<String,String>> locationVersions = new ArrayList<>();
+        for (JsonNode locationNode : locationRoot) {
+            // Location
+            String locationName = locationNode.get("location_area").get("name").asText();
+            locationName = StringUtils.convertFromURIFormat(locationName);
+
+            String locationURL = locationNode.get("location_area").get("url").asText();
+            
+            // Versions
+            JsonNode versionNodes = locationNode.get("version_details");
+            for (JsonNode versionNode : versionNodes) {
+                Map<String, String> versionMap = new HashMap<>();
+
+                // Location Name
+                versionMap.put ("locationName", locationName);
+                
+                // URL
+                versionMap.put ("locationURL", locationURL);
+
+                // Encounter Method
+                JsonNode encounterNode = versionNode.get("encounter_details");
+                Set<String> encounterSet = new HashSet<>();
+                
+                for (JsonNode encounter : encounterNode) {
+                    encounterSet.add(encounter.get("method").get("name").asText());
+                }
+                versionMap.put ("methods", encounterSet.toString());
+
+                // Max Chance
+                String maxChance = versionNode.get("max_chance").asText() + "%";
+                versionMap.put("maxChance", maxChance);
+
+                // Version
+                String version = versionNode.get("version").get("name").asText();
+                versionMap.put("versionName", version);
+
+                locationVersions.add(versionMap);
+            }
+        }
+        return locationVersions;
     }
 }

@@ -2,10 +2,15 @@ package com.revature.pokemondb.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.Spy;
@@ -22,36 +27,47 @@ import com.revature.pokemondb.repositories.PokemonRepository;
 
 @SpringBootTest
 class PokemonServiceImplTest {
-    @MockBean
-    private AuthController authController;
+    // @MockBean
+    // private AuthController authController;
+
+    // @MockBean
+    // private UserController userController;
+
+    // @MockBean
+    // private UserService userService;
 
     @MockBean
-    private UserController userController;
-
-    @MockBean
-    private UserService userService;
+    private WebClientService webClient;
 
     @MockBean
     private PokemonRepository pokemonRepo;
 
     @Autowired
-    @Spy
     private PokemonService pokemonService;
 
+    private String pikachuJSON;
+    private String speciesJSON;
+    private String evolutionJSON;
+    private String locationJSON;
+
     @Test
-    void createPokemonByName() {
+    void createPokemonByNameAndId() {
+        pikachuJSON = getStringFromFile("src\\test\\resources\\pikachu_pokemon.json");
+        speciesJSON = getStringFromFile("src\\test\\resources\\pikachu_species.json");
+        evolutionJSON = getStringFromFile("src\\test\\resources\\pikachu_evolution.json");
+        locationJSON = getStringFromFile("src\\test\\resources\\pikachu_location.json");
         PokemonDTO dto = new PokemonDTO();
+        Mockito.when(webClient.getRequestJSON("https://pokeapi.co/api/v2/pokemon/pikachu")).thenReturn(pikachuJSON);
+        Mockito.when(webClient.getRequestJSON("https://pokeapi.co/api/v2/pokemon-species/25")).thenReturn(speciesJSON);
+        Mockito.when(webClient.getRequestJSON("https://pokeapi.co/api/v2/evolution-chain/10/")).thenReturn(evolutionJSON);
+        Mockito.when(webClient.getRequestJSON("https://pokeapi.co/api/v2/pokemon/25/encounters")).thenReturn(locationJSON);
         Mockito.when(pokemonRepo.save(dto)).thenReturn(dto);
         Pokemon pokemon = pokemonService.createPokemon("pikachu");
         assertNotNull(pokemon);
-    }
 
-    @Test
-    void createPokemonById () {
-        PokemonDTO dto = new PokemonDTO();
-        Mockito.when(pokemonRepo.save(dto)).thenReturn(dto);
-        Pokemon pokemon = pokemonService.createPokemon(1);
-        assertNotNull(pokemon);
+        Mockito.when(webClient.getRequestJSON("https://pokeapi.co/api/v2/pokemon/25")).thenReturn(pikachuJSON);
+        Pokemon pokemonId = pokemonService.createPokemon(25);
+        assertNotNull(pokemonId);
     }
 
     @Test 
@@ -96,4 +112,20 @@ class PokemonServiceImplTest {
         List<PokemonDTO> pokemonList = pokemonService.getAllPokemonById(ids);
         assertTrue (!pokemonList.isEmpty());
     }
+
+    private String getStringFromFile (String path) {
+		BufferedReader reader = null; 
+        String retString = "";
+		try {
+			reader = new BufferedReader(new FileReader(path));
+			for (String line; (line = reader.readLine()) != null;) {
+				retString += line;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (reader != null) try { reader.close(); } catch (IOException ignore) {}
+		}
+        return retString;
+	}
 }
