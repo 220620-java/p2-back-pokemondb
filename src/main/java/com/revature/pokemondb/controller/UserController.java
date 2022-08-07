@@ -26,6 +26,8 @@ import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
 import com.revature.pokemondb.models.BannedUser;
 import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.models.dtos.UserBodyDTO;
+import com.revature.pokemondb.models.dtos.BannedUserDTO;
 import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.services.UserService;
 
@@ -105,7 +107,8 @@ public class UserController {
 	 * @return ResponseEntity<User>
 	 */
 	@PostMapping("/")
-	public ResponseEntity<UserDTO> createUser (@RequestBody User newUser) {
+	public ResponseEntity<UserDTO> createUser (@RequestBody UserBodyDTO userBody) {
+		User newUser = new User(userBody);
 		try {
 			newUser = userService.registerUser (newUser);
 			UserDTO userDTO = new UserDTO(newUser);
@@ -125,7 +128,8 @@ public class UserController {
 	 */
 	@PutMapping("/")
 	@Auth(requireSelfAction = true)
-	public ResponseEntity<UserDTO> updateUserDetails (@RequestBody User user) {
+	public ResponseEntity<UserDTO> updateUserDetails (@RequestBody UserBodyDTO userBody) {
+		User user = new User(userBody);
 		try {
 			User updatedUser = userService.updateUser(user);
 			if (updatedUser != null) {
@@ -151,7 +155,8 @@ public class UserController {
 	 */
 	@PatchMapping
 	@Auth(requireSelfAction = true)
-	public ResponseEntity<UserDTO> patchUserDetails (@RequestBody User user) {
+	public ResponseEntity<UserDTO> patchUserDetails (@RequestBody UserBodyDTO userBody) {
+		User user = new User(userBody);
 		try {
 			User updatedUser = userService.updateUser(user);
 			if (updatedUser != null) {
@@ -177,7 +182,8 @@ public class UserController {
 	 */
 	@DeleteMapping("/")
 	@Auth(requiredRole = "admin")
-	public ResponseEntity<UserDTO> deleteUser (@RequestBody User user) {
+	public ResponseEntity<UserDTO> deleteUser (@RequestBody UserBodyDTO userBody) {
+		User user = new User(userBody);
 		try {
 			User deletedUser = userService.deleteUser(user);
 			if (deletedUser != null) {
@@ -197,10 +203,11 @@ public class UserController {
 	 */
 	@PostMapping("/ban")
 	@Auth(requiredRole = "admin")
-	public ResponseEntity<UserDTO> banUser (@RequestBody BannedUser banBody) {
+	public ResponseEntity<UserDTO> banUser (@RequestBody BannedUserDTO banBody) {
+		BannedUser bannedUser = new BannedUser(banBody);
 		try {
-			User bannedUser = userService.banUser(banBody);
-			UserDTO userDTO = new UserDTO(bannedUser);
+			User user = userService.banUser(bannedUser);
+			UserDTO userDTO = new UserDTO(user);
 			return ResponseEntity.status(HttpStatus.OK).body(userDTO);
 		} catch (RecordNotFoundException | UsernameAlreadyExistsException e) {
 			e.printStackTrace();

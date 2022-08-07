@@ -22,7 +22,7 @@ public class Wishlist {
     @Column(name = "id", updatable = false, insertable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
+    
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
@@ -75,10 +75,9 @@ public class Wishlist {
         this.createdAt = createdAt;
     }
 
-
     @Override
     public String toString() {
-        return "Wishlist [createdAt=" + createdAt + ", id=" + id + ", pokemon=" + pokemon
+        return "Wishlist [createdAt=" + createdAt + ", id=" + id + ", Pokemon=" + pokemon
                 + ", User=" + user + "]";
     }
 

@@ -40,7 +40,6 @@ public class WishlistService {
             }
         }
         return false;
-
     }
 
     // delete pokemon from wish list

@@ -1,6 +1,7 @@
 package com.revature.pokemondb.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.revature.pokemondb.models.dtos.PokemonDTO;
 
 import javax.persistence.*;
 
@@ -130,6 +131,13 @@ public class Pokemon {
         this.baseExperience = baseExperience;
         this.abilities = abilities;
         this.moves = moves;
+    }
+
+    public Pokemon(PokemonDTO pokemon) {
+        this.id = pokemon.getId();
+        this.name = pokemon.getName();
+        this.generation = pokemon.getGeneration();
+        this.imageUrl = pokemon.getImageUrl();
     }
 
     public int getId() {
