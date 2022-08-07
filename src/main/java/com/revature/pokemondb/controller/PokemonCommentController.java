@@ -3,6 +3,7 @@ package com.revature.pokemondb.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.services.PokemonCommentImpl;
 import org.springframework.http.HttpMethod;
@@ -47,6 +48,11 @@ public class PokemonCommentController {
     @PutMapping
     protected ResponseEntity<String> editComment(@RequestBody PokemonComments pokeComment) {
             return ResponseEntity.ok(commentService.updateComment(pokeComment).toString());
+    }
+
+    @GetMapping(path = "/all{id}")
+    protected ResponseEntity<String> getAllById(@PathVariable Integer id) {
+        return ResponseEntity.ok(commentService.getAllByPokemon(new Pokemon(id)));
     }
 
     /*
