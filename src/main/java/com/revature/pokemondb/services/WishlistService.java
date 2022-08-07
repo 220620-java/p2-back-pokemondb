@@ -8,6 +8,7 @@ import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.Wishlist;
 import com.revature.pokemondb.models.dtos.PokemonDTO;
+import com.revature.pokemondb.models.dtos.UserIdDTO;
 import com.revature.pokemondb.repositories.WishlistRepository;
 import com.revature.pokemondb.repositories.PokemonRepository;
 import com.revature.pokemondb.repositories.UserRepository;
@@ -25,21 +26,13 @@ public class WishlistService {
     }
 
     // add pokemon to wish list
-    public Boolean addPokemonToWishlist(Integer pokemonid, Long userid) {
-        Wishlist wishlist = new Wishlist();
-        Optional<PokemonDTO> oPokemon = pokemonRepo.findById(pokemonid);
-        Optional<User> oUser = userRepo.findById(userid);
-        if (oPokemon.isPresent() && oUser.isPresent()) {
-            wishlist.setPokemon(oPokemon.get());
-            wishlist.setUser(oUser.get());
-            try {
-                listRepo.save(wishlist);
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public Boolean addPokemonToWishlist(Wishlist pokemonid) {
+        Wishlist wishlist = listRepo.save(pokemonid);
+        if(wishlist == null) {
+            return false;
+        } else {
+        return true;
         }
-        return false;
     }
 
     // delete pokemon from wish list
