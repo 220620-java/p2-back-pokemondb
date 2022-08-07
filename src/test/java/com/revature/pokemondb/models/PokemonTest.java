@@ -235,7 +235,9 @@ public class PokemonTest {
         PokemonDTO dto4 = new PokemonDTO(1, "pikachu", "imageURL");
         PokemonDTO dto5 = new PokemonDTO(1, "pikachu", "imageURL", 2);
         dto3.setGeneration(1);
+        dto3.setImageUrl("image");
         assertEquals(1, dto3.getGeneration());
+        assertEquals("image", dto3.getImageUrl());
         dto4.setId(2);
         assertEquals(2, dto4.getId());
         dto5.setName("name");
