@@ -26,7 +26,7 @@ public class PokemonComments {
 	private Timestamp posted_at = new Timestamp(System.currentTimeMillis());
 
 	public PokemonComments(Long id, Pokemon pokemon, User user_id, String comment_content, Boolean is_flagged,
-						   Integer likes) {
+			Integer likes) {
 		this.id = id;
 		this.pokemon = pokemon;
 		this.user = user_id;

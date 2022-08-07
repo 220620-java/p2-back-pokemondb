@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.pokemondb.auth.Auth;
+import com.revature.pokemondb.exceptions.BannedException;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.models.User;
@@ -20,6 +22,7 @@ import com.revature.pokemondb.services.TokenService;
 import com.revature.pokemondb.services.UserService;
 
 @RestController
+@CrossOrigin(maxAge = 3600)
 @RequestMapping(path="/auth")
 public class AuthController {
     private UserService userService;
@@ -29,7 +32,13 @@ public class AuthController {
         this.userService = userService;
         this.tokenService = tokenService;
     }
-
+    
+    @Auth(requiredRole = "admin")
+    @GetMapping
+    public ResponseEntity<String> validateToken() {
+        return ResponseEntity.ok("Hello World Auth PokemonDB!");
+    }
+    
     @PostMapping
     public ResponseEntity<UserDTO> login(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
@@ -44,13 +53,11 @@ public class AuthController {
             }
         } catch (FailedAuthenticationException | NoSuchAlgorithmException | RecordNotFoundException e) {
             e.printStackTrace();
+        } catch (BannedException e1) {
+            e1.printStackTrace();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    @Auth(requiredRole = "admin")
-    @GetMapping
-    public ResponseEntity<String> validateToken() {
-        return ResponseEntity.ok("Hello World Auth PokemonDB!");
-    }
 }

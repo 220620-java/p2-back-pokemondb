@@ -38,7 +38,7 @@ public class RateArtService {
 	 */
 	public RateArt getRatingByUserAndFanartId(int artId, int userId) {
 		FanartDTO artDtoObj = new FanartDTO(artId);
-		UserIdDTO userDtoObj = new UserIdDTO(userId);
+		UserIdDTO userDtoObj = new UserIdDTO(userId, "");
 		List<RateArt> rateArtList = rateArtRepo.findByFanartIdAndAuthor(artDtoObj, userDtoObj);
 		RateArt rateArt;
 		

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.auth.JwtConfig;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.utils.SecurityUtils;
@@ -17,7 +16,7 @@ import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 
 import io.jsonwebtoken.Jwts;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 class TokenServiceTest {
     @Autowired
 	private JwtConfig jwtConfig;
@@ -102,7 +101,7 @@ class TokenServiceTest {
                 .setIssuer("pokepost")
                 .setIssuedAt(new Date(now))
                 // Set expiration to before now.
-                .setExpiration(new Date(now - jwtConfig.getExpiration()))
+                .setExpiration(new Date(now - 10l))
                 .signWith(jwtConfig.getSigningKey())
                 .compact();
 		
@@ -120,4 +119,9 @@ class TokenServiceTest {
 			tokenService.validateToken("aaaaa");
 		});
 	}
+
+    @Test
+    void getDefaultExpiration() {
+        assertEquals(24*60*60*1000,tokenService.getDefaultExpiration());
+    }
 }

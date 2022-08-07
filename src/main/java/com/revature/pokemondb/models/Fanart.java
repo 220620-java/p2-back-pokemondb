@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.revature.pokemondb.models.dtos.UserIdDTO;
+
 /**
  * 
  * @author Barry Norton
@@ -30,7 +32,7 @@ public class Fanart {
 	private Pokemon pokemon;
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	private User author;
+	private UserIdDTO author;
 	private String title;
 	private String tags;
 	@Column(name = "image")
@@ -55,7 +57,7 @@ public class Fanart {
 		this.postDate = Date.valueOf(LocalDate.now());
 	}
 	
-	public Fanart(int id, Pokemon pokemon, User author, String title, String tags, String url, int likes, int reports,
+	public Fanart(int id, Pokemon pokemon, UserIdDTO author, String title, String tags, String url, int likes, int reports,
 			Boolean isFlagged, Date postDate, List<ArtComment> comments) {
 		super();
 		this.id = id;
@@ -89,7 +91,7 @@ public class Fanart {
 		Fanart other = (Fanart) obj;
 		return author == other.author && id == other.id	&& Objects.equals(isFlagged, other.isFlagged)
 				&& Objects.equals(likes, other.likes) && pokemon == other.pokemon
-				&& Objects.equals(postDate, other.postDate)&& Objects.equals(reports, other.reports) 
+				&& Objects.equals(reports, other.reports) 
 				&& Objects.equals(tags, other.tags)	&& Objects.equals(title, other.title) 
 				&& Objects.equals(url, other.url);
 	}
@@ -116,10 +118,10 @@ public class Fanart {
 	public void setPokemon(Pokemon pokemon) {
 		this.pokemon = pokemon;
 	}
-	public User getAuthor() {
+	public UserIdDTO getAuthor() {
 		return author;
 	}
-	public void setAuthor(User author) {
+	public void setAuthor(UserIdDTO author) {
 		this.author = author;
 	}
 	public String getTitle() {

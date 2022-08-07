@@ -1,7 +1,6 @@
 package com.revature.pokemondb.models;
 
-import java.time.Instant;
-import java.util.List;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,41 +10,37 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.revature.pokemondb.models.dtos.PokemonDTO;
 
 @Entity
-@Table(name = "pokemon_wishlists")
+@Table(name = "pokemon_wishlists", schema = "pokemon_db")
 public class Wishlist {
     @Id
     @Column(name = "id", updatable = false, insertable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "pokemon_id", referencedColumnName = "id")
+    
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
+    private User user;
 
+    @ManyToOne()
+    @JoinColumn(name = "pokemon_id")
     private PokemonDTO pokemon;
-    @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
 
-    private User wisher;
-    private Instant createdAt;
-    @OneToMany
-    @JoinColumn(name = "user_id")
-    private List<Wishlist> lists;
+    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
     public Wishlist() {
-
     }
 
-    public Wishlist(long id, PokemonDTO pokemon, User wisher, Instant createdAt, List<Wishlist> lists) {
+    public Wishlist(long id, User user, PokemonDTO pokemon, Timestamp createdAt) {
         this.id = id;
         this.pokemon = pokemon;
-        this.wisher = wisher;
+        this.user = user;
         this.createdAt = createdAt;
-        this.lists = lists;
     }
 
     public long getId() {
@@ -64,34 +59,26 @@ public class Wishlist {
         this.pokemon = pokemon;
     }
 
-    public User getWisher() {
-        return wisher;
+    public User getUser() {
+        return user;
     }
 
-    public void setWisher(User wisher) {
-        this.wisher = wisher;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public Instant getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public List<Wishlist> getLists() {
-        return lists;
-    }
-
-    public void setLists(List<Wishlist> lists) {
-        this.lists = lists;
     }
 
     @Override
     public String toString() {
-        return "Wishlist [createdAt=" + createdAt + ", id=" + id + ", lists=" + lists + ", pokemon=" + pokemon
-                + ", wisher=" + wisher + "]";
+        return "Wishlist [createdAt=" + createdAt + ", id=" + id + ", Pokemon=" + pokemon
+                + ", User=" + user + "]";
     }
 
 }

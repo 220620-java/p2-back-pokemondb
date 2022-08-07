@@ -13,4 +13,6 @@ import java.lang.annotation.RetentionPolicy;
 @Documented
 public @interface Auth {
 	String requiredRole() default "none";
+	boolean stopBannedUsers() default false;
+	boolean requireSelfAction() default false;
 }

@@ -1,12 +1,15 @@
 package com.revature.pokemondb.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -108,10 +111,31 @@ public class FanartController {
 		canShowArt = fanartService.getExistsById(id);
 		if(canShowArt) {//Id exists
 			test = fanartService.getFanart(id);
-			if(test.getIsFlagged() == true) {//Art has been flagged
+			if(test.getIsFlagged()) {//Art has been flagged
 				canShowArt = false;
 			}
 		}
 		return ResponseEntity.ok(canShowArt.toString());
+	}
+	
+	@GetMapping(path="/filters")
+	public ResponseEntity<String> getFilteredFanart(@RequestParam Map<String, String> params){
+		List<Fanart> result = new ArrayList<Fanart>();
+		String resultJSON = "";
+		if (params.containsKey("title")) {
+			result = fanartService.getAvailableFanartWithTitle(params.get("title"));
+		} else if (params.containsKey("tags")) {
+			result = fanartService.getAvailableFanartWithTags(params.get("tags"));
+		} else if (params.containsKey("dateBefore")) {
+			result = fanartService.getAvailableFanartFilteredByPostDate(false, params.get("dateBefore"));
+		} else if (params.containsKey("dateAfter")) {
+			result = fanartService.getAvailableFanartFilteredByPostDate(true, params.get("dateAfter"));
+		}
+		try {
+			resultJSON = objectMapper.writeValueAsString(result);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok(resultJSON);
 	}
 }

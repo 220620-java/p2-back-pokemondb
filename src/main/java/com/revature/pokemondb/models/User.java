@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.revature.pokemondb.models.dtos.UserBodyDTO;
 import com.revature.pokemondb.models.dtos.UserDTO;
 
 /**
@@ -114,40 +115,17 @@ public class User {
 			this.role = "user";
 		}
 	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(salt);
-		result = prime * result + Objects.hash(email, password, userId, username);
-		return result;
-	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return Objects.equals(email, other.email) && Objects.equals(password, other.password)
-				&& Arrays.equals(salt, other.salt) && Objects.equals(userId, other.userId)
-				&& Objects.equals(username, other.username);
-	}
+	public User(UserBodyDTO user) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.salt = user.getSalt();
+		this.password = user.getPassword();
+		this.role = user.getRole();
+    }
 
-	/** 
-	 * @return String
-	 */
-	@Override
-	public String toString() {
-		String retString = "UserId=%d, Username=%s, Email=%s, Password=%s, Salt=%s";
-		return String.format(retString, getUserId(), getUsername(), getEmail(), getPassword(), getSalt());
-	}
-
-	/** 
+    /** 
 	 * @return int
 	 */
 	public Long getUserId() {
@@ -223,5 +201,37 @@ public class User {
 
 	public void setRole (String role) {
 		this.role = role;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(salt);
+		result = prime * result + Objects.hash(email, password, userId, username);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		return Objects.equals(email, other.email) && Objects.equals(password, other.password)
+				&& Arrays.equals(salt, other.salt) && Objects.equals(userId, other.userId)
+				&& Objects.equals(username, other.username);
+	}
+
+	/** 
+	 * @return String
+	 */
+	@Override
+	public String toString() {
+		String retString = "UserId=%d, Username=%s, Email=%s, Password=%s, Salt=%s";
+		return String.format(retString, getUserId(), getUsername(), getEmail(), getPassword(), getSalt());
 	}
 }

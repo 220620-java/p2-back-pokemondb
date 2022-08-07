@@ -1,15 +1,21 @@
 package com.revature.pokemondb.services;
 
+import java.util.List;
+
 import com.revature.pokemondb.models.PokemonComments;
 
 public interface PokemonCommentService {
 
-    String getAllComments();
+    public List<PokemonComments> getAllFlaggedComments();
+    
+    public PokemonComments getById(Integer id);
+    
+    public List<PokemonComments> getAllUnflaggedComments();
 
-    PokemonComments storeNewComment(PokemonComments comment);
+    public PokemonComments storeNewComment(PokemonComments comment);
 
-    void deleteComment(PokemonComments comment);
-
-    PokemonComments updateComment(PokemonComments comment);
+    public PokemonComments updateComment(PokemonComments comment);
+    
+    public PokemonComments deleteComment(PokemonComments comment);
 
 }

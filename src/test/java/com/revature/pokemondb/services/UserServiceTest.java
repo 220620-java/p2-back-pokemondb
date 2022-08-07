@@ -3,6 +3,8 @@ package com.revature.pokemondb.services;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -13,20 +15,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.revature.pokemondb.PokemondbApplication;
+import com.revature.pokemondb.exceptions.BannedException;
 import com.revature.pokemondb.exceptions.EmailAlreadyExistsException;
 import com.revature.pokemondb.exceptions.FailedAuthenticationException;
 import com.revature.pokemondb.exceptions.InvalidInputException;
 import com.revature.pokemondb.exceptions.RecordNotFoundException;
 import com.revature.pokemondb.exceptions.UsernameAlreadyExistsException;
+import com.revature.pokemondb.models.BannedUser;
 import com.revature.pokemondb.models.User;
+import com.revature.pokemondb.repositories.BanRepository;
 import com.revature.pokemondb.repositories.UserRepository;
 import com.revature.pokemondb.utils.SecurityUtils;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 class UserServiceTest {
     
     @MockBean
     private UserRepository userRepo;
+
+    @MockBean
+    private BanRepository banRepo;
 
     @MockBean
     private SecurityUtils mockUtils;
@@ -34,6 +42,9 @@ class UserServiceTest {
     @Autowired
     private UserService userService;
 
+    /**
+     * Grabs all the users from the database and returns it.
+     */
     @Test
     void testGetAllUsers() {
         Mockito.when(userRepo.findAll()).thenReturn(new ArrayList<User>());
@@ -92,9 +103,10 @@ class UserServiceTest {
      * @throws NoSuchAlgorithmException
      * @throws FailedAuthenticationException
      * @throws RecordNotFoundException
+     * @throws BannedException
      */
     @Test
-	void testLoginUserSuccess() throws NoSuchAlgorithmException, FailedAuthenticationException, RecordNotFoundException {
+	void testLoginUserSuccess() throws NoSuchAlgorithmException, FailedAuthenticationException, RecordNotFoundException, BannedException {
         // Mock setup
         User mockUser = new User();
         mockUser.setUsername("user");
@@ -133,6 +145,54 @@ class UserServiceTest {
 	}
 
     /**
+     * Tests logging the user in if they are banned.
+     * Should throw a Banned Exception.
+     * @throws NoSuchAlgorithmException
+     * @throws FailedAuthenticationException
+     */
+    @Test
+	void testLoginUserBanned() throws NoSuchAlgorithmException, FailedAuthenticationException, BannedException {
+        // Mock setup
+        User mockUser = new User();
+        mockUser.setUsername("user");
+        mockUser.setPassword("pass");
+        mockUser.setSalt("salt".getBytes());
+        BannedUser bannedUser = new BannedUser(mockUser.getUserId());
+        bannedUser.setBanDuration(Timestamp.from(Instant.now().plusSeconds(5)));
+        Mockito.when(userRepo.findByUsername("user")).thenReturn(Optional.of(mockUser));
+        Mockito.when(mockUtils.encodePassword("pass", "salt".getBytes())).thenReturn("pass");
+        Mockito.when(banRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(bannedUser));
+        
+        // Should throw a banned exception
+        assertThrows(BannedException.class,
+        () -> userService.loginUser("user", "pass"));
+	}
+
+    /**
+     * Tests logging the user in if they are banned.
+     * Should throw a Banned Exception.
+     * @throws NoSuchAlgorithmException
+     * @throws FailedAuthenticationException
+     * @throws RecordNotFoundException
+     */
+    @Test
+	void testLoginUserBannedPastDuration() throws NoSuchAlgorithmException, FailedAuthenticationException, BannedException, RecordNotFoundException {
+        // Mock setup
+        User mockUser = new User();
+        mockUser.setUsername("user");
+        mockUser.setPassword("pass");
+        mockUser.setSalt("salt".getBytes());
+        BannedUser bannedUser = new BannedUser(mockUser.getUserId());
+        bannedUser.setBanDuration(Timestamp.from(Instant.now().minusSeconds(5)));
+        Mockito.when(userRepo.findByUsername("user")).thenReturn(Optional.of(mockUser));
+        Mockito.when(mockUtils.encodePassword("pass", "salt".getBytes())).thenReturn("pass");
+        Mockito.when(banRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(bannedUser));
+        
+        User returnedUser = userService.loginUser("user", "pass");
+        assertNotNull (returnedUser);
+	}
+
+    /**
      * Tests logging the user in and not being able to find the user.
      * Should throw FailedAuthenticationException.
      * @throws NoSuchAlgorithmException
@@ -148,6 +208,10 @@ class UserServiceTest {
         () -> userService.loginUser("user", "pass"));
 	}
 
+    /**
+     * Use the wrong salting algorithm to throw a NoSuchAlgorithm exception.
+     * @throws NoSuchAlgorithmException
+     */
     @Test
     void testLoginWrongSaltingAlgorithm() throws NoSuchAlgorithmException {
         User mockUser = new User();
@@ -260,12 +324,63 @@ class UserServiceTest {
     /**
      * Update the user and return it.
      * @throws RecordNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws EmailAlreadyExistsException
+     * @throws UsernameAlreadyExistsException
      */
     @Test
-    void testUpdateUser() throws RecordNotFoundException {
+    void testUpdateUser() throws RecordNotFoundException, NoSuchAlgorithmException, EmailAlreadyExistsException, UsernameAlreadyExistsException {
         User mockUser = new User();
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
+        User mockDbUser = new User();
+        mockUser.setUsername("user");
+        mockUser.setPassword("pass");
+        mockUser.setEmail("email");
+        mockUser.setRole("admin");
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockDbUser));
         assertNotNull(userService.updateUser(mockUser));
+    }
+
+    /**
+     * Update the user with an existing email.
+     * @throws RecordNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws EmailAlreadyExistsException
+     */
+    @Test
+    void testUpdateUserEmailExists() throws RecordNotFoundException, NoSuchAlgorithmException, EmailAlreadyExistsException {
+        User mockUser = new User();
+        User mockDbUser = new User();
+        mockUser.setUsername("user");
+        mockUser.setPassword("pass");
+        mockUser.setEmail("email");
+        mockDbUser.setUsername("user");
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockDbUser));
+        Mockito.when(userRepo.existsUserByEmail(mockUser.getEmail())).thenReturn(true);
+        assertThrows(EmailAlreadyExistsException.class, 
+        () -> userService.updateUser(mockUser));
+    }
+
+    /**
+     * Update the user with an existing username.
+     * @throws RecordNotFoundException
+     * @throws NoSuchAlgorithmException
+     * @throws UsernameAlreadyExistsException
+     */
+    @Test
+    void testUpdateUserUsernameExists() throws RecordNotFoundException, NoSuchAlgorithmException, UsernameAlreadyExistsException {
+        User mockUser = new User();
+        User mockDbUser = new User();
+        mockUser.setUsername("user");
+        mockUser.setPassword("pass");
+        mockUser.setEmail("email");
+        mockDbUser.setUsername("user2");
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockDbUser));
+        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
+        assertThrows(UsernameAlreadyExistsException.class, 
+        () -> userService.updateUser(mockUser));
     }
 
     /**
@@ -276,7 +391,21 @@ class UserServiceTest {
     @Test
     void testUpdateUserNotFound() throws RecordNotFoundException {
         User mockUser = new User();
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(false);
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(false);
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.updateUser(mockUser));
+    }
+
+    /**
+     * Try updating the user and they don't exist in the user database.
+     * Should throw a RecordNotFoundException
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testUpdateUserOptionalEmpty() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.empty());
         assertThrows(RecordNotFoundException.class, 
         () -> userService.updateUser(mockUser));
     }
@@ -288,7 +417,8 @@ class UserServiceTest {
     @Test
     void testDeleteUser() throws RecordNotFoundException {
         User mockUser = new User();
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(true);
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
         assertNotNull(userService.deleteUser(mockUser));
     }
 
@@ -300,7 +430,21 @@ class UserServiceTest {
     @Test
     void testDeleteUserNotFound() throws RecordNotFoundException {
         User mockUser = new User();
-        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(false);
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(false);
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.deleteUser(mockUser));
+    }
+
+    /**
+     * Try updating the user and they don't exist in the database.
+     * Should throw a RecordNotFoundException
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void testDeleteUserOptionalEmpty() throws RecordNotFoundException {
+        User mockUser = new User();
+        Mockito.when(userRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(mockUser.getUserId())).thenReturn(Optional.empty());
         assertThrows(RecordNotFoundException.class, 
         () -> userService.deleteUser(mockUser));
     }
@@ -308,24 +452,86 @@ class UserServiceTest {
     /**
      * Inserts the user into the ban table to indicate
 	 * a user has been banned.
+     * @throws UsernameAlreadyExistsException
+     * @throws RecordNotFoundException
      */
     @Test
-    void banUser() {
+    void banUser() throws UsernameAlreadyExistsException, RecordNotFoundException {
         User mockUser = new User();
-        assertNotNull (userService.banUser(mockUser));
+        mockUser.setUsername("username");
+        BannedUser bannedUser = new BannedUser(mockUser.getUserId(), Timestamp.from(Instant.now().plusSeconds(500l)), "Reason");
+        Mockito.when(userRepo.existsById(bannedUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(bannedUser.getUserId())).thenReturn(Optional.of(mockUser));
+        Mockito.when(banRepo.existsById(mockUser.getUserId())).thenReturn(false);
+        assertNotNull(userService.banUser(bannedUser));
     }
-    
-    // TODO Make a ban test case for when the user doesn't exist
+
+    /**
+     * Inserts the user into the ban table to indicate
+	 * a user has been banned.
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void banUserCannotFind() throws RecordNotFoundException {
+        User mockUser = new User();
+        BannedUser bannedUser = new BannedUser(mockUser.getUserId(), Timestamp.from(Instant.now().plusSeconds(500l)), "Reason");
+        Mockito.when(userRepo.existsUserByUsername(mockUser.getUsername())).thenReturn(false);
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.banUser(bannedUser));
+    }
+
+    /**
+     * Inserts the user into the ban table to indicate
+	 * a user has been banned.
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void banUserAlreadyBanned() throws RecordNotFoundException {
+        User mockUser = new User();
+        mockUser.setUserId(1l);
+        BannedUser bannedUser = new BannedUser(mockUser.getUserId(), Timestamp.from(Instant.now().plusSeconds(500l)), "Reason");
+        Mockito.when(userRepo.existsById(bannedUser.getUserId())).thenReturn(true);
+        Mockito.when(userRepo.findById(bannedUser.getUserId())).thenReturn(Optional.of(mockUser));
+        Mockito.when(banRepo.existsById(mockUser.getUserId())).thenReturn(true);
+        assertThrows(UsernameAlreadyExistsException.class, 
+        () -> userService.banUser(bannedUser));
+    }
 
     /**
      * Removes a user from the ban table to indicate
 	 * a user has been unbanned.
+     * @throws UsernameAlreadyExistsException
      */
     @Test
-    void unBanUser() {
+    void unBanUser() throws RecordNotFoundException {
         User mockUser = new User();
-        assertNotNull (userService.unBanUser(mockUser));
+        mockUser.setUserId(1l);
+        BannedUser bannedUser = new BannedUser(1l);
+        Mockito.when (banRepo.findById(1l)).thenReturn(Optional.of(bannedUser));
+        Mockito.when (userRepo.findById(1l)).thenReturn(Optional.of(mockUser));
+        assertNotNull (userService.unBanUser(1l));
     }
 
-    // TODO Make an unban test case for when the user doesn't exist
+    /**
+     * Tries to unban a user that's not in the ban table
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void unBanUserCannotFindUser() throws RecordNotFoundException {
+        Mockito.when (banRepo.findById(1l)).thenReturn(Optional.empty());
+        assertThrows(RecordNotFoundException.class, 
+        () -> userService.unBanUser(1l));
+    }
+
+    /**
+     * Tries to unban a user that's not in the ban table
+     * @throws RecordNotFoundException
+     */
+    @Test
+    void unBanUserNotInUsersTable() throws RecordNotFoundException {
+        BannedUser bannedUser = new BannedUser(1l);
+        Mockito.when (banRepo.findById(1l)).thenReturn(Optional.of(bannedUser));
+        Mockito.when (userRepo.findById(1l)).thenReturn(Optional.empty());
+        assertNull (userService.unBanUser(1l));
+    }
 }
