@@ -29,10 +29,10 @@ public class WishlistService {
     public Boolean addPokemonToWishlist(Integer pokemonid, Long userid) {
         Wishlist wishlist = new Wishlist();
         Optional<PokemonDTO> oPokemon = pokemonRepo.findById(pokemonid);
-        if (oPokemon.isPresent()) {
-            User user = userRepo.getReferenceById(userid);
+        Optional<User> oUser = userRepo.findById(userid);
+        if (oPokemon.isPresent() && oUser.isPresent()) {
             wishlist.setPokemon(oPokemon.get());
-            wishlist.setWisher(user);
+            wishlist.setUser(oUser.get());
             try {
                 listRepo.save(wishlist);
                 return true;
