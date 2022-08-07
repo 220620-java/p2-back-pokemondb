@@ -1,6 +1,7 @@
 package com.revature.pokemondb.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.repositories.PokemonCommentRepo;
 import org.springframework.stereotype.Service;
@@ -75,5 +76,14 @@ public class PokemonCommentImpl implements PokemonCommentService {
     public PokemonComments deleteComment(PokemonComments comment) {
         commentRepo.delete(comment);
         return comment;
+    }
+
+    public String getAllByPokemon(Pokemon pokemon) {
+        try {
+            Optional<List<PokemonComments>> pokemonCommentsOptional = Optional.of(commentRepo.findAllByPokemon(pokemon));
+            return objectMapper.valueToTree(pokemonCommentsOptional).toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
