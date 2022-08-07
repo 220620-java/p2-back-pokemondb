@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 import com.revature.pokemondb.models.BannedUser;
-import com.revature.pokemondb.models.User;
 
 public class BannedUserDTO {
 	private Long userId = 0l; 
