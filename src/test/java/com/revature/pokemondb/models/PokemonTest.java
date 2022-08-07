@@ -225,4 +225,21 @@ public class PokemonTest {
         assertEquals ("url", move.getURL());
         assertEquals (2, move.getLevelLearnedAt());
     }
+
+    @Test
+    void pokemonDTO() {
+        PokemonDTO dto = new PokemonDTO(1);
+        PokemonDTO dto2 = new PokemonDTO(1);
+        assertEquals(dto, dto2);
+        PokemonDTO dto3 = new PokemonDTO(1, "pikachu");
+        PokemonDTO dto4 = new PokemonDTO(1, "pikachu", "imageURL");
+        PokemonDTO dto5 = new PokemonDTO(1, "pikachu", "imageURL", 2);
+        dto3.setGeneration(1);
+        assertEquals(1, dto3.getGeneration());
+        dto4.setId(2);
+        assertEquals(2, dto4.getId());
+        dto5.setName("name");
+        assertEquals("name", dto5.getName());
+        assertInstanceOf(Integer.class, dto.hashCode());
+    }
 }

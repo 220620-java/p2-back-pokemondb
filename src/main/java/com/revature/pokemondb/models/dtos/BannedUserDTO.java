@@ -17,20 +17,6 @@ public class BannedUserDTO {
         banReason = "";
     }
 
-    public BannedUserDTO(Long userId) {
-        this.userId = userId;
-    }
-
-    public BannedUserDTO(Long userId, Timestamp banDuration, String banReason) {
-        this.userId = userId;
-        this.banDuration = banDuration;
-        this.banReason = banReason;
-    }
-
-    public BannedUserDTO(User user) {
-        this.userId = user.getUserId();
-    }
-
     public BannedUserDTO(BannedUser user) {
         this.userId = user.getUserId();
         this.banDuration = user.getBanDuration();

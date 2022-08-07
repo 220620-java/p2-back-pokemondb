@@ -1,11 +1,5 @@
 package com.revature.pokemondb.models.dtos;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.revature.pokemondb.models.User;
 
 /**
@@ -30,51 +24,6 @@ public class UserBodyDTO {
 		this.role = "user";
 	}
 
-	public UserBodyDTO (long id) {
-		this.userId = id;
-		this.username = "";
-		this.email = "";
-		this.password = "";
-		this.token = "";
-		this.role = "user";
-	}
-
-	public UserBodyDTO(String username, String email) {
-		this.username = username;
-		this.email = email;
-	}
-
-	public UserBodyDTO(String username, String email, String password) {
-		this.username = username;
-		this.email = email;
-		this.password = password;
-	}
-
-	@Autowired
-    public UserBodyDTO(Long userId, String username, String email, String password) {
-		this.userId = userId;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-	}
-	
-	public UserBodyDTO(Long userId, String username, String email, String password, byte[] salt) {
-		this.userId = userId;
-		this.username = username;
-		this.email = email;
-		this.salt = salt;
-		this.password = password;
-	}
-
-	public UserBodyDTO(Long userId, String username, String email, String password, byte[] salt, String token) {
-		this.userId = userId;
-		this.username = username;
-		this.email = email;
-		this.salt = salt;
-		this.password = password;
-		this.token = token;
-	}
-
 	public UserBodyDTO (User user) {
 		this.userId = user.getUserId();
 		this.username = user.getUsername();
@@ -90,29 +39,6 @@ public class UserBodyDTO {
 		this.email = user.getEmail();
 		this.role = user.getRole();
 		this.token = user.getToken();
-	}
-
-	public UserBodyDTO (Map<String, String> map) {
-		if ((map.get("userId") != null)) {
-			this.userId = Long.valueOf(map.get("userId"));
-		}
-
-		this.username = map.get("username");
-
-		this.email = map.get("email");
-
-		if (map.get("salt") != null) {
-			this.salt = map.get("salt").getBytes();
-		}
-
-		this.password = map.get("password");
-
-		if (map.get("role") != null) {
-			this.role = map.get("role");
-		}
-		else {
-			this.role = "user";
-		}
 	}
 
 	/** 
@@ -199,37 +125,5 @@ public class UserBodyDTO {
 
 	public void setToken(String token) {
 		this.token = token;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(salt);
-		result = prime * result + Objects.hash(email, password, userId, username);
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UserBodyDTO other = (UserBodyDTO) obj;
-		return Objects.equals(email, other.email) && Objects.equals(password, other.password)
-				&& Arrays.equals(salt, other.salt) && Objects.equals(userId, other.userId)
-				&& Objects.equals(username, other.username);
-	}
-
-	/** 
-	 * @return String
-	 */
-	@Override
-	public String toString() {
-		String retString = "UserId=%d, Username=%s, Email=%s, Password=%s, Salt=%s";
-		return String.format(retString, getUserId(), getUsername(), getEmail(), getPassword(), getSalt());
 	}
 }
