@@ -31,7 +31,7 @@ public class WishlistService {
         Optional<User> oUser = userRepo.findById(userid);
         if (oPokemon.isPresent() && oUser.isPresent()) {
             wishlist.setPokemon(oPokemon.get());
-            wishlist.setWisher(oUser.get());
+            wishlist.setUser(oUser.get());
             try {
                 listRepo.save(wishlist);
                 return true;
