@@ -6,7 +6,6 @@ import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.dtos.PokemonDTO;
 
 public interface PokemonService {
-    public String getRequestJSON(String url);
     public String getPokemonJSON(int pokemonId);
     public String getPokemonJSON(String pokemonName);
     public PokemonDTO getReferencePokemon(int id);

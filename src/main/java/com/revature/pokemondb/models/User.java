@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.revature.pokemondb.models.dtos.UserBodyDTO;
 import com.revature.pokemondb.models.dtos.UserDTO;
 
 /**
@@ -127,7 +128,16 @@ public class User {
 		}
 	}
 
-	/** 
+	public User(UserBodyDTO user) {
+		this.userId = user.getUserId();
+		this.username = user.getUsername();
+		this.email = user.getEmail();
+		this.salt = user.getSalt();
+		this.password = user.getPassword();
+		this.role = user.getRole();
+    }
+
+    /** 
 	 * @return int
 	 */
 	public Long getUserId() {
