@@ -30,7 +30,7 @@ public class Wishlist {
     @ManyToOne()
     @JoinColumn(name = "pokemon_id")
     private PokemonDTO pokemon;
-    
+
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
     public Wishlist() {
