@@ -23,7 +23,7 @@ public class Wishlist {
     private long id;
     @ManyToOne(targetEntity = PokemonDTO.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "pokemon_id", referencedColumnName = "id")
-    private Pokemon pokemon;
+    private PokemonDTO pokemon;
     @ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User wisher;
@@ -33,7 +33,7 @@ public class Wishlist {
 
     }
 
-    public Wishlist(long id, Pokemon pokemon, User wisher, Timestamp createdAt) {
+    public Wishlist(long id, PokemonDTO pokemon, User wisher, Timestamp createdAt) {
         this.id = id;
         this.pokemon = pokemon;
         this.wisher = wisher;
@@ -48,11 +48,11 @@ public class Wishlist {
         this.id = id;
     }
 
-    public Pokemon getPokemon() {
+    public PokemonDTO getPokemon() {
         return pokemon;
     }
 
-    public void setPokemon(Pokemon pokemon) {
+    public void setPokemon(PokemonDTO pokemon) {
         this.pokemon = pokemon;
     }
 
