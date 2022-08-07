@@ -10,13 +10,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.models.ReportArt;
 import com.revature.pokemondb.models.dtos.FanartDTO;
 import com.revature.pokemondb.models.dtos.UserIdDTO;
 import com.revature.pokemondb.repositories.ReportArtRepository;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class ReportArtServiceTest {
 	/*Class Variables*/
     @MockBean
@@ -33,7 +32,7 @@ public class ReportArtServiceTest {
     	int mockArtId = 1,
     		mockUserId = 1;
     	FanartDTO mockArt = new FanartDTO(mockArtId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<ReportArt> mockdata = new ArrayList<ReportArt>();
     	ReportArt mockentry = new ReportArt(),
     		expected = new ReportArt(),
@@ -60,7 +59,7 @@ public class ReportArtServiceTest {
     	int mockArtId = 1,
     		mockUserId = 1;
     	FanartDTO mockArt = new FanartDTO(mockArtId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<ReportArt> mockdata = new ArrayList<ReportArt>();
     	ReportArt expected = null,
     		actual;

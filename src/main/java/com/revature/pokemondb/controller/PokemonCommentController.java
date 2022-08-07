@@ -1,13 +1,16 @@
 package com.revature.pokemondb.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.PokemonComments;
 import com.revature.pokemondb.services.PokemonCommentImpl;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -32,7 +35,7 @@ public class PokemonCommentController {
     @GetMapping(path = "/flagged")
     protected ResponseEntity<String> getAllFlagged() {
 
-        return ResponseEntity.ok(commentService.getFlagged().toString());
+        return ResponseEntity.ok(commentService.getAllFlaggedComments().toString());
     }
     @GetMapping(path = "/{id}")
     protected ResponseEntity<String> findById(@PathVariable Integer id) {
@@ -68,7 +71,13 @@ public class PokemonCommentController {
      */
     @GetMapping
     protected ResponseEntity<String> getComments() {
-            return ResponseEntity.ok(commentService.getAllComments());
+        List<PokemonComments> comments = commentService.getAllUnflaggedComments();
+            try {
+                return ResponseEntity.ok(objectMapper.writeValueAsString(comments));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
         }
     }
 

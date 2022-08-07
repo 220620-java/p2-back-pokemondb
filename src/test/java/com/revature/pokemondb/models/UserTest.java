@@ -7,16 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.revature.pokemondb.PokemondbApplication;
-import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.dtos.UserDTO;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class UserTest {
     
     @Test

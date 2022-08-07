@@ -38,7 +38,7 @@ public class RateArtCommService {
 	 */
 	public RateArtComm getRatingByUserAndCommentId(int commId, int userId) {
 		ArtCommDTO commDtoObj = new ArtCommDTO(commId);
-		UserIdDTO userDtoObj = new UserIdDTO(userId);
+		UserIdDTO userDtoObj = new UserIdDTO(userId, "");
 		List<RateArtComm> rateArtCommList = rateArtCommRepo.findByCommentIdAndAuthor(commDtoObj, userDtoObj);
 		RateArtComm rateArtComm;
 		

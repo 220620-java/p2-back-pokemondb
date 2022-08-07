@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.models.ArtComment;
 import com.revature.pokemondb.models.dtos.FanartDTO;
 import com.revature.pokemondb.repositories.ArtCommRepository;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class ArtCommServiceTest {
 	/*Class Variables*/
     @MockBean

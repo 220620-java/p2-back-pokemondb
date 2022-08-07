@@ -10,13 +10,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.revature.pokemondb.PokemondbApplication;
 import com.revature.pokemondb.models.RateArtComm;
 import com.revature.pokemondb.models.dtos.ArtCommDTO;
 import com.revature.pokemondb.models.dtos.UserIdDTO;
 import com.revature.pokemondb.repositories.RateArtCommRepository;
 
-@SpringBootTest(classes=PokemondbApplication.class)
+@SpringBootTest
 public class RateArtCommServiceTest {
 	/*Class Variables*/
     @MockBean
@@ -33,7 +32,7 @@ public class RateArtCommServiceTest {
     	int mockCommId = 1,
     		mockUserId = 1;
     	ArtCommDTO mockComm = new ArtCommDTO(mockCommId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<RateArtComm> mockdata = new ArrayList<RateArtComm>();
     	RateArtComm mockentry = new RateArtComm(),
     		expected = new RateArtComm(),
@@ -60,7 +59,7 @@ public class RateArtCommServiceTest {
     	int mockCommId = 1,
     		mockUserId = 1;
     	ArtCommDTO mockComm = new ArtCommDTO(mockCommId);
-    	UserIdDTO mockUser = new UserIdDTO(mockUserId);
+    	UserIdDTO mockUser = new UserIdDTO(mockUserId, "");
     	List<RateArtComm> mockdata = new ArrayList<RateArtComm>();
     	RateArtComm expected = null,
     		actual;
