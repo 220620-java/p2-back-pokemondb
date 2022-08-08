@@ -36,9 +36,14 @@ public class WishlistService {
     }
 
     // delete pokemon from wish list
-    public boolean deletePokemonFromWishlist(Long id) {
+    public boolean deletePokemonFromWishlist(int pokemonid, int userid) {
+        PokemonDTO pokeId = new PokemonDTO(pokemonid);
+        UserIdDTO userId = new UserIdDTO(userid, "");
+        
         try {
-            listRepo.deleteById(id);
+            // listRepo.deleteByPokemonAndUser(pokeId, userId);
+            Wishlist wishlistdelete = listRepo.findByUserIdAndPokemonId(userid, pokemonid);
+            listRepo.delete(wishlistdelete);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

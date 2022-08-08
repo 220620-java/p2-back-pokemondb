@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.User;
 import com.revature.pokemondb.models.Wishlist;
+import com.revature.pokemondb.models.dtos.PokemonDTO;
 import com.revature.pokemondb.models.dtos.UserDTO;
 import com.revature.pokemondb.models.dtos.UserIdDTO;
 
@@ -27,4 +28,10 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     public void saveWishlist(@Param("pokemon_id") Pokemon pokemon_id, @Param("user_id") User user_id);
 
     public List<Wishlist> findByUser(UserIdDTO id);
+
+    @Modifying
+    public void deleteByPokemonAndUser(PokemonDTO pokemonid, UserIdDTO userid);
+
+
+    public Wishlist findByUserIdAndPokemonId(Integer userId, Integer pokemonId);
 }
