@@ -222,7 +222,7 @@ public class PokemonServiceImpl implements PokemonService{
         int size = node.size();
         String[] types = new String[size];
         for (int i = 0; i < size; i++) {
-            types[i] = node.get("type").get("name").asText();
+            types[i] = node.get(i).get("type").get("name").asText();
         }
         return types;
     }
