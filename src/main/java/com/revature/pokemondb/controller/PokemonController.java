@@ -1,5 +1,6 @@
 package com.revature.pokemondb.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpMethod;
@@ -50,6 +51,22 @@ public class PokemonController {
 			return ResponseEntity.status(HttpStatus.OK).body(pokemonList);
 		}
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	}
+
+	@Auth(requiredRole = "admin")
+	@GetMapping("/allPokemon")
+	public ResponseEntity<List<Pokemon>> saveAllPokemonById () {
+		List<Pokemon> pokemonList = new ArrayList<>();
+		try {
+			for (int i = 1; i <= 898; i++) {
+				Pokemon pokemon = pokemonService.createPokemon(i);
+				pokemonList.add(pokemon);
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(pokemonList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
 	}
 
 	/**
