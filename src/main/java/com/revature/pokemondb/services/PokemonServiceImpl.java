@@ -143,7 +143,7 @@ public class PokemonServiceImpl implements PokemonService{
             int weight = pokemonRoot.get("weight").asInt();
 
             // Types
-            String[] types = getTypes(pokemonRoot.get("types").get(0));
+            String[] types = getTypes(pokemonRoot.get("types"));
 
             // Base Stats
             Map<String, Integer> baseStats = getBaseStats(pokemonRoot.get("stats"));
