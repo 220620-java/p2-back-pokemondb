@@ -134,25 +134,41 @@ public class PokemonServiceImpl implements PokemonService{
     }
 
     public PokemonDTO createReferencePokemon (String pokemonName) {
-        String pokemonJSON = getPokemonJSON (pokemonName);
-        String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonName);
+        PokemonDTO dto = null;
+        Optional<PokemonDTO> oDto = pokeRepo.findByName(pokemonName);
+        if (oDto.isPresent()) {
+            dto = oDto.get();
+            return dto;
+        }
+
         try {
-            return createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+            String pokemonJSON = getPokemonJSON (pokemonName);
+            String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonName);
+            dto = createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+            pokeRepo.save(dto);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return null;
+        return dto;
     }
 
     public PokemonDTO createReferencePokemon (Integer pokemonId) {
-        String pokemonJSON = getPokemonJSON (pokemonId);
-        String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonId);
+        PokemonDTO dto = null;
+        Optional<PokemonDTO> oDto = pokeRepo.findById(pokemonId);
+        if (oDto.isPresent()) {
+            dto = oDto.get();
+            return dto;
+        }
+
         try {
-            return createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+            String pokemonJSON = getPokemonJSON (pokemonId);
+            String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonId);
+            dto = createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+            pokeRepo.save(dto);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return null;
+        return dto;
     }
 
     public PokemonDTO createReferencePokemonObject (String pokemonJSON, String pokemonSpeciesJSON) throws JsonMappingException, JsonProcessingException {
