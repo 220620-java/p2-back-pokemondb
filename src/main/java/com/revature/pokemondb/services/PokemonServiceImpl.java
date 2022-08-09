@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Ability;
@@ -70,6 +71,17 @@ public class PokemonServiceImpl implements PokemonService{
     }
 
     /**
+     * External API CALL - Grab Pokemon Species by Id
+     * 
+     * @param pokemonName
+     * @return
+     */
+    public String getPokemonSpeciesJSON(String pokemonName) {
+        String url = "https://pokeapi.co/api/v2/pokemon-species/" + StringUtils.convertToURIFormat(pokemonName);
+        return  webClient.getRequestJSON(url);
+    }
+
+    /**
      * 
      */
     public PokemonDTO getReferencePokemon(int id) {
@@ -119,6 +131,50 @@ public class PokemonServiceImpl implements PokemonService{
                 pokemonList.add(pokemon.get());
         }
         return pokemonList;
+    }
+
+    public PokemonDTO createReferencePokemon (String pokemonName) {
+        String pokemonJSON = getPokemonJSON (pokemonName);
+        String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonName);
+        try {
+            return createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public PokemonDTO createReferencePokemon (Integer pokemonId) {
+        String pokemonJSON = getPokemonJSON (pokemonId);
+        String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonId);
+        try {
+            return createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public PokemonDTO createReferencePokemonObject (String pokemonJSON, String pokemonSpeciesJSON) throws JsonMappingException, JsonProcessingException {
+        JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
+        // Id
+        int id = pokemonRoot.get("id").asInt();
+
+        // Name
+        String name = pokemonRoot.get("name").asText();
+
+        // Image URL
+        String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
+
+        JsonNode speciesRoot = objMapper.readTree(pokemonSpeciesJSON);
+        // Generation
+        String generation = speciesRoot.get("generation").get("name").asText();
+        String number = generation.split("-")[1];
+        int genNum = StringUtils.getNumberFromRomanNumeral(number);
+
+        PokemonDTO pokemonDTO = new PokemonDTO (id, name, imageURL, genNum);
+
+        return pokemonDTO;
     }
 
     /**
