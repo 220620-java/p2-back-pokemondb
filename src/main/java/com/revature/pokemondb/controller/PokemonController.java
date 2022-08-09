@@ -55,11 +55,11 @@ public class PokemonController {
 
 	@Auth(requiredRole = "admin")
 	@GetMapping("/allPokemon")
-	public ResponseEntity<List<Pokemon>> saveAllPokemonById () {
-		List<Pokemon> pokemonList = new ArrayList<>();
+	public ResponseEntity<List<PokemonDTO>> saveAllPokemonById () {
+		List<PokemonDTO> pokemonList = new ArrayList<>();
 		try {
 			for (int i = 1; i <= 898; i++) {
-				Pokemon pokemon = pokemonService.createPokemon(i);
+				PokemonDTO pokemon = pokemonService.createReferencePokemon(i);
 				pokemonList.add(pokemon);
 			}
 			return ResponseEntity.status(HttpStatus.OK).body(pokemonList);
