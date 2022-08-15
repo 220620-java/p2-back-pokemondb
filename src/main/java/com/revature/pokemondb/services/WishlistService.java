@@ -36,9 +36,14 @@ public class WishlistService {
     }
 
     // delete pokemon from wish list
-    public boolean deletePokemonFromWishlist(Long id) {
+    public boolean deletePokemonFromWishlist(int pokemonid, int userid) {
+        PokemonDTO pokeId = new PokemonDTO(pokemonid);
+        UserIdDTO userId = new UserIdDTO(userid, "");
+        
         try {
-            listRepo.deleteById(id);
+            // listRepo.deleteByPokemonAndUser(pokeId, userId);
+            Wishlist wishlistdelete = listRepo.findByUserIdAndPokemonId(userid, pokemonid);
+            listRepo.delete(wishlistdelete);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,18 +57,11 @@ public class WishlistService {
         return wishlists;
     }
 
-    public Wishlist findById(Long id) {
-        try {
-            Optional<Wishlist> wishlist = listRepo.findById(id);
+    public List<Wishlist> findByUserId(int id) {
+        UserIdDTO userId = new UserIdDTO(id, "");
+            List<Wishlist> wishlist = listRepo.findByUser(userId);
 
-            if (wishlist.isPresent()) {
-                return wishlist.get();
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+            return wishlist;
+        
     }
 }

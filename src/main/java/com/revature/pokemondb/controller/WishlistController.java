@@ -3,8 +3,9 @@ package com.revature.pokemondb.controller;
 import java.util.List;
 import java.util.Map;
 
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,8 +49,8 @@ public class WishlistController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<String> getWishlistById(@PathVariable Long id) {
-        Wishlist wishlist = wishlistService.findById(id);
+    public ResponseEntity<String> getWishlistById(@PathVariable int id) {
+        List<Wishlist> wishlist = wishlistService.findByUserId(id);
         String wishlistJSON;
         try {
             wishlistJSON = objectMapper.writeValueAsString(wishlist);
@@ -73,5 +74,11 @@ public class WishlistController {
         return ResponseEntity.notFound().build();
     }
 
-    
+    @DeleteMapping(path = "/")
+    public ResponseEntity<String> deletePokemon(@RequestBody Map<String, Integer> parameters) {
+        Integer pokemonid = parameters.get("pokemonid");
+        Integer userid = parameters.get("userid");
+        wishlistService.deletePokemonFromWishlist(pokemonid, userid);
+        return new ResponseEntity<String>("Pokemon is free", HttpStatus.OK);
+    }
 }
