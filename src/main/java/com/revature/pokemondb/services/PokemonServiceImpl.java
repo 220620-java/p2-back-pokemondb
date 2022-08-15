@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.pokemondb.models.Ability;
@@ -21,7 +22,6 @@ import com.revature.pokemondb.models.PokemonMoves;
 import com.revature.pokemondb.models.dtos.PokemonDTO;
 import com.revature.pokemondb.repositories.PokemonRepository;
 import com.revature.pokemondb.utils.StringUtils;
-
 
 @Service("PokemonService")
 public class PokemonServiceImpl implements PokemonService{
@@ -67,6 +67,17 @@ public class PokemonServiceImpl implements PokemonService{
      */
     public String getPokemonSpeciesJSON(int id) {
         String url = "https://pokeapi.co/api/v2/pokemon-species/" + id;
+        return  webClient.getRequestJSON(url);
+    }
+
+    /**
+     * External API CALL - Grab Pokemon Species by Id
+     * 
+     * @param pokemonName
+     * @return
+     */
+    public String getPokemonSpeciesJSON(String pokemonName) {
+        String url = "https://pokeapi.co/api/v2/pokemon-species/" + StringUtils.convertToURIFormat(pokemonName);
         return  webClient.getRequestJSON(url);
     }
 
@@ -122,6 +133,66 @@ public class PokemonServiceImpl implements PokemonService{
         return pokemonList;
     }
 
+    public PokemonDTO createReferencePokemon (String pokemonName) {
+        PokemonDTO dto = null;
+        Optional<PokemonDTO> oDto = pokeRepo.findByName(pokemonName);
+        if (oDto.isPresent()) {
+            dto = oDto.get();
+            return dto;
+        }
+
+        try {
+            String pokemonJSON = getPokemonJSON (pokemonName);
+            String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonName);
+            dto = createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+            pokeRepo.save(dto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return dto;
+    }
+
+    public PokemonDTO createReferencePokemon (Integer pokemonId) {
+        PokemonDTO dto = null;
+        Optional<PokemonDTO> oDto = pokeRepo.findById(pokemonId);
+        if (oDto.isPresent()) {
+            dto = oDto.get();
+            return dto;
+        }
+
+        try {
+            String pokemonJSON = getPokemonJSON (pokemonId);
+            String pokemonSpeciesJSON = getPokemonSpeciesJSON(pokemonId);
+            dto = createReferencePokemonObject (pokemonJSON, pokemonSpeciesJSON);
+            pokeRepo.save(dto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return dto;
+    }
+
+    public PokemonDTO createReferencePokemonObject (String pokemonJSON, String pokemonSpeciesJSON) throws JsonMappingException, JsonProcessingException {
+        JsonNode pokemonRoot = objMapper.readTree(pokemonJSON);
+        // Id
+        int id = pokemonRoot.get("id").asInt();
+
+        // Name
+        String name = pokemonRoot.get("name").asText();
+
+        // Image URL
+        String imageURL = pokemonRoot.get("sprites").get("other").get("official-artwork").get("front_default").asText();
+
+        JsonNode speciesRoot = objMapper.readTree(pokemonSpeciesJSON);
+        // Generation
+        String generation = speciesRoot.get("generation").get("name").asText();
+        String number = generation.split("-")[1];
+        int genNum = StringUtils.getNumberFromRomanNumeral(number);
+
+        PokemonDTO pokemonDTO = new PokemonDTO (id, name, imageURL, genNum);
+
+        return pokemonDTO;
+    }
+
     /**
      * Create a pokemon object using four different API calls from PokeAPI.
      */
@@ -144,7 +215,7 @@ public class PokemonServiceImpl implements PokemonService{
             int weight = pokemonRoot.get("weight").asInt();
 
             // Types
-            String[] types = getTypes(pokemonRoot.get("types").get(0));
+            String[] types = getTypes(pokemonRoot.get("types"));
 
             // Base Stats
             Map<String, Integer> baseStats = getBaseStats(pokemonRoot.get("stats"));
@@ -223,7 +294,7 @@ public class PokemonServiceImpl implements PokemonService{
         int size = node.size();
         String[] types = new String[size];
         for (int i = 0; i < size; i++) {
-            types[i] = node.get("type").get("name").asText();
+            types[i] = node.get(i).get("type").get("name").asText();
         }
         return types;
     }

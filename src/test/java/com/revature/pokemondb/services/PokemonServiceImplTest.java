@@ -9,17 +9,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.revature.pokemondb.controller.AuthController;
-import com.revature.pokemondb.controller.UserController;
 import com.revature.pokemondb.models.Pokemon;
 import com.revature.pokemondb.models.dtos.PokemonDTO;
 import com.revature.pokemondb.repositories.PokemonRepository;
@@ -27,15 +22,6 @@ import com.revature.pokemondb.repositories.PokemonRepository;
 
 @SpringBootTest
 class PokemonServiceImplTest {
-    // @MockBean
-    // private AuthController authController;
-
-    // @MockBean
-    // private UserController userController;
-
-    // @MockBean
-    // private UserService userService;
-
     @MockBean
     private WebClientService webClient;
 
